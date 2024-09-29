@@ -1,13 +1,14 @@
+import { File, Rank } from "engine/src/types";
 import classes from "./Square.module.css";
 
 interface SquareProps {
-  rank: number;
-  file: string;
+  rank: Rank;
+  file: File;
 }
 
 export const Square = (props: SquareProps) => {
   const classNames = [classes.square];
-  if (props.rank % 2 === 0) {
+  if ((props.file.charCodeAt(0) - "a".charCodeAt(0)) % 2 === props.rank % 2) {
     classNames.push(classes.black);
   } else {
     classNames.push(classes.white);
