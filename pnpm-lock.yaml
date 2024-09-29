@@ -10,6 +10,9 @@ importers:
 
   client:
     dependencies:
+      engine:
+        specifier: workspace:0.0.0
+        version: link:../engine
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -50,6 +53,12 @@ importers:
       vite:
         specifier: ^5.4.1
         version: 5.4.8
+
+  engine:
+    devDependencies:
+      typescript:
+        specifier: ^5.5.3
+        version: 5.6.2
 
 packages:
 
