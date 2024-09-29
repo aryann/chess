@@ -1,4 +1,4 @@
-import { Piece as PieceType } from "engine/src/types";
+import { TPiece as PieceType } from "engine/src/types";
 
 interface PieceProps {
   piece: PieceType;

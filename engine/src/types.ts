@@ -1,10 +1,10 @@
 export const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"] as const;
 export const RANKS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
 
-export type File = (typeof FILES)[number];
-export type Rank = (typeof RANKS)[number];
+export type TFile = (typeof FILES)[number];
+export type TRank = (typeof RANKS)[number];
 
-export type Piece =
+export type TPiece =
   | "r"
   | "n"
   | "b"
@@ -18,6 +18,30 @@ export type Piece =
   | "K"
   | "P";
 
-export const key = (file: File, rank: Rank) => {
+export type TBoardRank = [
+  TPiece?,
+  TPiece?,
+  TPiece?,
+  TPiece?,
+  TPiece?,
+  TPiece?,
+  TPiece?,
+  TPiece?
+];
+
+export type TBoard = [
+  TBoardRank,
+  TBoardRank,
+  TBoardRank,
+  TBoardRank,
+  TBoardRank,
+  TBoardRank,
+  TBoardRank,
+  TBoardRank
+];
+
+export type TObserver = (current: TBoard) => void;
+
+export const key = (file: TFile, rank: TRank) => {
   return `${file}${rank}`;
 };
