@@ -37,15 +37,13 @@ export const Square = (props: SquareProps) => {
     classNames.push(classes.white);
   }
 
-  if (canDrop) {
-    classNames.push(classes.highlight);
-  }
-
   const piece = board[fileToIndex(props.file)][rankToIndex(props.rank)];
 
   return (
     <div ref={drop} className={classNames.join(" ")}>
       {piece && <Piece piece={piece} file={props.file} rank={props.rank} />}
+
+      {canDrop && <div className={classes.possibleMove}></div>}
     </div>
   );
 };
