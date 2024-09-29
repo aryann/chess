@@ -13,13 +13,13 @@ interface SquareProps {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
+  const to = { file: props.file, rank: props.rank };
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: "piece",
-      canDrop: () => true,
+      canDrop: (from: TSquare) => engine.isLegal(from, to),
       drop: (from: TSquare) => {
-        const to = { file: props.file, rank: props.rank };
         engine.move(from, to);
       },
       collect: (monitor) => ({

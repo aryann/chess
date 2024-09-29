@@ -87,6 +87,10 @@ export class Engine {
     this.emit();
   }
 
+  isLegal(from: TSquare, to: TSquare): boolean {
+    return this.board[fileToIndex(to.file)][rankToIndex(to.rank)] === undefined;
+  }
+
   registerObserver(observer: TObserver) {
     this.observers.push(observer);
   }
