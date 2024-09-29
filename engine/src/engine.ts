@@ -1,4 +1,4 @@
-import { TBoard, TBoardRank, TFile, TObserver, TRank } from "./types";
+import { TBoard, TBoardRank, TFile, TObserver, TRank, TSquare } from "./types";
 
 export class Engine {
   private board: TBoard = [
@@ -80,8 +80,21 @@ export class Engine {
     return result;
   }
 
+  move(from: TSquare, to: TSquare) {
+    this.board[fileToIndex(to.file)][rankToIndex(to.rank)] =
+      this.board[fileToIndex(from.file)][rankToIndex(from.rank)];
+    this.board[fileToIndex(from.file)][rankToIndex(from.rank)] = undefined;
+    this.emit();
+  }
+
   registerObserver(observer: TObserver) {
     this.observers.push(observer);
+  }
+
+  private emit() {
+    for (const observer of this.observers) {
+      observer(this.board);
+    }
   }
 }
 

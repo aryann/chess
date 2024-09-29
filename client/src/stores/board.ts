@@ -2,7 +2,7 @@ import { Store } from "@tanstack/react-store";
 import { Engine } from "engine/src/engine";
 import { TBoard } from "engine/src/types";
 
-const engine = new Engine();
+export const engine = new Engine();
 
 interface TBoardStore {
   board: TBoard;
