@@ -14,5 +14,9 @@ export const Square = (props: SquareProps) => {
     classNames.push(classes.white);
   }
 
-  return <div className={classNames.join(" ")}></div>;
+  return (
+    <div className={classNames.join(" ")}>
+      <img src="/pieces/white/K.svg"></img>
+    </div>
+  );
 };
