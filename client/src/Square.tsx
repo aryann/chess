@@ -1,9 +1,11 @@
 import { File, Rank } from "engine/src/types";
+import { Piece } from "./Piece";
 import classes from "./Square.module.css";
+import { engine } from "./state";
 
 interface SquareProps {
-  rank: Rank;
   file: File;
+  rank: Rank;
 }
 
 export const Square = (props: SquareProps) => {
@@ -14,9 +16,11 @@ export const Square = (props: SquareProps) => {
     classNames.push(classes.white);
   }
 
+  const piece = engine.getPiece(props.file, props.rank);
+
   return (
     <div className={classNames.join(" ")}>
-      <img src="/pieces/white/K.svg"></img>
+      {piece && <Piece piece={piece} />}
     </div>
   );
 };
