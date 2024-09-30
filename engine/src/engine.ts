@@ -88,7 +88,6 @@ export class Engine {
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
-    console.log(from);
     return this.board[rankToIndex(to.rank)][fileToIndex(to.file)] === undefined;
   }
 
@@ -111,7 +110,7 @@ export class Engine {
 
   private emit() {
     for (const observer of this.observers) {
-      observer(this.board);
+      observer(this.current());
     }
   }
 }

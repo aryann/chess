@@ -11,11 +11,21 @@ interface SquareProps {
   rank: TRank;
 }
 
+const PossibleMove = () => {
+  return (
+    <div className={classes.possibleMove}>
+      <div className={classes.circle}></div>
+    </div>
+  );
+};
+
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const to = { file: props.file, rank: props.rank };
 
-  const [{ canDrop }, drop] = useDrop(
+  console.log(board);
+
+  const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: "piece",
       canDrop: (from: TSquare) => engine.isLegal(from, to),
@@ -45,7 +55,8 @@ export const Square = (props: SquareProps) => {
       {props.rank}
       {piece && <Piece piece={piece} file={props.file} rank={props.rank} />}
 
-      {canDrop && <div className={classes.possibleMove}></div>}
+      {!isOver && canDrop && <PossibleMove />}
+      {isOver && <div className={classes.hover}></div>}
     </div>
   );
 };

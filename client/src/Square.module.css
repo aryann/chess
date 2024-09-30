@@ -24,6 +24,21 @@
 
 .possibleMove {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.circle {
+  height: 16px;
+  width: 16px;
+  background-color: lightgray;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hover {
+  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
