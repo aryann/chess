@@ -81,14 +81,14 @@ export class Engine {
   }
 
   move(from: TSquare, to: TSquare) {
-    this.board[fileToIndex(to.file)][rankToIndex(to.rank)] =
-      this.board[fileToIndex(from.file)][rankToIndex(from.rank)];
-    this.board[fileToIndex(from.file)][rankToIndex(from.rank)] = undefined;
+    this.board[rankToIndex(to.rank)][fileToIndex(to.file)] =
+      this.board[rankToIndex(from.rank)][fileToIndex(from.file)];
+    this.board[rankToIndex(from.rank)][fileToIndex(from.file)] = undefined;
     this.emit();
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
-    return this.board[fileToIndex(to.file)][rankToIndex(to.rank)] === undefined;
+    return this.board[rankToIndex(to.rank)][fileToIndex(to.file)] === undefined;
   }
 
   registerObserver(observer: TObserver) {
@@ -107,5 +107,5 @@ export const fileToIndex = (file: TFile) => {
 };
 
 export const rankToIndex = (rank: TRank) => {
-  return rank - 1;
+  return 8 - rank;
 };

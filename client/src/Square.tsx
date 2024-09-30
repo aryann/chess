@@ -15,7 +15,7 @@ export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const to = { file: props.file, rank: props.rank };
 
-  const [{ isOver, canDrop }, drop] = useDrop(
+  const [{ canDrop }, drop] = useDrop(
     () => ({
       accept: "piece",
       canDrop: (from: TSquare) => engine.isLegal(from, to),
@@ -37,10 +37,12 @@ export const Square = (props: SquareProps) => {
     classNames.push(classes.white);
   }
 
-  const piece = board[fileToIndex(props.file)][rankToIndex(props.rank)];
+  const piece = board[rankToIndex(props.rank)][fileToIndex(props.file)];
 
   return (
     <div ref={drop} className={classNames.join(" ")}>
+      {props.file}
+      {props.rank}
       {piece && <Piece piece={piece} file={props.file} rank={props.rank} />}
 
       {canDrop && <div className={classes.possibleMove}></div>}

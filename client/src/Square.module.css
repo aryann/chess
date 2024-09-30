@@ -1,5 +1,6 @@
 .square {
   position: relative;
+  padding: 4px;
 }
 
 .square img {
@@ -13,10 +14,12 @@
 
 .white {
   background-color: white;
+  color: green;
 }
 
 .black {
   background-color: green;
+  color: white;
 }
 
 .possibleMove {

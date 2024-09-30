@@ -4,8 +4,8 @@ import { Square } from "./Square";
 
 export const Board = () => {
   const squares = [];
-  for (const file of FILES) {
-    for (const rank of RANKS) {
+  for (const rank of [...RANKS].reverse()) {
+    for (const file of FILES) {
       squares.push(<Square key={key(file, rank)} file={file} rank={rank} />);
     }
   }
