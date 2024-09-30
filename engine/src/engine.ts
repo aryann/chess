@@ -1,49 +1,24 @@
 import { TBoard, TBoardRank, TObserver, TSquare } from "./types";
 
+const EMPTY_RANK: TBoardRank = [
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+];
+
 export class Engine {
   private board: TBoard = [
     ["r", "n", "b", "q", "k", "n", "b", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
-    [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ],
-    [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ],
-    [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ],
-    [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ],
+    [...EMPTY_RANK],
+    [...EMPTY_RANK],
+    [...EMPTY_RANK],
+    [...EMPTY_RANK],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "N", "B", "R"],
   ];
@@ -51,26 +26,15 @@ export class Engine {
   private observers: TObserver[] = [];
 
   current(): TBoard {
-    const emptyRank: TBoardRank = [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ];
-
     const result: TBoard = [
-      emptyRank,
-      emptyRank,
-      emptyRank,
-      emptyRank,
-      emptyRank,
-      emptyRank,
-      emptyRank,
-      emptyRank,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
+      EMPTY_RANK,
     ];
 
     for (let i = 0; i < this.board.length; i++) {
