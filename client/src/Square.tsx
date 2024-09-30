@@ -1,5 +1,5 @@
 import { useStore } from "@tanstack/react-store";
-import { fileToIndex, rankToIndex } from "engine/src/engine";
+import { fileIndex, rankIndex } from "engine/src/engine";
 import { TFile, TRank, TSquare } from "engine/src/types";
 import { useDrop } from "react-dnd";
 import { Piece } from "./Piece";
@@ -21,9 +21,7 @@ const PossibleMove = () => {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
-  const to = { file: props.file, rank: props.rank };
-
-  console.log(board);
+  const to: TSquare = { file: props.file, rank: props.rank };
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
@@ -47,7 +45,7 @@ export const Square = (props: SquareProps) => {
     classNames.push(classes.white);
   }
 
-  const piece = board[rankToIndex(props.rank)][fileToIndex(props.file)];
+  const piece = board[rankIndex(to)][fileIndex(to)];
 
   return (
     <div ref={drop} className={classNames.join(" ")}>

@@ -1,4 +1,4 @@
-import { TBoard, TBoardRank, TFile, TObserver, TRank, TSquare } from "./types";
+import { TBoard, TBoardRank, TObserver, TSquare } from "./types";
 
 export class Engine {
   private board: TBoard = [
@@ -81,14 +81,14 @@ export class Engine {
   }
 
   move(from: TSquare, to: TSquare) {
-    this.board[rankToIndex(to.rank)][fileToIndex(to.file)] =
-      this.board[rankToIndex(from.rank)][fileToIndex(from.file)];
-    this.board[rankToIndex(from.rank)][fileToIndex(from.file)] = undefined;
+    this.board[rankIndex(to)][fileIndex(to)] =
+      this.board[rankIndex(from)][fileIndex(from)];
+    this.board[rankIndex(from)][fileIndex(from)] = undefined;
     this.emit();
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
-    return this.board[rankToIndex(to.rank)][fileToIndex(to.file)] === undefined;
+    return this.board[rankIndex(to)][fileIndex(to)] === undefined;
   }
 
   registerObserver(observer: TObserver) {
@@ -139,10 +139,10 @@ export const rankToFen = (rank: TBoardRank): string => {
   return result.join("");
 };
 
-export const fileToIndex = (file: TFile) => {
-  return file.charCodeAt(0) - "a".charCodeAt(0);
+export const fileIndex = (square: TSquare) => {
+  return square.file.charCodeAt(0) - "a".charCodeAt(0);
 };
 
-export const rankToIndex = (rank: TRank) => {
-  return 8 - rank;
+export const rankIndex = (square: TSquare) => {
+  return 8 - square.rank;
 };
