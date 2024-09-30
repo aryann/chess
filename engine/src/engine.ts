@@ -95,8 +95,8 @@ export class Engine {
     this.observers.push(observer);
   }
 
-  // Returns the current game state using the Forsyth–Edwards Notation (FEN)
-  // notation. For more details, see
+  // Returns the current game state using the Forsyth–Edwards Notation (FEN).
+  // For more details, see
   // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation.
   fen(): string {
     const ranks = [];
