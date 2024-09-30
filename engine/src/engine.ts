@@ -45,7 +45,14 @@ export class Engine {
     return result;
   }
 
-  move(from: TSquare, to: TSquare) {
+  move(from: TSquare | string, to: TSquare | string) {
+    if (typeof from === "string") {
+      from = TSquare.from(from);
+    }
+    if (typeof to === "string") {
+      to = TSquare.from(to);
+    }
+
     if (!this.isLegal(from, to)) {
       throw `${from}${to} is illegal.`;
     }
@@ -58,7 +65,14 @@ export class Engine {
     this.emit();
   }
 
-  isLegal(from: TSquare, to: TSquare): boolean {
+  isLegal(from: TSquare | string, to: TSquare | string): boolean {
+    if (typeof from === "string") {
+      from = TSquare.from(from);
+    }
+    if (typeof to === "string") {
+      to = TSquare.from(to);
+    }
+
     if (this.isWhiteTurn && !this.containsWhitePiece(from)) {
       return false;
     }

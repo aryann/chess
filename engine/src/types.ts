@@ -13,6 +13,24 @@ export class TSquare {
     this.rank = rank;
   }
 
+  static from(square: string): TSquare {
+    if (square.length !== 2) {
+      throw `illegal square value: ${square}`;
+    }
+
+    const file = square[0];
+    if (file < "a" || file > "h") {
+      throw `illegal file in square value: ${square}`;
+    }
+
+    const rank = parseInt(square[1]);
+    if (rank < 1 || rank > 8) {
+      throw `illegal rank in square value: ${square}`;
+    }
+
+    return new TSquare(file as TFile, rank as TRank);
+  }
+
   public toString(): string {
     return `${this.file}${this.rank}`;
   }
