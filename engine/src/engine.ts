@@ -1,4 +1,4 @@
-import { TBoard, TBoardRank, TObserver, TSquare } from "./types";
+import { TBoard, TBoardRank, TObserver, TPiece, TSquare } from "./types";
 
 const EMPTY_RANK: TBoardRank = [
   undefined,
@@ -22,6 +22,7 @@ export class Engine {
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "N", "B", "R"],
   ];
+  private isWhiteTurn = true;
 
   private observers: TObserver[] = [];
 
@@ -45,13 +46,26 @@ export class Engine {
   }
 
   move(from: TSquare, to: TSquare) {
+    if (!this.isLegal(from, to)) {
+      throw `${from}${to} is illegal.`;
+    }
+
     this.board[rankIndex(to)][fileIndex(to)] =
       this.board[rankIndex(from)][fileIndex(from)];
     this.board[rankIndex(from)][fileIndex(from)] = undefined;
+
+    this.isWhiteTurn = !this.isWhiteTurn;
     this.emit();
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
+    if (this.isWhiteTurn && !this.containsWhitePiece(from)) {
+      return false;
+    }
+    if (!this.isWhiteTurn && !this.containsBlackPiece(from)) {
+      return false;
+    }
+
     return this.board[rankIndex(to)][fileIndex(to)] === undefined;
   }
 
@@ -68,14 +82,30 @@ export class Engine {
       ranks.push(rankToFen(rank));
     }
 
-    // TODO: Add support for turn, castling rights, en passant, and move counters.
-    return `${ranks.join("/")} w KQkq - 0 1`;
+    const turn = this.isWhiteTurn ? "w" : "b";
+
+    // TODO: Add support for castling rights, en passant, and move counters.
+    return `${ranks.join("/")} ${turn} KQkq - 0 1`;
   }
 
   private emit() {
     for (const observer of this.observers) {
       observer(this.current());
     }
+  }
+
+  private get(square: TSquare): TPiece | undefined {
+    return this.board[rankIndex(square)][fileIndex(square)];
+  }
+
+  private containsWhitePiece(square: TSquare): boolean {
+    const piece = this.get(square);
+    return !!piece && piece.toUpperCase() === piece;
+  }
+
+  private containsBlackPiece(square: TSquare): boolean {
+    const piece = this.get(square);
+    return !!piece && piece.toLowerCase() === piece;
   }
 }
 

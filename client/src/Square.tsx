@@ -21,7 +21,7 @@ const PossibleMove = () => {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
-  const to: TSquare = { file: props.file, rank: props.rank };
+  const to = new TSquare(props.file, props.rank);
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({

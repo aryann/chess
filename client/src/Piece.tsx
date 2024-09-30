@@ -1,4 +1,4 @@
-import { TPiece as PieceType, TFile, TRank } from "engine/src/types";
+import { TPiece as PieceType, TFile, TRank, TSquare } from "engine/src/types";
 import { DragPreviewImage, useDrag } from "react-dnd";
 
 interface PieceProps {
@@ -11,7 +11,7 @@ export const Piece = (props: PieceProps) => {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: "piece",
-      item: { rank: props.rank, file: props.file },
+      item: new TSquare(props.file, props.rank),
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
