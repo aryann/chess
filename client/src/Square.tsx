@@ -49,8 +49,14 @@ export const Square = (props: SquareProps) => {
 
   return (
     <div ref={drop} className={classNames.join(" ")}>
-      {props.file}
-      {props.rank}
+      {props.file === "a" && (
+        <div className={classes.rankLabel}>{props.rank}</div>
+      )}
+
+      {props.rank === 1 && (
+        <div className={classes.fileLabel}>{props.file}</div>
+      )}
+
       {piece && <Piece piece={piece} file={props.file} rank={props.rank} />}
 
       {!isOver && canDrop && <PossibleMove />}
