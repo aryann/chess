@@ -8,14 +8,15 @@ export const Fen = () => {
   return (
     <pre className={classes.fen}>
       <code>
-        {fen} (
-        <a
-          href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation"
-          target="_blank"
-        >
-          ?
-        </a>
-        )
+        {fen}
+        <sup>
+          <a
+            href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation"
+            target="_blank"
+          >
+            [?]
+          </a>
+        </sup>
       </code>
     </pre>
   );
