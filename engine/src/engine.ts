@@ -104,7 +104,7 @@ export class Engine {
 
   private emit() {
     for (const observer of this.observers) {
-      observer(this.current());
+      observer({ board: this.current(), fen: this.fen() });
     }
   }
 
@@ -123,7 +123,7 @@ export class Engine {
   }
 }
 
-export const rankToFen = (rank: TBoardRank): string => {
+const rankToFen = (rank: TBoardRank): string => {
   const result = [];
   let emptyCount = 0;
 
