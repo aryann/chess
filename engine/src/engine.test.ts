@@ -17,7 +17,7 @@ describe("fen", () => {
 
     assert.equal(
       engine.fen(),
-      "rnbqknbr/pppppppp/11111111/11111111/11111111/11111111/PPPPPPPP/RNBQKNBR w KQkq - 0 1"
+      "rnbqknbr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKNBR w KQkq - 0 1"
     );
   });
 });

@@ -117,15 +117,25 @@ export class Engine {
 
 export const rankToFen = (rank: TBoardRank): string => {
   const result = [];
+  let emptyCount = 0;
+
   for (const piece of rank) {
-    if (piece) {
-      result.push(piece);
-    } else {
-      // TODO: Add support for coalescing empty squares.
-      result.push(1);
+    if (!piece) {
+      emptyCount++;
+      continue;
     }
+
+    if (emptyCount > 0) {
+      result.push(emptyCount);
+      emptyCount = 0;
+    }
+
+    result.push(piece);
   }
 
+  if (emptyCount > 0) {
+    result.push(emptyCount);
+  }
   return result.join("");
 };
 
