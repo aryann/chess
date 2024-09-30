@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 __snapshots__
+.firebase

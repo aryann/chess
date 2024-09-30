@@ -88,6 +88,7 @@ export class Engine {
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
+    console.log(from);
     return this.board[rankToIndex(to.rank)][fileToIndex(to.file)] === undefined;
   }
 
