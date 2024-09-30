@@ -95,12 +95,39 @@ export class Engine {
     this.observers.push(observer);
   }
 
+  // Returns the current game state using the Forsyth–Edwards Notation (FEN)
+  // notation. For more details, see
+  // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation.
+  fen(): string {
+    const ranks = [];
+    for (const rank of this.board) {
+      ranks.push(rankToFen(rank));
+    }
+
+    // TODO: Add support for turn, castling rights, en passant, and move counters.
+    return `${ranks.join("/")} w KQkq - 0 1`;
+  }
+
   private emit() {
     for (const observer of this.observers) {
       observer(this.board);
     }
   }
 }
+
+export const rankToFen = (rank: TBoardRank): string => {
+  const result = [];
+  for (const piece of rank) {
+    if (piece) {
+      result.push(piece);
+    } else {
+      // TODO: Add support for coalescing empty squares.
+      result.push(1);
+    }
+  }
+
+  return result.join("");
+};
 
 export const fileToIndex = (file: TFile) => {
   return file.charCodeAt(0) - "a".charCodeAt(0);

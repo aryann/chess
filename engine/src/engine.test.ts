@@ -10,3 +10,14 @@ describe("engine", () => {
     );
   });
 });
+
+describe("fen", () => {
+  it("initial state", () => {
+    const engine = new Engine();
+
+    assert.equal(
+      engine.fen(),
+      "rnbqknbr/pppppppp/11111111/11111111/11111111/11111111/PPPPPPPP/RNBQKNBR w KQkq - 0 1"
+    );
+  });
+});
