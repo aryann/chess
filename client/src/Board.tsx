@@ -1,4 +1,4 @@
-import { FILES, key, RANKS } from "engine/src/types";
+import { FILES, key, RANKS } from "@chess/engine/src/types";
 import classes from "./Board.module.css";
 import { Square } from "./Square";
 
