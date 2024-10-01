@@ -72,14 +72,6 @@ export type TBoard = [
   TBoardRank
 ];
 
-export type TObserver = ({
-  board,
-  fen,
-}: {
-  board: TBoard;
-  fen: string;
-}) => void;
-
 export const key = (file: TFile, rank: TRank) => {
   return `${file}${rank}`;
 };

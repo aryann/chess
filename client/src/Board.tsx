@@ -1,18 +1,18 @@
-import { FILES, key, RANKS, TPiece } from "@chess/engine/src/types";
+import { FILES, key, RANKS } from "@chess/engine/src/types";
 import {
   DndContext,
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
-import { useState } from "react";
+import { useStore } from "@tanstack/react-store";
 import classes from "./Board.module.css";
 import { Piece } from "./Piece";
 import { Square } from "./Square";
-import { engine } from "./stores/board";
+import { boardActions, boardStore } from "./stores/board";
 
 export const Board = () => {
-  const [activePiece, setActivePiece] = useState<TPiece | null>(null);
+  const activePiece = useStore(boardStore, (state) => state.activePiece);
 
   const squares = [];
   for (const rank of [...RANKS].reverse()) {
@@ -26,16 +26,15 @@ export const Board = () => {
     if (!piece) {
       throw "Draggable element did not contain piece information.";
     }
-    setActivePiece(piece);
+    boardActions.setActivePiece(piece);
   };
+
   const onDragEnd = (event: DragEndEvent) => {
-    setActivePiece(null);
+    boardActions.clearActivePiece();
     if (!event.over) {
       return;
     }
-
-    console.log(event);
-    engine.move(event.active.id as string, event.over.id as string);
+    boardActions.move(event.active.id as string, event.over.id as string);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { TBoard, TBoardRank, TObserver, TPiece, TSquare } from "./types";
+import { TBoard, TBoardRank, TPiece, TSquare } from "./types";
 
 const EMPTY_RANK: TBoardRank = [
   undefined,
@@ -23,8 +23,6 @@ export class Engine {
     ["R", "N", "B", "Q", "K", "N", "B", "R"],
   ];
   private isWhiteTurn = true;
-
-  private observers: TObserver[] = [];
 
   current(): TBoard {
     const result: TBoard = [
@@ -62,7 +60,6 @@ export class Engine {
     this.board[rankIndex(from)][fileIndex(from)] = undefined;
 
     this.isWhiteTurn = !this.isWhiteTurn;
-    this.emit();
   }
 
   isLegal(from: TSquare | string, to: TSquare | string): boolean {
@@ -83,10 +80,6 @@ export class Engine {
     return this.board[rankIndex(to)][fileIndex(to)] === undefined;
   }
 
-  registerObserver(observer: TObserver) {
-    this.observers.push(observer);
-  }
-
   // Returns the current game state using the Forsyth–Edwards Notation (FEN).
   // For more details, see
   // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation.
@@ -100,12 +93,6 @@ export class Engine {
 
     // TODO: Add support for castling rights, en passant, and move counters.
     return `${ranks.join("/")} ${turn} KQkq - 0 1`;
-  }
-
-  private emit() {
-    for (const observer of this.observers) {
-      observer({ board: this.current(), fen: this.fen() });
-    }
   }
 
   private get(square: TSquare): TPiece | undefined {
