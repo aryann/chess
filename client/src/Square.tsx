@@ -1,9 +1,16 @@
-import { fileIndex, rankIndex, TFile, TRank, TSquare } from "@chess/engine/src";
+import {
+  fileIndex,
+  key,
+  rankIndex,
+  TFile,
+  TRank,
+  TSquare,
+} from "@chess/engine/src";
+import { useDroppable } from "@dnd-kit/core";
 import { useStore } from "@tanstack/react-store";
-import { useDrop } from "react-dnd";
 import { OccupiedSquare } from "./OccupiedSquare";
 import classes from "./Square.module.css";
-import { boardStore, engine } from "./stores/board";
+import { boardStore } from "./stores/board";
 
 interface SquareProps {
   file: TFile;
@@ -22,20 +29,9 @@ export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const to = new TSquare(props.file, props.rank);
 
-  const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
-      accept: "piece",
-      canDrop: (from: TSquare) => engine.isLegal(from, to),
-      drop: (from: TSquare) => {
-        engine.move(from, to);
-      },
-      collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
-        canDrop: !!monitor.canDrop(),
-      }),
-    }),
-    [engine]
-  );
+  const { isOver, setNodeRef } = useDroppable({
+    id: key(props.file, props.rank),
+  });
 
   const classNames = [classes.square];
   if ((props.file.charCodeAt(0) - "a".charCodeAt(0)) % 2 === props.rank % 2) {
@@ -47,7 +43,7 @@ export const Square = (props: SquareProps) => {
   const piece = board[rankIndex(to)][fileIndex(to)];
 
   return (
-    <div ref={drop} className={classNames.join(" ")}>
+    <div ref={setNodeRef} className={classNames.join(" ")}>
       {props.file === "a" && (
         <div className={classes.rankLabel}>{props.rank}</div>
       )}
@@ -60,7 +56,7 @@ export const Square = (props: SquareProps) => {
         <OccupiedSquare piece={piece} file={props.file} rank={props.rank} />
       )}
 
-      {!isOver && canDrop && <PossibleMove />}
+      {/* {!isOver && canDrop && <PossibleMove />} */}
       {isOver && <div className={classes.hover}></div>}
     </div>
   );
