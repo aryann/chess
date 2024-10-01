@@ -88,7 +88,7 @@ export class Engine {
     return this.board[rankIndex(to)][fileIndex(to)] === undefined;
   }
 
-  moves(from: string): string[] {
+  moves(_from: string): string[] {
     const result: string[] = [];
 
     for (const rank of RANKS) {

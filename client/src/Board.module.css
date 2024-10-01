@@ -1,11 +1,7 @@
 .board {
-  margin: 0 auto;
+  aspect-ratio: 1 / 1;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  width: 800px;
-  height: 800px;
   border: 1px solid green;
-  z-index: 1;
-  position: relative;
 }
