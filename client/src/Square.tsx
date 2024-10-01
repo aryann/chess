@@ -1,6 +1,5 @@
+import { fileIndex, rankIndex, TFile, TRank, TSquare } from "@chess/engine";
 import { useStore } from "@tanstack/react-store";
-import { fileIndex, rankIndex } from "engine/src/engine";
-import { TFile, TRank, TSquare } from "engine/src/types";
 import { useDrop } from "react-dnd";
 import { Piece } from "./Piece";
 import classes from "./Square.module.css";
