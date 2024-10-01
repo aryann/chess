@@ -1,7 +1,13 @@
 .board {
   aspect-ratio: 1 / 1;
+  width: 800px;
+  max-width: 100dvmin;
+
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   border: 1px solid green;
+
+  /* Disable scrolling on mobile. */
+  touch-action: none;
 }

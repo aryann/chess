@@ -48,11 +48,15 @@ export const Square = (props: SquareProps) => {
   return (
     <div ref={setNodeRef} className={classNames.join(" ")}>
       {props.file === "a" && (
-        <div className={classes.rankLabel}>{props.rank}</div>
+        <div className={[classes.label, classes.rankLabel].join(" ")}>
+          {props.rank}
+        </div>
       )}
 
       {props.rank === 1 && (
-        <div className={classes.fileLabel}>{props.file}</div>
+        <div className={[classes.label, classes.fileLabel].join(" ")}>
+          {props.file}
+        </div>
       )}
 
       {piece && (

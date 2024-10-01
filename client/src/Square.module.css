@@ -12,18 +12,20 @@
   color: white;
 }
 
-.fileLabel {
+.label {
   position: absolute;
+  user-select: none;
+  resize: both;
+}
+
+.fileLabel {
   bottom: 4px;
   right: 4px;
-  user-select: none;
 }
 
 .rankLabel {
-  position: absolute;
   top: 4px;
   left: 4px;
-  user-select: none;
 }
 
 .possibleMove {
