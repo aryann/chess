@@ -1,5 +1,4 @@
-import { fileIndex, rankIndex } from "@chess/engine/src/engine";
-import { TFile, TRank, TSquare } from "@chess/engine/src/types";
+import { fileIndex, rankIndex, TFile, TRank, TSquare } from "@chess/engine/src";
 import { useStore } from "@tanstack/react-store";
 import { useDrop } from "react-dnd";
 import { Piece } from "./Piece";

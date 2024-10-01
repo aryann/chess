@@ -1,9 +1,4 @@
-import {
-  TPiece as PieceType,
-  TFile,
-  TRank,
-  TSquare,
-} from "@chess/engine/src/types";
+import { TPiece as PieceType, TFile, TRank, TSquare } from "@chess/engine/src";
 import { DragPreviewImage, useDrag } from "react-dnd";
 
 interface PieceProps {

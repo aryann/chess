@@ -1,5 +1,4 @@
-import { Engine } from "@chess/engine/src/engine";
-import { TBoard } from "@chess/engine/src/types";
+import { Engine, TBoard } from "@chess/engine/src";
 import { Store } from "@tanstack/react-store";
 
 export const engine = new Engine();
