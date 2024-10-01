@@ -27,6 +27,9 @@ const PossibleMove = () => {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
+  const moves = useStore(boardStore, (state) => state.moves);
+  const isMoveCandidate = moves.includes(key(props.file, props.rank));
+
   const to = new TSquare(props.file, props.rank);
 
   const { isOver, setNodeRef } = useDroppable({
@@ -56,7 +59,7 @@ export const Square = (props: SquareProps) => {
         <OccupiedSquare piece={piece} file={props.file} rank={props.rank} />
       )}
 
-      {/* {!isOver && canDrop && <PossibleMove />} */}
+      {isMoveCandidate && <PossibleMove />}
       {isOver && <div className={classes.hover}></div>}
     </div>
   );

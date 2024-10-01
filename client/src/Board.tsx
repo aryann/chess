@@ -26,7 +26,7 @@ export const Board = () => {
     if (!piece) {
       throw "Draggable element did not contain piece information.";
     }
-    boardActions.setActivePiece(piece);
+    boardActions.setActivePiece(event.active.id as string, piece);
   };
 
   const onDragEnd = (event: DragEndEvent) => {

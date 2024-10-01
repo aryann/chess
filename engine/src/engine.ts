@@ -1,4 +1,12 @@
-import { TBoard, TBoardRank, TPiece, TSquare } from "./types";
+import {
+  FILES,
+  key,
+  RANKS,
+  TBoard,
+  TBoardRank,
+  TPiece,
+  TSquare,
+} from "./types";
 
 const EMPTY_RANK: TBoardRank = [
   undefined,
@@ -78,6 +86,22 @@ export class Engine {
     }
 
     return this.board[rankIndex(to)][fileIndex(to)] === undefined;
+  }
+
+  moves(from: string): string[] {
+    const result: string[] = [];
+
+    for (const rank of RANKS) {
+      for (const file of FILES) {
+        const square = { rank, file };
+        if (!this.board[rankIndex(square)][fileIndex(square)]) {
+          // For now, we consider any empty square to be a valid move.
+          result.push(key(file, rank));
+        }
+      }
+    }
+
+    return result;
   }
 
   // Returns the current game state using the Forsyth–Edwards Notation (FEN).

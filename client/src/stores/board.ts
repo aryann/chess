@@ -9,11 +9,13 @@ interface TBoardStore {
   fen: string;
 
   activePiece?: TPiece;
+  moves: string[];
 }
 
 export const boardStore = new Store<TBoardStore>({
   board: engine.current(),
   fen: engine.fen(),
+  moves: [],
 });
 
 const setState = (recipe: (draft: WritableDraft<TBoardStore>) => void) => {
@@ -23,15 +25,17 @@ const setState = (recipe: (draft: WritableDraft<TBoardStore>) => void) => {
 };
 
 export const boardActions = {
-  setActivePiece: (piece: TPiece) => {
+  setActivePiece: (square: string, piece: TPiece) => {
     setState((state) => {
       state.activePiece = piece;
+      state.moves = engine.moves(square);
     });
   },
 
   clearActivePiece: () => {
     setState((state) => {
       state.activePiece = undefined;
+      state.moves = [];
     });
   },
 
