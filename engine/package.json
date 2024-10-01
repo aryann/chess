@@ -1,5 +1,5 @@
 {
-  "name": "@chess/engine",
+  "name": "engine",
   "private": true,
   "version": "0.0.0",
   "type": "module",
