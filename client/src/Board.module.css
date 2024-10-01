@@ -6,4 +6,6 @@
   width: 800px;
   height: 800px;
   border: 1px solid green;
+  z-index: 1;
+  position: relative;
 }

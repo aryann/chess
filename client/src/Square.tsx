@@ -1,7 +1,7 @@
 import { fileIndex, rankIndex, TFile, TRank, TSquare } from "@chess/engine/src";
 import { useStore } from "@tanstack/react-store";
 import { useDrop } from "react-dnd";
-import { Piece } from "./Piece";
+import { OccupiedSquare } from "./OccupiedSquare";
 import classes from "./Square.module.css";
 import { boardStore, engine } from "./stores/board";
 
@@ -56,7 +56,9 @@ export const Square = (props: SquareProps) => {
         <div className={classes.fileLabel}>{props.file}</div>
       )}
 
-      {piece && <Piece piece={piece} file={props.file} rank={props.rank} />}
+      {piece && (
+        <OccupiedSquare piece={piece} file={props.file} rank={props.rank} />
+      )}
 
       {!isOver && canDrop && <PossibleMove />}
       {isOver && <div className={classes.hover}></div>}
