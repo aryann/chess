@@ -37,7 +37,7 @@ export const Square = (props: SquareProps) => {
   });
 
   const classNames = [classes.square];
-  if ((props.file.charCodeAt(0) - "a".charCodeAt(0)) % 2 === props.rank % 2) {
+  if ((props.file.charCodeAt(0) - "a".charCodeAt(0)) % 2 !== props.rank % 2) {
     classNames.push(classes.black);
   } else {
     classNames.push(classes.white);

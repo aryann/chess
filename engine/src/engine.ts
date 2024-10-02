@@ -21,14 +21,14 @@ const EMPTY_RANK: TBoardRank = [
 
 export class Engine {
   private board: TBoard = [
-    ["r", "n", "b", "q", "k", "n", "b", "r"],
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
     [...EMPTY_RANK],
     [...EMPTY_RANK],
     [...EMPTY_RANK],
     [...EMPTY_RANK],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
-    ["R", "N", "B", "Q", "K", "N", "B", "R"],
+    ["R", "N", "B", "Q", "K", "B", "N", "R"],
   ];
   private isWhiteTurn = true;
 
