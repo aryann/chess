@@ -16,6 +16,16 @@ export class BoardState {
     return String.fromCharCode(this.state[index]) as TPiece;
   }
 
+  set(square: string, piece: TPiece) {
+    const index = this.toIndex(square);
+    this.state[index] = this.squareToInt(piece);
+  }
+
+  clear(square: string) {
+    const index = this.toIndex(square);
+    this.state[index] = 0;
+  }
+
   private init(): Uint8Array {
     const rank1: TPiece[] = ["R", "N", "B", "Q", "K", "B", "N", "R"];
     const rank2: TPiece[] = ["P", "P", "P", "P", "P", "P", "P", "P"];
