@@ -8,6 +8,7 @@ import {
 import { useStore } from "@tanstack/react-store";
 import classes from "./Board.module.css";
 import { Piece } from "./Piece";
+import { playMoveSound } from "./sounds";
 import { Square } from "./Square";
 import { boardActions, boardStore } from "./stores/board";
 
@@ -38,6 +39,7 @@ export const Board = () => {
       return;
     }
     boardActions.move(event.active.id as TSquare, to);
+    playMoveSound();
   };
 
   return (
