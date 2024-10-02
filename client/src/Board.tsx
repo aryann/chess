@@ -1,4 +1,4 @@
-import { FILES, key, RANKS } from "@chess/engine/src/types";
+import { SQUARES, TSquare } from "@chess/engine/src/types";
 import {
   DndContext,
   DragEndEvent,
@@ -15,10 +15,8 @@ export const Board = () => {
   const activePiece = useStore(boardStore, (state) => state.activePiece);
 
   const squares = [];
-  for (const rank of [...RANKS].reverse()) {
-    for (const file of FILES) {
-      squares.push(<Square key={key(file, rank)} file={file} rank={rank} />);
-    }
+  for (const square of SQUARES) {
+    squares.push(<Square key={square} square={square} />);
   }
 
   const onDragStart = (event: DragStartEvent) => {
@@ -26,7 +24,7 @@ export const Board = () => {
     if (!piece) {
       throw "Draggable element did not contain piece information.";
     }
-    boardActions.setActivePiece(event.active.id as string, piece);
+    boardActions.setActivePiece(event.active.id as TSquare, piece);
   };
 
   const onDragEnd = (event: DragEndEvent) => {
@@ -34,7 +32,7 @@ export const Board = () => {
     if (!event.over) {
       return;
     }
-    boardActions.move(event.active.id as string, event.over.id as string);
+    boardActions.move(event.active.id as TSquare, event.over.id as TSquare);
   };
 
   return (

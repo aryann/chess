@@ -1,11 +1,11 @@
-import { Engine, TBoard, TPiece } from "@chess/engine/src";
+import { Engine, TPiece, TSquare } from "@chess/engine/src";
 import { Store } from "@tanstack/react-store";
 import { WritableDraft, produce } from "immer";
 
 export const engine = new Engine();
 
 interface TBoardStore {
-  board: TBoard;
+  board: (TPiece | undefined)[];
   fen: string;
 
   activePiece?: TPiece;
@@ -25,7 +25,7 @@ const setState = (recipe: (draft: WritableDraft<TBoardStore>) => void) => {
 };
 
 export const boardActions = {
-  setActivePiece: (square: string, piece: TPiece) => {
+  setActivePiece: (square: TSquare, piece: TPiece) => {
     setState((state) => {
       state.activePiece = piece;
       state.moves = engine.moves(square);
@@ -39,7 +39,7 @@ export const boardActions = {
     });
   },
 
-  move: (from: string, to: string) => {
+  move: (from: TSquare, to: TSquare) => {
     engine.move(from, to);
     setState((state) => {
       state.board = engine.current();

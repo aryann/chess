@@ -1,40 +1,74 @@
-export const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"] as const;
-export const RANKS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+export const NUM_FILES = 8;
+export const NUM_RANKS = 8;
 
-export type TFile = (typeof FILES)[number];
-export type TRank = (typeof RANKS)[number];
+export const SQUARES = [
+  "a1",
+  "b1",
+  "c1",
+  "d1",
+  "e1",
+  "f1",
+  "g1",
+  "h1",
+  "a2",
+  "b2",
+  "c2",
+  "d2",
+  "e2",
+  "f2",
+  "g2",
+  "h2",
+  "a3",
+  "b3",
+  "c3",
+  "d3",
+  "e3",
+  "f3",
+  "g3",
+  "h3",
+  "a4",
+  "b4",
+  "c4",
+  "d4",
+  "e4",
+  "f4",
+  "g4",
+  "h4",
+  "a5",
+  "b5",
+  "c5",
+  "d5",
+  "e5",
+  "f5",
+  "g5",
+  "h5",
+  "a6",
+  "b6",
+  "c6",
+  "d6",
+  "e6",
+  "f6",
+  "g6",
+  "h6",
+  "a7",
+  "b7",
+  "c7",
+  "d7",
+  "e7",
+  "f7",
+  "g7",
+  "h7",
+  "a8",
+  "b8",
+  "c8",
+  "d8",
+  "e8",
+  "f8",
+  "g8",
+  "h8",
+] as const;
 
-export class TSquare {
-  public readonly file: TFile;
-  public readonly rank: TRank;
-
-  constructor(file: TFile, rank: TRank) {
-    this.file = file;
-    this.rank = rank;
-  }
-
-  static from(square: string): TSquare {
-    if (square.length !== 2) {
-      throw `illegal square value: ${square}`;
-    }
-
-    const file = square[0];
-    if (file < "a" || file > "h") {
-      throw `illegal file in square value: ${square}`;
-    }
-
-    const rank = parseInt(square[1]);
-    if (rank < 1 || rank > 8) {
-      throw `illegal rank in square value: ${square}`;
-    }
-
-    return new TSquare(file as TFile, rank as TRank);
-  }
-
-  public toString(): string {
-    return `${this.file}${this.rank}`;
-  }
-}
+export type TSquare = (typeof SQUARES)[number];
 
 export type TPiece =
   | "r"
@@ -50,28 +84,10 @@ export type TPiece =
   | "K"
   | "P";
 
-export type TBoardRank = [
-  TPiece?,
-  TPiece?,
-  TPiece?,
-  TPiece?,
-  TPiece?,
-  TPiece?,
-  TPiece?,
-  TPiece?
-];
+export const file = (square: TSquare): string => {
+  return square[0];
+};
 
-export type TBoard = [
-  TBoardRank,
-  TBoardRank,
-  TBoardRank,
-  TBoardRank,
-  TBoardRank,
-  TBoardRank,
-  TBoardRank,
-  TBoardRank
-];
-
-export const key = (file: TFile, rank: TRank) => {
-  return `${file}${rank}`;
+export const rank = (square: TSquare): number => {
+  return parseInt(square[1]) + 1;
 };

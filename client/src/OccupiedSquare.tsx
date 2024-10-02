@@ -1,17 +1,16 @@
-import { key, TPiece as PieceType, TFile, TRank } from "@chess/engine/src";
+import { TPiece, TSquare } from "@chess/engine/src";
 import { useDraggable } from "@dnd-kit/core";
 import classes from "./OccupiedSquare.module.css";
 import { Piece } from "./Piece";
 
 interface OccupiedSquareProps {
-  piece: PieceType;
-  file: TFile;
-  rank: TRank;
+  piece: TPiece;
+  square: TSquare;
 }
 
 export const OccupiedSquare = (props: OccupiedSquareProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: key(props.file, props.rank),
+    id: props.square,
     data: { piece: props.piece },
   });
 

@@ -1,11 +1,4 @@
-import {
-  fileIndex,
-  key,
-  rankIndex,
-  TFile,
-  TRank,
-  TSquare,
-} from "@chess/engine/src";
+import { file, rank, SQUARES, TSquare } from "@chess/engine/src";
 import { useDroppable } from "@dnd-kit/core";
 import { useStore } from "@tanstack/react-store";
 import { OccupiedSquare } from "./OccupiedSquare";
@@ -13,8 +6,7 @@ import classes from "./Square.module.css";
 import { boardStore } from "./stores/board";
 
 interface SquareProps {
-  file: TFile;
-  rank: TRank;
+  square: TSquare;
 }
 
 const PossibleMove = () => {
@@ -28,40 +20,41 @@ const PossibleMove = () => {
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const moves = useStore(boardStore, (state) => state.moves);
-  const isMoveCandidate = moves.includes(key(props.file, props.rank));
+  const to = props.square;
 
-  const to = new TSquare(props.file, props.rank);
+  const isMoveCandidate = moves.includes(to);
 
   const { isOver, setNodeRef } = useDroppable({
-    id: key(props.file, props.rank),
+    id: to,
   });
 
   const classNames = [classes.square];
-  if ((props.file.charCodeAt(0) - "a".charCodeAt(0)) % 2 !== props.rank % 2) {
+  if (
+    (file(props.square).charCodeAt(0) - "a".charCodeAt(0)) % 2 !==
+    rank(props.square) % 2
+  ) {
     classNames.push(classes.black);
   } else {
     classNames.push(classes.white);
   }
 
-  const piece = board[rankIndex(to)][fileIndex(to)];
+  const piece = board[SQUARES.indexOf(props.square)];
 
   return (
     <div ref={setNodeRef} className={classNames.join(" ")}>
-      {props.file === "a" && (
+      {file(props.square) === "a" && (
         <div className={[classes.label, classes.rankLabel].join(" ")}>
-          {props.rank}
+          {rank(props.square)}
         </div>
       )}
 
-      {props.rank === 1 && (
+      {rank(props.square) === 1 && (
         <div className={[classes.label, classes.fileLabel].join(" ")}>
-          {props.file}
+          {file(props.square)}
         </div>
       )}
 
-      {piece && (
-        <OccupiedSquare piece={piece} file={props.file} rank={props.rank} />
-      )}
+      {piece && <OccupiedSquare piece={piece} square={props.square} />}
 
       {isMoveCandidate && <PossibleMove />}
       {isOver && <div className={classes.hover}></div>}

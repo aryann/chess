@@ -1,83 +1,31 @@
-import {
-  FILES,
-  key,
-  RANKS,
-  TBoard,
-  TBoardRank,
-  TPiece,
-  TSquare,
-} from "./types";
-
-const EMPTY_RANK: TBoardRank = [
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-];
+import { BoardState } from "./board";
+import { NUM_RANKS, SQUARES, TPiece, TSquare } from "./types";
 
 export class Engine {
-  private board: TBoard = [
-    ["r", "n", "b", "q", "k", "b", "n", "r"],
-    ["p", "p", "p", "p", "p", "p", "p", "p"],
-    [...EMPTY_RANK],
-    [...EMPTY_RANK],
-    [...EMPTY_RANK],
-    [...EMPTY_RANK],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
-    ["R", "N", "B", "Q", "K", "B", "N", "R"],
-  ];
+  private board: BoardState = new BoardState();
   private isWhiteTurn = true;
 
-  current(): TBoard {
-    const result: TBoard = [
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-      EMPTY_RANK,
-    ];
-
-    for (let i = 0; i < this.board.length; i++) {
-      result[i] = [...this.board[i]];
-    }
-
-    return result;
+  current(): (TPiece | undefined)[] {
+    return this.board.current();
   }
 
-  move(from: TSquare | string, to: TSquare | string) {
-    if (typeof from === "string") {
-      from = TSquare.from(from);
-    }
-    if (typeof to === "string") {
-      to = TSquare.from(to);
-    }
-
+  move(from: TSquare, to: TSquare) {
     if (!this.isLegal(from, to)) {
       throw `${from}${to} is illegal.`;
     }
 
-    this.board[rankIndex(to)][fileIndex(to)] =
-      this.board[rankIndex(from)][fileIndex(from)];
-    this.board[rankIndex(from)][fileIndex(from)] = undefined;
+    const fromPiece = this.board.get(from);
+    if (!fromPiece) {
+      throw `${from}${to} is illegal.`;
+    }
+
+    this.board.set(to, fromPiece);
+    this.board.clear(from);
 
     this.isWhiteTurn = !this.isWhiteTurn;
   }
 
-  isLegal(from: TSquare | string, to: TSquare | string): boolean {
-    if (typeof from === "string") {
-      from = TSquare.from(from);
-    }
-    if (typeof to === "string") {
-      to = TSquare.from(to);
-    }
-
+  isLegal(from: TSquare, to: TSquare): boolean {
     if (this.isWhiteTurn && !this.containsWhitePiece(from)) {
       return false;
     }
@@ -85,19 +33,17 @@ export class Engine {
       return false;
     }
 
-    return this.board[rankIndex(to)][fileIndex(to)] === undefined;
+    return (
+      this.board.get(from) !== undefined && this.board.get(to) === undefined
+    );
   }
 
-  moves(_from: string): string[] {
-    const result: string[] = [];
+  moves(_from: string): TSquare[] {
+    const result: TSquare[] = [];
 
-    for (const rank of RANKS) {
-      for (const file of FILES) {
-        const square = { rank, file };
-        if (!this.board[rankIndex(square)][fileIndex(square)]) {
-          // For now, we consider any empty square to be a valid move.
-          result.push(key(file, rank));
-        }
+    for (const square of SQUARES) {
+      if (!this.board.get(square)) {
+        result.push(square);
       }
     }
 
@@ -108,10 +54,17 @@ export class Engine {
   // For more details, see
   // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation.
   fen(): string {
+    const current = this.board.current();
+
     const ranks = [];
-    for (const rank of this.board) {
-      ranks.push(rankToFen(rank));
+    for (let rank = 0; rank < NUM_RANKS; rank++) {
+      const currentRank = current.slice(
+        rank * NUM_RANKS,
+        rank * NUM_RANKS + NUM_RANKS
+      );
+      ranks.push(rankToFen(currentRank));
     }
+    ranks.reverse();
 
     const turn = this.isWhiteTurn ? "w" : "b";
 
@@ -119,22 +72,18 @@ export class Engine {
     return `${ranks.join("/")} ${turn} KQkq - 0 1`;
   }
 
-  private get(square: TSquare): TPiece | undefined {
-    return this.board[rankIndex(square)][fileIndex(square)];
-  }
-
   private containsWhitePiece(square: TSquare): boolean {
-    const piece = this.get(square);
+    const piece = this.board.get(square);
     return !!piece && piece.toUpperCase() === piece;
   }
 
   private containsBlackPiece(square: TSquare): boolean {
-    const piece = this.get(square);
+    const piece = this.board.get(square);
     return !!piece && piece.toLowerCase() === piece;
   }
 }
 
-const rankToFen = (rank: TBoardRank): string => {
+const rankToFen = (rank: (TPiece | undefined)[]): string => {
   const result = [];
   let emptyCount = 0;
 
@@ -156,12 +105,4 @@ const rankToFen = (rank: TBoardRank): string => {
     result.push(emptyCount);
   }
   return result.join("");
-};
-
-export const fileIndex = (square: TSquare) => {
-  return square.file.charCodeAt(0) - "a".charCodeAt(0);
-};
-
-export const rankIndex = (square: TSquare) => {
-  return 8 - square.rank;
 };

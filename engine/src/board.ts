@@ -1,4 +1,4 @@
-import { TPiece } from "./types";
+import { SQUARES, TPiece, TSquare } from "./types";
 
 export class BoardState {
   private state: Uint8Array;
@@ -7,7 +7,7 @@ export class BoardState {
     this.state = this.init();
   }
 
-  get(square: string): TPiece | undefined {
+  get(square: TSquare): TPiece | undefined {
     const index = this.toIndex(square);
     const val = this.state[index];
     if (val === 0) {
@@ -16,14 +16,22 @@ export class BoardState {
     return String.fromCharCode(this.state[index]) as TPiece;
   }
 
-  set(square: string, piece: TPiece) {
+  set(square: TSquare, piece: TPiece) {
     const index = this.toIndex(square);
-    this.state[index] = this.squareToInt(piece);
+    this.state[index] = this.pieceToInt(piece);
   }
 
-  clear(square: string) {
+  clear(square: TSquare) {
     const index = this.toIndex(square);
     this.state[index] = 0;
+  }
+
+  current(): (TPiece | undefined)[] {
+    const result: (TPiece | undefined)[] = [];
+    for (const val of this.state) {
+      result.push(this.intToPiece(val));
+    }
+    return result;
   }
 
   private init(): Uint8Array {
@@ -43,37 +51,29 @@ export class BoardState {
         ...emptyRank,
         ...rank7,
         ...rank8,
-      ].map(this.squareToInt)
+      ].map(this.pieceToInt)
     );
 
     return result;
   }
 
-  private toIndex(square: string): number {
-    if (square.length !== 2) {
-      throw `illegal square value: ${square}`;
-    }
-
-    const file = square[0];
-    if (file < "a" || file > "h") {
-      throw `illegal file in square value: ${square}`;
-    }
-
-    const rank = parseInt(square[1]);
-    if (rank < 1 || rank > 8) {
-      throw `illegal rank in square value: ${square}`;
-    }
-
-    const fileIndex = file.charCodeAt(0) - "a".charCodeAt(0);
-    const rankIndex = rank - 1;
-
-    return rankIndex * 8 + fileIndex;
+  private toIndex(square: TSquare): number {
+    // TODO(aryann): Check the performance of finding the index through the SQUARES list.
+    return SQUARES.indexOf(square);
   }
 
-  private squareToInt(piece?: TPiece): number {
+  private pieceToInt(piece?: TPiece): number {
     if (!piece) {
       return 0;
     }
     return piece.charCodeAt(0);
+  }
+
+  private intToPiece(int: number): TPiece | undefined {
+    if (int === 0) {
+      return undefined;
+    } else {
+      return String.fromCharCode(int) as TPiece;
+    }
   }
 }
