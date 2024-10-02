@@ -35,22 +35,22 @@ export class BoardState {
   }
 
   private init(): Uint8Array {
-    const rank1: TPiece[] = ["R", "N", "B", "Q", "K", "B", "N", "R"];
-    const rank2: TPiece[] = ["P", "P", "P", "P", "P", "P", "P", "P"];
     const rank8: TPiece[] = ["r", "n", "b", "q", "k", "b", "n", "r"];
     const rank7: TPiece[] = ["p", "p", "p", "p", "p", "p", "p", "p"];
     const emptyRank = Array(8).fill(undefined);
+    const rank2: TPiece[] = ["P", "P", "P", "P", "P", "P", "P", "P"];
+    const rank1: TPiece[] = ["R", "N", "B", "Q", "K", "B", "N", "R"];
 
     const result = new Uint8Array(
       [
-        ...rank1,
-        ...rank2,
-        ...emptyRank,
-        ...emptyRank,
-        ...emptyRank,
-        ...emptyRank,
-        ...rank7,
         ...rank8,
+        ...rank7,
+        ...emptyRank,
+        ...emptyRank,
+        ...emptyRank,
+        ...emptyRank,
+        ...rank2,
+        ...rank1,
       ].map(this.pieceToInt)
     );
 

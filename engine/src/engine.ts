@@ -64,7 +64,6 @@ export class Engine {
       );
       ranks.push(rankToFen(currentRank));
     }
-    ranks.reverse();
 
     const turn = this.isWhiteTurn ? "w" : "b";
 
