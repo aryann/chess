@@ -20,12 +20,11 @@ const PossibleMove = () => {
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const moves = useStore(boardStore, (state) => state.moves);
-  const to = props.square;
 
-  const isMoveCandidate = moves.includes(to);
+  const isMoveCandidate = moves.includes(props.square);
 
   const { isOver, setNodeRef } = useDroppable({
-    id: to,
+    id: props.square,
   });
 
   const classNames = [classes.square];
