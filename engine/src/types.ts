@@ -89,5 +89,5 @@ export const file = (square: TSquare): string => {
 };
 
 export const rank = (square: TSquare): number => {
-  return parseInt(square[1]) + 1;
+  return parseInt(square[1]);
 };
