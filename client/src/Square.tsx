@@ -1,4 +1,4 @@
-import { file, rank, SQUARES, TSquare } from "@chess/engine/src";
+import { getFile, getRank, SQUARES, TSquare } from "@chess/engine/src";
 import { useDroppable } from "@dnd-kit/core";
 import { useStore } from "@tanstack/react-store";
 import { OccupiedSquare } from "./OccupiedSquare";
@@ -30,8 +30,8 @@ export const Square = (props: SquareProps) => {
 
   const classNames = [classes.square];
   if (
-    (file(props.square).charCodeAt(0) - "a".charCodeAt(0)) % 2 !==
-    rank(props.square) % 2
+    (getFile(props.square).charCodeAt(0) - "a".charCodeAt(0)) % 2 !==
+    getRank(props.square) % 2
   ) {
     classNames.push(classes.black);
   } else {
@@ -42,15 +42,15 @@ export const Square = (props: SquareProps) => {
 
   return (
     <div ref={setNodeRef} className={classNames.join(" ")}>
-      {file(props.square) === "a" && (
+      {getFile(props.square) === "a" && (
         <div className={[classes.label, classes.rankLabel].join(" ")}>
-          {rank(props.square)}
+          {getRank(props.square)}
         </div>
       )}
 
-      {rank(props.square) === 1 && (
+      {getRank(props.square) === 1 && (
         <div className={[classes.label, classes.fileLabel].join(" ")}>
-          {file(props.square)}
+          {getFile(props.square)}
         </div>
       )}
 

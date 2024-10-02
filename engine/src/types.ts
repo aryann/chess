@@ -84,10 +84,14 @@ export type TPiece =
   | "K"
   | "P";
 
-export const file = (square: TSquare): string => {
+export const getFile = (square: TSquare): string => {
   return square[0];
 };
 
-export const rank = (square: TSquare): number => {
+export const getRank = (square: TSquare): number => {
   return parseInt(square[1]);
+};
+
+export const toSquare = (file: string, rank: number): TSquare => {
+  return `${file}${rank}` as TSquare;
 };
