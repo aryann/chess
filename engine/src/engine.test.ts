@@ -7,7 +7,7 @@ describe("engine", () => {
   it("initial state", () => {
     assert.equal(
       engine.fen(),
-      "rnbqknbr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKNBR w KQkq - 0 1"
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     );
   });
 
@@ -18,7 +18,7 @@ describe("engine", () => {
 
     assert.equal(
       engine.fen(),
-      "rnbqknbr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKNBR b KQkq - 0 1"
+      "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
     );
   });
 
@@ -29,7 +29,7 @@ describe("engine", () => {
 
     assert.equal(
       engine.fen(),
-      "rnbqknbr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKNBR w KQkq - 0 1"
+      "rnbqkbnr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
     );
   });
 });
