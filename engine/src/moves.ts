@@ -1,5 +1,12 @@
 import { BoardState } from "./board";
-import { NUM_FILES, NUM_RANKS, SQUARES, TPiece, TSquare } from "./types";
+import {
+  isBlack,
+  isSame,
+  NUM_FILES,
+  NUM_RANKS,
+  SQUARES,
+  TSquare,
+} from "./types";
 
 enum Direction {
   Up = -8,
@@ -27,6 +34,7 @@ export class MoveGenerator {
     const piece = this.board.get(from);
 
     switch (piece) {
+      // Bishops
       case "B":
       case "b":
         return this.generateSlidingMoves(from, [
@@ -36,6 +44,12 @@ export class MoveGenerator {
           Direction.UpLeft,
         ]);
 
+      // Pawns
+      case "P":
+      case "p":
+        return this.generatePawnMoves(from);
+
+      // Queens
       case "Q":
       case "q":
         return this.generateSlidingMoves(from, [
@@ -49,6 +63,7 @@ export class MoveGenerator {
           Direction.UpLeft,
         ]);
 
+      // Rooks
       case "R":
       case "r":
         return this.generateSlidingMoves(from, [
@@ -61,6 +76,38 @@ export class MoveGenerator {
       default:
         return [];
     }
+  }
+
+  private generatePawnMoves(from: TSquare): TSquare[] {
+    const fromIndex = SQUARES.indexOf(from);
+    const piece = this.board.get(from)!;
+
+    const dir = isBlack(piece) ? Direction.Down : Direction.Up;
+
+    const onRank2 = fromIndex >= NUM_FILES && fromIndex < NUM_FILES * 2;
+    const onRank7 = fromIndex >= NUM_FILES * 6 && fromIndex < NUM_FILES * 7;
+    const isFirstMove = isBlack(piece) ? onRank2 : onRank7;
+
+    const moves: TSquare[] = [];
+
+    const front = SQUARES[fromIndex + dir];
+    const destinationPiece = this.board.get(front);
+    if (!destinationPiece) {
+      moves.push(front);
+    }
+
+    if (isFirstMove) {
+      // TODO(aryann): There is a bug here. We must also ensure the square immediately in front of the pawn is also empty.
+      const twoSpaceFront = SQUARES[fromIndex + dir * 2];
+      const destinationPiece2 = this.board.get(twoSpaceFront);
+      if (!destinationPiece2) {
+        moves.push(twoSpaceFront);
+      }
+    }
+
+    // TODO(aryann): Handle captures.
+
+    return moves;
   }
 
   private generateSlidingMoves(
@@ -84,7 +131,7 @@ export class MoveGenerator {
         if (!destinationPiece) {
           // The next square is empty, so add it to the move set and continue.
           moves.push(square);
-        } else if (this.isSame(piece, destinationPiece)) {
+        } else if (isSame(piece, destinationPiece)) {
           // The next square has a piece of the same color as this one, so we
           // can't go any further in the current direction.
           break;
@@ -97,12 +144,6 @@ export class MoveGenerator {
     }
 
     return moves;
-  }
-
-  private isSame(a: TPiece, b: TPiece): boolean {
-    const aIsBlack = a === a.toLowerCase();
-    const bIsBlack = b === b.toLowerCase();
-    return aIsBlack === bIsBlack;
   }
 
   private initNumSquaresToEdge(): SquareToEdge[] {

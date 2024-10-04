@@ -1,13 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import {
-  getFile,
-  getRank,
-  NUM_RANKS,
-  toSquare,
-  TPiece,
-  TSquare,
-} from "./types";
+import { NUM_RANKS, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -48,54 +41,7 @@ export class Engine {
   }
 
   moves(from: TSquare): TSquare[] {
-    const result: TSquare[] = [];
-    const piece = this.board.get(from);
-    if (!piece) {
-      return result;
-    }
-
-    const [file, rank] = [getFile(from), getRank(from)];
-
-    switch (piece) {
-      case "P": {
-        const oneForward = toSquare(file, rank + 1);
-        if (!this.board.get(oneForward)) {
-          result.push(oneForward);
-        }
-
-        const twoForward = toSquare(file, rank + 2);
-        if (
-          rank === 2 &&
-          !this.board.get(oneForward) &&
-          !this.board.get(twoForward)
-        ) {
-          result.push(twoForward);
-        }
-        return result;
-      }
-
-      case "p": {
-        const oneForward = toSquare(file, rank - 1);
-        if (!this.board.get(oneForward)) {
-          result.push(oneForward);
-        }
-
-        const twoForward = toSquare(file, rank - 2);
-        if (
-          rank === 7 &&
-          !this.board.get(oneForward) &&
-          !this.board.get(twoForward)
-        ) {
-          result.push(twoForward);
-        }
-        return result;
-      }
-
-      default:
-        return this.moveGenerator.generateMoves(from);
-    }
-
-    return result;
+    return this.moveGenerator.generateMoves(from);
   }
 
   // Returns the current game state using the Forsyth–Edwards Notation (FEN).
