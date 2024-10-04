@@ -1,10 +1,16 @@
-import { SQUARES, TPiece, TSquare } from "./types";
+import { NUM_FILES, NUM_RANKS, SQUARES, TPiece, TSquare } from "./types";
+
+const START_STATE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 export class BoardState {
   private state: Uint8Array;
 
-  constructor() {
-    this.state = this.init();
+  constructor(fen?: string) {
+    if (!fen) {
+      fen = START_STATE;
+    }
+
+    this.state = this.fromFen(fen);
   }
 
   get(square: TSquare): TPiece | undefined {
@@ -38,25 +44,32 @@ export class BoardState {
     return result;
   }
 
-  private init(): Uint8Array {
-    const rank8: TPiece[] = ["r", "n", "b", "q", "k", "b", "n", "r"];
-    const rank7: TPiece[] = ["p", "p", "p", "p", "p", "p", "p", "p"];
-    const emptyRank = Array(8).fill(undefined);
-    const rank2: TPiece[] = ["P", "P", "P", "P", "P", "P", "P", "P"];
-    const rank1: TPiece[] = ["R", "N", "B", "Q", "K", "B", "N", "R"];
+  private fromFen(fen: string): Uint8Array {
+    const parts = fen.split(" ");
+    if (parts.length !== 6) {
+      throw `Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`;
+    }
 
-    const result = new Uint8Array(
-      [
-        ...rank8,
-        ...rank7,
-        ...emptyRank,
-        ...emptyRank,
-        ...emptyRank,
-        ...emptyRank,
-        ...rank2,
-        ...rank1,
-      ].map(this.pieceToInt)
-    );
+    const ranks = parts[0].split("/");
+    if (ranks.length !== 8) {
+      throw `Forsyth–Edwards Notation (FEN) must have eight ranks: ${fen}`;
+    }
+
+    const result = new Uint8Array(NUM_FILES * NUM_RANKS);
+    let square = 0;
+
+    for (const rank of ranks) {
+      for (let i = 0; i < rank.length; i++) {
+        const char = rank[i].charCodeAt(0);
+        if (char >= "1".charCodeAt(0) && char <= "8".charCodeAt(0)) {
+          const numEmptySquares = char - "1".charCodeAt(0) + 1;
+          square += numEmptySquares;
+        } else {
+          result[square] = char;
+          square++;
+        }
+      }
+    }
 
     return result;
   }
