@@ -1,9 +1,9 @@
 import { BoardState } from "./board";
+import { MoveGenerator } from "./moves";
 import {
   getFile,
   getRank,
   NUM_RANKS,
-  SQUARES,
   toSquare,
   TPiece,
   TSquare,
@@ -11,6 +11,7 @@ import {
 
 export class Engine {
   private board: BoardState = new BoardState();
+  private readonly moveGenerator = new MoveGenerator(this.board);
   private isWhiteTurn = true;
 
   current(): (TPiece | undefined)[] {
@@ -91,11 +92,7 @@ export class Engine {
       }
 
       default:
-        for (const square of SQUARES) {
-          if (!this.board.get(square)) {
-            result.push(square);
-          }
-        }
+        return this.moveGenerator.generateMoves(from);
     }
 
     return result;

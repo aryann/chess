@@ -16,6 +16,10 @@ export class BoardState {
     return String.fromCharCode(this.state[index]) as TPiece;
   }
 
+  isOccupied(square: TSquare): boolean {
+    return this.get(square) !== undefined;
+  }
+
   set(square: TSquare, piece: TPiece) {
     const index = this.toIndex(square);
     this.state[index] = this.pieceToInt(piece);
