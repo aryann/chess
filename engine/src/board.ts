@@ -168,13 +168,6 @@ export class BoardState {
     return SQUARES.indexOf(square);
   }
 
-  private pieceToInt(piece?: TPiece): number {
-    if (!piece) {
-      return 0;
-    }
-    return piece.charCodeAt(0);
-  }
-
   private intToPiece(int: number): TPiece | undefined {
     if (int === 0) {
       return undefined;
