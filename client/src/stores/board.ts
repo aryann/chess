@@ -4,11 +4,18 @@ import { WritableDraft, produce } from "immer";
 
 export const engine = new Engine();
 
+interface LastEngineMove {
+  to: TSquare;
+  translateX: number;
+  translateY: number;
+}
+
 interface TBoardStore {
   board: (TPiece | undefined)[];
   fen: string;
 
   activePiece?: TPiece;
+  lastEngineMove?: LastEngineMove;
   moves: string[];
 }
 
@@ -41,11 +48,24 @@ export const boardActions = {
 
   move: (from: TSquare, to: TSquare) => {
     engine.move(from, to);
-    engine.makeNextMove();
+    const { from: nextFrom, to: nextTo } = engine.generateNextMove();
+    engine.move(nextFrom, nextTo);
+
+    const fromDiv = document.getElementById(nextFrom);
+    const toDiv = document.getElementById(nextTo);
 
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();
+
+      if (fromDiv && toDiv) {
+        const fromRect = fromDiv.getBoundingClientRect();
+        const toRect = toDiv.getBoundingClientRect();
+        const translateX = fromRect.x - toRect.x;
+        const translateY = fromRect.y - toRect.y;
+
+        state.lastEngineMove = { to: nextTo, translateX, translateY };
+      }
     });
   },
 };

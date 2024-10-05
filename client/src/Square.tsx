@@ -40,7 +40,7 @@ export const Square = (props: SquareProps) => {
   const piece = board[SQUARES.indexOf(props.square)];
 
   return (
-    <div ref={setNodeRef} className={classNames.join(" ")}>
+    <div ref={setNodeRef} id={props.square} className={classNames.join(" ")}>
       {getFile(props.square) === "a" && (
         <div className={[classes.label, classes.rankLabel].join(" ")}>
           {getRank(props.square)}

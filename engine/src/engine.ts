@@ -22,13 +22,12 @@ export class Engine {
     return this.moveGenerator.generateMoves(from);
   }
 
-  makeNextMove() {
+  generateNextMove(): { from: TSquare; to: TSquare } {
     const moves = this.nextMoves();
     if (!moves) {
       throw "No more moves are possible";
     }
-    const { from, to } = moves[Math.floor(Math.random() * moves.length)];
-    this.move(from, to);
+    return moves[Math.floor(Math.random() * moves.length)];
   }
 
   private nextMoves(): { from: TSquare; to: TSquare }[] {
