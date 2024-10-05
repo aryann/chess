@@ -19,6 +19,17 @@ enum Direction {
   UpLeft = -9,
 }
 
+const KNIGHT_OFFSETS = [
+  { rank: -2, file: 1 },
+  { rank: -1, file: 2 },
+  { rank: 1, file: 2 },
+  { rank: 2, file: 1 },
+  { rank: 2, file: -1 },
+  { rank: 1, file: -2 },
+  { rank: -1, file: -2 },
+  { rank: -2, file: -1 },
+];
+
 type SquareToEdge = { [key in Direction]: number };
 
 export class MoveGenerator {
@@ -73,6 +84,11 @@ export class MoveGenerator {
           Direction.Left,
         ]);
 
+      // Knights
+      case "N":
+      case "n":
+        return this.generateKnightMoves(from);
+
       default:
         return [];
     }
@@ -97,7 +113,8 @@ export class MoveGenerator {
     }
 
     if (isFirstMove) {
-      // TODO(aryann): There is a bug here. We must also ensure the square immediately in front of the pawn is also empty.
+      // TODO(aryann): There is a bug here. We must also ensure the square
+      // immediately in front of the pawn is also empty.
       const twoSpaceFront = SQUARES[fromIndex + dir * 2];
       const destinationPiece2 = this.board.get(twoSpaceFront);
       if (!destinationPiece2) {
@@ -143,6 +160,39 @@ export class MoveGenerator {
       }
     }
 
+    return moves;
+  }
+
+  private generateKnightMoves(from: TSquare): TSquare[] {
+    const piece = this.board.get(from)!;
+    const fromIndex = SQUARES.indexOf(from);
+    const rank = Math.floor(fromIndex / NUM_FILES);
+    const file = fromIndex % NUM_FILES;
+
+    const moves: TSquare[] = [];
+
+    for (const offset of KNIGHT_OFFSETS) {
+      const newRank = rank + offset.rank;
+      const newFile = file + offset.file;
+
+      if (newRank < 0 || newRank >= NUM_RANKS) {
+        continue;
+      }
+
+      if (newFile < 0 || newFile >= NUM_FILES) {
+        continue;
+      }
+
+      const square = SQUARES[newRank * NUM_FILES + newFile];
+      const destinationPiece = this.board.get(square);
+      if (destinationPiece && isSame(piece, destinationPiece)) {
+        // There is a piece in the destination and it's of the same
+        // color, so the knight can't move here.
+        continue;
+      }
+
+      moves.push(square);
+    }
     return moves;
   }
 
