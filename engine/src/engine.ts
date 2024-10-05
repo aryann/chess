@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { NUM_RANKS, TPiece, TSquare } from "./types";
+import { isSame, NUM_RANKS, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -35,9 +35,13 @@ export class Engine {
       return false;
     }
 
-    return (
-      this.board.get(from) !== undefined && this.board.get(to) === undefined
-    );
+    const piece = this.board.get(from);
+    if (!piece) {
+      return false;
+    }
+
+    const destinationPiece = this.board.get(to);
+    return !destinationPiece || !isSame(piece, destinationPiece);
   }
 
   moves(from: TSquare): TSquare[] {

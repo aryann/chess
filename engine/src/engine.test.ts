@@ -58,3 +58,24 @@ describe("initial moves", () => {
     assert.deepEqual(engine.moves("h7"), ["h6", "h5"]);
   });
 });
+
+describe("capture", () => {
+  it("n captures P", () => {
+    const engine = new Engine();
+
+    engine.move("e2", "e4");
+    engine.move("g8", "f6");
+    engine.move("f1", "c4");
+    assert.equal(
+      engine.fen(),
+      "rnbqkb1r/pppppppp/5n2/8/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 0 1"
+    );
+
+    // N captures:
+    engine.move("f6", "e4");
+    assert.equal(
+      engine.fen(),
+      "rnbqkb1r/pppppppp/8/8/2B1n3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 1"
+    );
+  });
+});
