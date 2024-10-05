@@ -71,6 +71,9 @@ export class BoardState {
       }
     }
 
+    if (square != result.length) {
+      throw `Forsyth–Edwards Notation (FEN) must specify all 64 squares: ${fen}`;
+    }
     return result;
   }
 
