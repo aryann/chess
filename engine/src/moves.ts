@@ -95,8 +95,13 @@ export class MoveGenerator {
       case "n":
         return this.generateKnightMoves(from);
 
+      // Kings
+      case "K":
+      case "k":
+        return this.generateKingMoves(from);
+
       default:
-        return [];
+        throw `Unknown piece type: ${piece}`;
     }
   }
 
@@ -222,6 +227,40 @@ export class MoveGenerator {
 
       moves.push(square);
     }
+    return moves;
+  }
+
+  private generateKingMoves(from: TSquare): TSquare[] {
+    const fromIndex = SQUARES.indexOf(from);
+    const piece = this.board.get(from)!;
+    const file = fromIndex % NUM_FILES;
+    const rank = Math.floor(fromIndex / NUM_FILES);
+
+    const moves: TSquare[] = [];
+    for (const offset of [
+      UP,
+      UP_RIGHT,
+      RIGHT,
+      DOWN_RIGHT,
+      DOWN,
+      DOWN_LEFT,
+      LEFT,
+      UP_LEFT,
+    ]) {
+      const newFile = file + offset.file;
+      const newRank = rank + offset.rank;
+
+      if (!this.isInRange(newFile, newRank)) {
+        continue;
+      }
+
+      const square = SQUARES[newRank * NUM_FILES + newFile];
+      const destinationPiece = this.board.get(square);
+      if (!destinationPiece || !isSame(piece, destinationPiece)) {
+        moves.push(square);
+      }
+    }
+
     return moves;
   }
 

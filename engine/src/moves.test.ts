@@ -321,4 +321,47 @@ describe("moves", () => {
       "c7",
     ]);
   });
+
+  it("king", () => {
+    let generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    assert.sameDeepMembers(generator.generateMoves("e1"), []);
+    assert.sameDeepMembers(generator.generateMoves("e8"), []);
+
+    generator = make("K7/8/8/8/8/8/8/8");
+    assert.sameDeepMembers(generator.generateMoves("a8"), ["b8", "b7", "a7"]);
+
+    generator = make("8/8/8/3k4/8/8/8/8");
+    assert.sameDeepMembers(generator.generateMoves("d5"), [
+      "d4",
+      "e4",
+      "e5",
+      "e6",
+      "d6",
+      "c6",
+      "c5",
+      "c4",
+    ]);
+
+    generator = make("8/8/8/2rkr3/8/8/8/8");
+    assert.sameDeepMembers(generator.generateMoves("d5"), [
+      "d4",
+      "e4",
+      "e6",
+      "d6",
+      "c6",
+      "c4",
+    ]);
+
+    generator = make("8/8/8/2RkR3/8/8/8/8");
+    assert.sameDeepMembers(generator.generateMoves("d5"), [
+      "d4",
+      "e4",
+      "e5",
+      "e6",
+      "d6",
+      "c6",
+      "c5",
+      "c4",
+    ]);
+  });
 });
