@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import {
-  isBlack,
+  getRank,
   isSame,
   NUM_FILES,
   NUM_RANKS,
@@ -8,81 +8,87 @@ import {
   TSquare,
 } from "./types";
 
-enum Direction {
-  Up = -8,
-  UpRight = -7,
-  Right = 1,
-  DownRight = 9,
-  Down = 8,
-  DownLeft = 7,
-  Left = -1,
-  UpLeft = -9,
-}
+type Offset = { file: number; rank: number };
 
-const KNIGHT_OFFSETS = [
-  { rank: -2, file: 1 },
-  { rank: -1, file: 2 },
-  { rank: 1, file: 2 },
-  { rank: 2, file: 1 },
-  { rank: 2, file: -1 },
-  { rank: 1, file: -2 },
-  { rank: -1, file: -2 },
-  { rank: -2, file: -1 },
+const UP: Offset = { file: 0, rank: 1 };
+const UP_RIGHT: Offset = { file: 1, rank: 1 };
+const RIGHT: Offset = { file: 1, rank: 0 };
+const DOWN_RIGHT: Offset = { file: 1, rank: -1 };
+const DOWN: Offset = { file: 0, rank: -1 };
+const DOWN_LEFT: Offset = { file: -1, rank: -1 };
+const LEFT: Offset = { file: -1, rank: 0 };
+const UP_LEFT: Offset = { file: -1, rank: 1 };
+
+const KNIGHT_OFFSETS: Offset[] = [
+  { file: 1, rank: -2 },
+  { file: 2, rank: -1 },
+  { file: 2, rank: 1 },
+  { file: 1, rank: 2 },
+  { file: -1, rank: 2 },
+  { file: -2, rank: 1 },
+  { file: -2, rank: -1 },
+  { file: -1, rank: -2 },
 ];
-
-type SquareToEdge = { [key in Direction]: number };
 
 export class MoveGenerator {
   private readonly board: BoardState;
-  private readonly numSquaresToEdge: SquareToEdge[];
 
   constructor(board: BoardState) {
     this.board = board;
-    this.numSquaresToEdge = this.initNumSquaresToEdge();
   }
 
   generateMoves(from: TSquare): TSquare[] {
     const piece = this.board.get(from);
 
     switch (piece) {
+      // White pawns
+      case "P": {
+        const isFirstMove = getRank(from) === 2;
+        return this.generatePawnMoves(
+          from,
+          [DOWN_RIGHT, DOWN, DOWN_LEFT],
+          isFirstMove
+        );
+      }
+
+      // Black pawns
+      case "p": {
+        const isFirstMove = getRank(from) === 7;
+        return this.generatePawnMoves(
+          from,
+          [UP_LEFT, UP, UP_RIGHT],
+          isFirstMove
+        );
+      }
+
       // Bishops
       case "B":
       case "b":
         return this.generateSlidingMoves(from, [
-          Direction.UpRight,
-          Direction.DownRight,
-          Direction.DownLeft,
-          Direction.UpLeft,
+          UP_RIGHT,
+          DOWN_RIGHT,
+          DOWN_LEFT,
+          UP_LEFT,
         ]);
-
-      // Pawns
-      case "P":
-      case "p":
-        return this.generatePawnMoves(from);
 
       // Queens
       case "Q":
       case "q":
         return this.generateSlidingMoves(from, [
-          Direction.Up,
-          Direction.UpRight,
-          Direction.Right,
-          Direction.DownRight,
-          Direction.Down,
-          Direction.DownLeft,
-          Direction.Left,
-          Direction.UpLeft,
+          UP,
+          UP_RIGHT,
+          RIGHT,
+          DOWN_RIGHT,
+          DOWN,
+          DOWN_LEFT,
+          LEFT,
+          UP_LEFT,
         ]);
 
       // Rooks
       case "R":
       case "r":
-        return this.generateSlidingMoves(from, [
-          Direction.Up,
-          Direction.Right,
-          Direction.Down,
-          Direction.Left,
-        ]);
+        return this.generateSlidingMoves(from, [UP, RIGHT, DOWN, LEFT]);
 
       // Knights
       case "N":
@@ -94,55 +100,82 @@ export class MoveGenerator {
     }
   }
 
-  private generatePawnMoves(from: TSquare): TSquare[] {
+  // Generates moves for pawns. The left, front, and right offsets are from the
+  // pawn's perspective.
+  private generatePawnMoves(
+    from: TSquare,
+    [left, front, right]: [Offset, Offset, Offset],
+    isFirstMove: boolean
+  ): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
+    const rank = Math.floor(fromIndex / NUM_FILES);
+    const file = fromIndex % NUM_FILES;
     const piece = this.board.get(from)!;
-
-    const dir = isBlack(piece) ? Direction.Down : Direction.Up;
-
-    const onRank2 = fromIndex >= NUM_FILES && fromIndex < NUM_FILES * 2;
-    const onRank7 = fromIndex >= NUM_FILES * 6 && fromIndex < NUM_FILES * 7;
-    const isFirstMove = isBlack(piece) ? onRank2 : onRank7;
 
     const moves: TSquare[] = [];
 
-    const front = SQUARES[fromIndex + dir];
-    const destinationPiece = this.board.get(front);
-    if (!destinationPiece) {
-      moves.push(front);
-    }
+    // Front:
+    const frontFile = file + front.file;
+    const frontRank = rank + front.rank;
+    if (this.isInRange(frontFile, frontRank)) {
+      const frontSquare = SQUARES[this.toIndex(frontFile, frontRank)];
+      const destinationPiece = this.board.get(frontSquare);
+      if (!destinationPiece) {
+        moves.push(frontSquare);
 
-    if (isFirstMove) {
-      // TODO(aryann): There is a bug here. We must also ensure the square
-      // immediately in front of the pawn is also empty.
-      const twoSpaceFront = SQUARES[fromIndex + dir * 2];
-      const destinationPiece2 = this.board.get(twoSpaceFront);
-      if (!destinationPiece2) {
-        moves.push(twoSpaceFront);
+        if (isFirstMove) {
+          const secondFile = frontFile + front.file;
+          const secondRank = frontRank + front.rank;
+          const secondSquare = SQUARES[this.toIndex(secondFile, secondRank)];
+          const secondDestination = this.board.get(frontSquare);
+          if (!secondDestination) {
+            moves.push(secondSquare);
+          }
+        }
       }
     }
 
-    // TODO(aryann): Handle captures.
+    // Left and right:
+    for (const offset of [left, right]) {
+      const newFile = file + offset.file;
+      const newRank = rank + offset.rank;
+      if (this.isInRange(newFile, newRank)) {
+        const leftSquare = SQUARES[this.toIndex(newFile, newRank)];
+        const destinationPiece = this.board.get(leftSquare);
+        if (destinationPiece && !isSame(piece, destinationPiece)) {
+          moves.push(leftSquare);
+        }
+      }
+    }
+
+    // TODO(aryann): Add support for En Passant.
+
+    // TODO(aryann): Add support for promotion to queen, rook, bishop, and knight.
 
     return moves;
   }
 
-  private generateSlidingMoves(
-    from: TSquare,
-    allowedDirections: Direction[]
-  ): TSquare[] {
-    const fromIndex = SQUARES.indexOf(from);
+  private generateSlidingMoves(from: TSquare, offsets: Offset[]): TSquare[] {
     const piece = this.board.get(from)!;
+    const fromIndex = SQUARES.indexOf(from);
+    const rank = Math.floor(fromIndex / NUM_FILES);
+    const file = fromIndex % NUM_FILES;
 
     const moves: TSquare[] = [];
 
-    for (const dir of allowedDirections) {
-      let curr = fromIndex;
-      const maxMovesAllowed = this.numSquaresToEdge[fromIndex][dir];
+    for (const offset of offsets) {
+      let newFile = file;
+      let newRank = rank;
 
-      for (let move = 0; move < maxMovesAllowed; move++) {
-        curr += dir;
-        const square = SQUARES[curr];
+      for (;;) {
+        newFile += offset.file;
+        newRank += offset.rank;
+
+        if (!this.isInRange(newFile, newRank)) {
+          break;
+        }
+
+        const square = SQUARES[newRank * NUM_FILES + newFile];
         const destinationPiece = this.board.get(square);
 
         if (!destinationPiece) {
@@ -175,11 +208,7 @@ export class MoveGenerator {
       const newRank = rank + offset.rank;
       const newFile = file + offset.file;
 
-      if (newRank < 0 || newRank >= NUM_RANKS) {
-        continue;
-      }
-
-      if (newFile < 0 || newFile >= NUM_FILES) {
+      if (!this.isInRange(newFile, newRank)) {
         continue;
       }
 
@@ -196,29 +225,11 @@ export class MoveGenerator {
     return moves;
   }
 
-  private initNumSquaresToEdge(): SquareToEdge[] {
-    const result: SquareToEdge[] = [];
+  private isInRange(file: number, rank: number): boolean {
+    return file >= 0 && file < NUM_FILES && rank >= 0 && rank < NUM_RANKS;
+  }
 
-    for (let rank = 0; rank < NUM_RANKS; rank++) {
-      for (let file = 0; file < NUM_FILES; file++) {
-        const numUp = rank;
-        const numRight = NUM_FILES - file - 1;
-        const numDown = NUM_RANKS - rank - 1;
-        const numLeft = file;
-
-        result.push({
-          [Direction.Up]: numUp,
-          [Direction.UpRight]: Math.min(numUp, numRight),
-          [Direction.Right]: numRight,
-          [Direction.DownRight]: Math.min(numDown, numRight),
-          [Direction.Down]: numDown,
-          [Direction.DownLeft]: Math.min(numDown, numLeft),
-          [Direction.Left]: numLeft,
-          [Direction.UpLeft]: Math.min(numUp, numLeft),
-        });
-      }
-    }
-
-    return result;
+  private toIndex(file: number, rank: number): number {
+    return file + rank * NUM_FILES;
   }
 }
