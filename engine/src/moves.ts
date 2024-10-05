@@ -5,6 +5,7 @@ import {
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
+  TPiece,
   TSquare,
 } from "./types";
 
@@ -47,7 +48,8 @@ export class MoveGenerator {
         return this.generatePawnMoves(
           from,
           [DOWN_RIGHT, DOWN, DOWN_LEFT],
-          isFirstMove
+          isFirstMove,
+          piece
         );
       }
 
@@ -57,48 +59,43 @@ export class MoveGenerator {
         return this.generatePawnMoves(
           from,
           [UP_LEFT, UP, UP_RIGHT],
-          isFirstMove
+          isFirstMove,
+          piece
         );
       }
 
       // Bishops
       case "B":
       case "b":
-        return this.generateSlidingMoves(from, [
-          UP_RIGHT,
-          DOWN_RIGHT,
-          DOWN_LEFT,
-          UP_LEFT,
-        ]);
+        return this.generateSlidingMoves(
+          from,
+          [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
+          piece
+        );
 
       // Queens
       case "Q":
       case "q":
-        return this.generateSlidingMoves(from, [
-          UP,
-          UP_RIGHT,
-          RIGHT,
-          DOWN_RIGHT,
-          DOWN,
-          DOWN_LEFT,
-          LEFT,
-          UP_LEFT,
-        ]);
+        return this.generateSlidingMoves(
+          from,
+          [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
+          piece
+        );
 
       // Rooks
       case "R":
       case "r":
-        return this.generateSlidingMoves(from, [UP, RIGHT, DOWN, LEFT]);
+        return this.generateSlidingMoves(from, [UP, RIGHT, DOWN, LEFT], piece);
 
       // Knights
       case "N":
       case "n":
-        return this.generateKnightMoves(from);
+        return this.generateKnightMoves(from, piece);
 
       // Kings
       case "K":
       case "k":
-        return this.generateKingMoves(from);
+        return this.generateKingMoves(from, piece);
 
       default:
         throw `Unknown piece type: ${piece}`;
@@ -110,12 +107,12 @@ export class MoveGenerator {
   private generatePawnMoves(
     from: TSquare,
     [left, front, right]: [Offset, Offset, Offset],
-    isFirstMove: boolean
+    isFirstMove: boolean,
+    piece: TPiece
   ): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
-    const piece = this.board.get(from)!;
 
     const moves: TSquare[] = [];
 
@@ -160,8 +157,11 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateSlidingMoves(from: TSquare, offsets: Offset[]): TSquare[] {
-    const piece = this.board.get(from)!;
+  private generateSlidingMoves(
+    from: TSquare,
+    offsets: Offset[],
+    piece: TPiece
+  ): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
@@ -201,8 +201,7 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateKnightMoves(from: TSquare): TSquare[] {
-    const piece = this.board.get(from)!;
+  private generateKnightMoves(from: TSquare, piece: TPiece): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
@@ -230,9 +229,8 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateKingMoves(from: TSquare): TSquare[] {
+  private generateKingMoves(from: TSquare, piece: TPiece): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
-    const piece = this.board.get(from)!;
     const file = fromIndex % NUM_FILES;
     const rank = Math.floor(fromIndex / NUM_FILES);
 
