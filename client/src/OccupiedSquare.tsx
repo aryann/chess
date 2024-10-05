@@ -27,19 +27,26 @@ export const OccupiedSquare = (props: OccupiedSquareProps) => {
   }, []);
 
   let style = {};
-  if (lastEngineMove && props.square === lastEngineMove.to) {
+  if (
+    lastEngineMove &&
+    props.square === lastEngineMove.to &&
+    includeTransform
+  ) {
     style = {
-      transform: includeTransform
-        ? `translate(${lastEngineMove.translateX}px, ${lastEngineMove.translateY}px)`
-        : undefined,
-      transition: "all 0.2s ease-in",
+      transform: `translate(${lastEngineMove.translateX}px, ${lastEngineMove.translateY}px)`,
     };
   }
 
   return (
     <div className={classes.pieceContainer}>
       {!transform && (
-        <div ref={setNodeRef} {...listeners} {...attributes} style={style}>
+        <div
+          ref={setNodeRef}
+          className={classes.innerPieceContainer}
+          {...listeners}
+          {...attributes}
+          style={style}
+        >
           <Piece piece={props.piece} />
         </div>
       )}
