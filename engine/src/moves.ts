@@ -5,7 +5,6 @@ import {
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
-  TPiece,
   TSquare,
 } from "./types";
 
@@ -108,7 +107,7 @@ export class MoveGenerator {
     from: TSquare,
     [left, front, right]: [Offset, Offset, Offset],
     isFirstMove: boolean,
-    piece: TPiece
+    piece: "P" | "p"
   ): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
@@ -160,7 +159,7 @@ export class MoveGenerator {
   private generateSlidingMoves(
     from: TSquare,
     offsets: Offset[],
-    piece: TPiece
+    piece: "Q" | "q" | "R" | "r" | "B" | "b"
   ): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
@@ -201,7 +200,7 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateKnightMoves(from: TSquare, piece: TPiece): TSquare[] {
+  private generateKnightMoves(from: TSquare, piece: "N" | "n"): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
@@ -229,7 +228,7 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateKingMoves(from: TSquare, piece: TPiece): TSquare[] {
+  private generateKingMoves(from: TSquare, piece: "K" | "k"): TSquare[] {
     const fromIndex = SQUARES.indexOf(from);
     const file = fromIndex % NUM_FILES;
     const rank = Math.floor(fromIndex / NUM_FILES);
