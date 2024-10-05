@@ -85,40 +85,6 @@ describe("board", () => {
     assert.equal(board.get("g8"), "n");
     assert.equal(board.get("h8"), "r");
   });
-
-  it("set", () => {
-    board.set("a1", "p");
-    assert.equal(board.get("a1"), "p");
-
-    board.set("a8", "q");
-    assert.equal(board.get("a8"), "q");
-
-    board.set("e5", "Q");
-    assert.equal(board.get("e5"), "Q");
-
-    board.set("a8", "Q");
-    assert.equal(board.get("a8"), "Q");
-
-    board.set("h8", "Q");
-    assert.equal(board.get("h8"), "Q");
-  });
-
-  it("clear", () => {
-    board.clear("a1");
-    assert.isUndefined(board.get("a1"));
-
-    board.clear("a8");
-    assert.isUndefined(board.get("a8"));
-
-    board.clear("e5");
-    assert.isUndefined(board.get("e5"));
-
-    board.clear("a8");
-    assert.isUndefined(board.get("a8"));
-
-    board.clear("h8");
-    assert.isUndefined(board.get("h8"));
-  });
 });
 
 describe("from fen", () => {

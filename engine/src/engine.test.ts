@@ -29,7 +29,7 @@ describe("fen", () => {
 
     assert.equal(
       engine.fen(),
-      "rnbqkbnr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
+      "rnbqkbnr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2"
     );
   });
 });
@@ -68,14 +68,14 @@ describe("capture", () => {
     engine.move("f1", "c4");
     assert.equal(
       engine.fen(),
-      "rnbqkb1r/pppppppp/5n2/8/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 0 1"
+      "rnbqkb1r/pppppppp/5n2/8/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 2 2"
     );
 
-    // N captures:
+    // n captures:
     engine.move("f6", "e4");
     assert.equal(
       engine.fen(),
-      "rnbqkb1r/pppppppp/8/8/2B1n3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 1"
+      "rnbqkb1r/pppppppp/8/8/2B1n3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 3"
     );
   });
 });
