@@ -1,0 +1,17 @@
+on:
+  - push
+  - pull_request
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: package.json
+      - run: pnpm install
+      - run: pnpm --recursive run tsc
+      - run: pnpm --recursive run test
+      - run: pnpm --recursive run build
