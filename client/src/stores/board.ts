@@ -41,6 +41,8 @@ export const boardActions = {
 
   move: (from: TSquare, to: TSquare) => {
     engine.move(from, to);
+    engine.makeNextMove();
+
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();

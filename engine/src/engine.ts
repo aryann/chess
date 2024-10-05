@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { TPiece, TSquare } from "./types";
+import { isBlack, isWhite, SQUARES, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -20,6 +20,37 @@ export class Engine {
 
   moves(from: TSquare): TSquare[] {
     return this.moveGenerator.generateMoves(from);
+  }
+
+  makeNextMove() {
+    const moves = this.nextMoves();
+    if (!moves) {
+      throw "No more moves are possible";
+    }
+    const { from, to } = moves[Math.floor(Math.random() * moves.length)];
+    this.move(from, to);
+  }
+
+  private nextMoves(): { from: TSquare; to: TSquare }[] {
+    const moves: { from: TSquare; to: TSquare }[] = [];
+
+    for (const from of SQUARES) {
+      const piece = this.board.get(from);
+      if (!piece) {
+        continue;
+      }
+
+      if (
+        (this.board.nextTurnIsWhite() && isWhite(piece)) ||
+        (!this.board.nextTurnIsWhite() && isBlack(piece))
+      ) {
+        for (const to of this.moves(from)) {
+          moves.push({ from, to });
+        }
+      }
+    }
+
+    return moves;
   }
 
   // Returns the current game state using the Forsyth–Edwards Notation (FEN).

@@ -104,6 +104,10 @@ export class BoardState {
     }`;
   }
 
+  nextTurnIsWhite(): boolean {
+    return this.isWhiteTurn;
+  }
+
   private rankToFen(rank: (TPiece | undefined)[]): string {
     const result = [];
     let emptyCount = 0;
