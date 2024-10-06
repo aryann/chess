@@ -316,16 +316,18 @@ describe("from fen", () => {
   });
 
   it("color", () => {
-    assert.isTrue(
+    assert.equal(
       new BoardState(
         "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 40 40"
-      ).nextTurnIsWhite()
+      ).sideToMove(),
+      "w"
     );
 
-    assert.isTrue(
-      !new BoardState(
+    assert.equal(
+      new BoardState(
         "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b - - 40 40"
-      ).nextTurnIsWhite()
+      ).sideToMove(),
+      "b"
     );
   });
 });

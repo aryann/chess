@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { isBlack, isWhite, SQUARES, TPiece, TSquare } from "./types";
+import { getSide, SQUARES, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -38,17 +38,12 @@ export class Engine {
 
     for (const from of SQUARES) {
       const piece = this.board.get(from);
-      if (!piece) {
+      if (!piece || getSide(piece) !== this.board.sideToMove()) {
         continue;
       }
 
-      if (
-        (this.board.nextTurnIsWhite() && isWhite(piece)) ||
-        (!this.board.nextTurnIsWhite() && isBlack(piece))
-      ) {
-        for (const to of this.possibleMoves(from)) {
-          moves.push({ from, to });
-        }
+      for (const to of this.possibleMoves(from)) {
+        moves.push({ from, to });
       }
     }
 

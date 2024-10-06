@@ -1,14 +1,15 @@
 import { assert, describe, it } from "vitest";
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { SQUARES } from "./types";
+import { getSide, SQUARES } from "./types";
 
 const newStates = (board: BoardState): BoardState[] => {
   const moveGenerator = new MoveGenerator(board);
 
   const newStates: BoardState[] = [];
   for (const from of SQUARES) {
-    if (!board.currentTurn(from)) {
+    const piece = board.get(from);
+    if (!piece || getSide(piece) !== board.sideToMove()) {
       continue;
     }
 

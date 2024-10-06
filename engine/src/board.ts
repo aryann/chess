@@ -1,11 +1,10 @@
 import {
-  isBlack,
-  isSame,
-  isWhite,
+  getSide,
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
   TPiece,
+  TSide,
   TSquare,
 } from "./types";
 
@@ -62,21 +61,14 @@ export class BoardState {
   isLegal(from: TSquare, to: TSquare): boolean {
     const fromIndex = this.toIndex(from);
     const piece = this.intToPiece(this.state.board[fromIndex]);
-    if (!piece) {
-      return false;
-    }
-
-    if (this.state.isWhiteTurn && !isWhite(piece)) {
-      return false;
-    }
-    if (!this.state.isWhiteTurn && !isBlack(piece)) {
+    if (!piece || getSide(piece) !== this.sideToMove()) {
       return false;
     }
 
     const destinationPiece = this.intToPiece(
       this.state.board[this.toIndex(to)]
     );
-    return !destinationPiece || !isSame(piece, destinationPiece);
+    return !destinationPiece || getSide(piece) !== getSide(destinationPiece);
   }
 
   get(square: TSquare): TPiece | undefined {
@@ -116,21 +108,8 @@ export class BoardState {
     }`;
   }
 
-  nextTurnIsWhite(): boolean {
-    return this.state.isWhiteTurn;
-  }
-
-  currentTurn(square: TSquare) {
-    const piece = this.get(square);
-    if (!piece) {
-      return false;
-    }
-
-    if (this.state.isWhiteTurn) {
-      return isWhite(piece);
-    } else {
-      return isBlack(piece);
-    }
+  sideToMove(): TSide {
+    return this.state.isWhiteTurn ? "w" : "b";
   }
 
   private rankToFen(rank: (TPiece | undefined)[]): string {

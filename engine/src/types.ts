@@ -70,6 +70,8 @@ export const SQUARES = [
 
 export type TSquare = (typeof SQUARES)[number];
 
+export type TSide = "w" | "b";
+
 export type TPiece =
   | "r"
   | "n"
@@ -92,18 +94,14 @@ export const getRank = (square: TSquare): number => {
   return parseInt(square[1]);
 };
 
+export const getSide = (piece: TPiece): TSide => {
+  if (piece.toUpperCase() === piece) {
+    return "w";
+  } else {
+    return "b";
+  }
+};
+
 export const toSquare = (file: string, rank: number): TSquare => {
   return `${file}${rank}` as TSquare;
-};
-
-export const isBlack = (piece: TPiece): boolean => {
-  return piece.toLowerCase() === piece;
-};
-
-export const isWhite = (piece: TPiece): boolean => {
-  return piece.toUpperCase() === piece;
-};
-
-export const isSame = (a: TPiece, b: TPiece): boolean => {
-  return isBlack(a) === isBlack(b);
 };

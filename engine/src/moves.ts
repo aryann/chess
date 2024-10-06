@@ -1,7 +1,7 @@
 import { BoardState } from "./board";
 import {
   getRank,
-  isSame,
+  getSide,
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
@@ -143,7 +143,7 @@ export class MoveGenerator {
       if (this.isInRange(newFile, newRank)) {
         const leftSquare = SQUARES[this.toIndex(newFile, newRank)];
         const destinationPiece = this.board.get(leftSquare);
-        if (destinationPiece && !isSame(piece, destinationPiece)) {
+        if (destinationPiece && getSide(piece) !== getSide(destinationPiece)) {
           moves.push(leftSquare);
         }
       }
@@ -185,7 +185,7 @@ export class MoveGenerator {
         if (!destinationPiece) {
           // The next square is empty, so add it to the move set and continue.
           moves.push(square);
-        } else if (isSame(piece, destinationPiece)) {
+        } else if (getSide(piece) === getSide(destinationPiece)) {
           // The next square has a piece of the same color as this one, so we
           // can't go any further in the current direction.
           break;
@@ -217,7 +217,7 @@ export class MoveGenerator {
 
       const square = SQUARES[newRank * NUM_FILES + newFile];
       const destinationPiece = this.board.get(square);
-      if (destinationPiece && isSame(piece, destinationPiece)) {
+      if (destinationPiece && getSide(piece) === getSide(destinationPiece)) {
         // There is a piece in the destination and it's of the same
         // color, so the knight can't move here.
         continue;
@@ -253,7 +253,7 @@ export class MoveGenerator {
 
       const square = SQUARES[newRank * NUM_FILES + newFile];
       const destinationPiece = this.board.get(square);
-      if (!destinationPiece || !isSame(piece, destinationPiece)) {
+      if (!destinationPiece || getSide(piece) !== getSide(destinationPiece)) {
         moves.push(square);
       }
     }
