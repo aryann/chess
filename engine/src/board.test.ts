@@ -315,7 +315,7 @@ describe("from fen", () => {
     assert.isUndefined(board.get("h8"));
   });
 
-  it("color", () => {
+  it("side to move", () => {
     assert.equal(
       new BoardState(
         "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 40 40"
@@ -328,6 +328,115 @@ describe("from fen", () => {
         "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b - - 40 40"
       ).sideToMove(),
       "b"
+    );
+  });
+});
+
+describe("castling rights", () => {
+  it("K move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("e2", "e3");
+    board.move("a7", "a6");
+    board.move("f1", "e2");
+    board.move("b7", "b6");
+    board.move("g1", "f3");
+    board.move("c7", "c6");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("e1", "f1");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1K1R b kq - 1 4"
+    );
+  });
+
+  it("k move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("a2", "a3");
+    board.move("e7", "e6");
+    board.move("b2", "b3");
+    board.move("f8", "e7");
+    board.move("c2", "c3");
+    board.move("g8", "f6");
+    board.move("d2", "d3");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("e8", "f8");
+    assert.equal(
+      board.fen(),
+      "rnbq1k1r/ppppbppp/4pn2/8/8/PPPP4/4PPPP/RNBQKBNR w KQ - 1 5"
+    );
+  });
+
+  it("queen side R move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("b1", "c3");
+    board.move("a7", "a6");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("a1", "b1");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/1ppppppp/p7/8/8/2N5/PPPPPPPP/1RBQKBNR b Kkq - 1 2"
+    );
+  });
+
+  it("king side R move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("g1", "f3");
+    board.move("a7", "a6");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("h1", "g1");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKBR1 b Qkq - 1 2"
+    );
+  });
+
+  it("queen side r move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("a2", "a3");
+    board.move("b8", "c6");
+    board.move("b2", "b3");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("a8", "b8");
+    assert.equal(
+      board.fen(),
+      "1rbqkbnr/pppppppp/2n5/8/8/PP6/2PPPPPP/RNBQKBNR w KQk - 1 3"
+    );
+  });
+
+  it("king side r move", () => {
+    const board = new BoardState();
+    assert.include(board.fen(), "KQkq");
+
+    board.move("a2", "a3");
+    board.move("g8", "f6");
+    board.move("b2", "b3");
+
+    assert.include(board.fen(), "KQkq");
+
+    board.move("h8", "g8");
+    assert.equal(
+      board.fen(),
+      "rnbqkbr1/pppppppp/5n2/8/8/PP6/2PPPPPP/RNBQKBNR w KQq - 1 3"
     );
   });
 });

@@ -15,6 +15,17 @@ type State = {
   isWhiteTurn: boolean;
   halfMoves: number;
   fullMoves: number;
+
+  castlingRights: {
+    white: {
+      kingSide: boolean;
+      queenSide: boolean;
+    };
+    black: {
+      kingSide: boolean;
+      queenSide: boolean;
+    };
+  };
 };
 
 export class BoardState {
@@ -49,6 +60,8 @@ export class BoardState {
       this.state.halfMoves++;
     }
 
+    this.updateCastlingRights(from);
+
     this.state.board[toIndex] = this.state.board[fromIndex];
     this.state.board[fromIndex] = 0;
 
@@ -56,6 +69,23 @@ export class BoardState {
       this.state.fullMoves++;
     }
     this.state.isWhiteTurn = !this.state.isWhiteTurn;
+  }
+
+  // Updates the castling rights. This function assumes that the move has
+  // already been determined to be valid.
+  private updateCastlingRights(from: TSquare) {
+    if (from === "a1" || from === "e1") {
+      this.state.castlingRights.white.queenSide = false;
+    }
+    if (from === "h1" || from === "e1") {
+      this.state.castlingRights.white.kingSide = false;
+    }
+    if (from === "a8" || from === "e8") {
+      this.state.castlingRights.black.queenSide = false;
+    }
+    if (from === "h8" || from === "e8") {
+      this.state.castlingRights.black.kingSide = false;
+    }
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
@@ -103,9 +133,30 @@ export class BoardState {
     const turn = this.state.isWhiteTurn ? "w" : "b";
 
     // TODO: Add support for castling rights, en passant, and move counters.
-    return `${ranks.join("/")} ${turn} KQkq - ${this.state.halfMoves} ${
-      this.state.fullMoves
-    }`;
+    return `${ranks.join("/")} ${turn} ${this.fenCastlingRights()} - ${
+      this.state.halfMoves
+    } ${this.state.fullMoves}`;
+  }
+
+  private fenCastlingRights(): string {
+    const castlingRights = [];
+    if (this.state.castlingRights.white.kingSide) {
+      castlingRights.push("K");
+    }
+    if (this.state.castlingRights.white.queenSide) {
+      castlingRights.push("Q");
+    }
+    if (this.state.castlingRights.black.kingSide) {
+      castlingRights.push("k");
+    }
+    if (this.state.castlingRights.black.queenSide) {
+      castlingRights.push("q");
+    }
+    if (castlingRights.length === 0) {
+      return "-";
+    }
+
+    return castlingRights.join("");
   }
 
   sideToMove(): TSide {
@@ -148,6 +199,8 @@ export class BoardState {
     }
     const isWhiteTurn = turn === "w";
 
+    const castlingRights = parts[2];
+
     const halfMoves = parseInt(parts[4]);
     if (Number.isNaN(halfMoves) || halfMoves < 0) {
       throw `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`;
@@ -188,6 +241,16 @@ export class BoardState {
       isWhiteTurn,
       halfMoves,
       fullMoves,
+      castlingRights: {
+        white: {
+          kingSide: castlingRights.includes("K"),
+          queenSide: castlingRights.includes("Q"),
+        },
+        black: {
+          kingSide: castlingRights.includes("k"),
+          queenSide: castlingRights.includes("q"),
+        },
+      },
     };
   }
 
