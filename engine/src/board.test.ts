@@ -336,6 +336,12 @@ describe("castling rights", () => {
   it("K move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("e2", "e3");
     board.move("a7", "a6");
@@ -351,11 +357,23 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1K1R b kq - 1 4"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: false,
+      Q: false,
+      k: true,
+      q: true,
+    });
   });
 
   it("k move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("a2", "a3");
     board.move("e7", "e6");
@@ -372,11 +390,23 @@ describe("castling rights", () => {
       board.fen(),
       "rnbq1k1r/ppppbppp/4pn2/8/8/PPPP4/4PPPP/RNBQKBNR w KQ - 1 5"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: false,
+      q: false,
+    });
   });
 
   it("queen side R move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("b1", "c3");
     board.move("a7", "a6");
@@ -388,11 +418,23 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/2N5/PPPPPPPP/1RBQKBNR b Kkq - 1 2"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: false,
+      k: true,
+      q: true,
+    });
   });
 
   it("king side R move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("g1", "f3");
     board.move("a7", "a6");
@@ -404,11 +446,23 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKBR1 b Qkq - 1 2"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: false,
+      Q: true,
+      k: true,
+      q: true,
+    });
   });
 
   it("queen side r move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("a2", "a3");
     board.move("b8", "c6");
@@ -421,11 +475,23 @@ describe("castling rights", () => {
       board.fen(),
       "1rbqkbnr/pppppppp/2n5/8/8/PP6/2PPPPPP/RNBQKBNR w KQk - 1 3"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: false,
+    });
   });
 
   it("king side r move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: true,
+      q: true,
+    });
 
     board.move("a2", "a3");
     board.move("g8", "f6");
@@ -438,5 +504,11 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbr1/pppppppp/5n2/8/8/PP6/2PPPPPP/RNBQKBNR w KQq - 1 3"
     );
+    assert.deepEqual(board.castlingRights(), {
+      K: true,
+      Q: true,
+      k: false,
+      q: true,
+    });
   });
 });

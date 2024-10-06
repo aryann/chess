@@ -10,12 +10,11 @@ export class Engine {
     return this.board.current();
   }
 
+  // Moves a piece from one square to another. Clients must use possibleMoves()
+  // to ensure that the parameters passed to this function are valid. Illegal
+  // moves result in an exception.
   move(from: TSquare, to: TSquare) {
     this.board.move(from, to);
-  }
-
-  isLegal(from: TSquare, to: TSquare): boolean {
-    return this.board.isLegal(from, to);
   }
 
   // Returns the possible moves that this piece can make. There must be a

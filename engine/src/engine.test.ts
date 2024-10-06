@@ -12,9 +12,7 @@ describe("fen", () => {
   });
 
   it("first move", () => {
-    assert.isTrue(engine.isLegal("e2", "e3"));
     engine.move("e2", "e3");
-    assert.isFalse(engine.isLegal("e2", "e3"));
 
     assert.equal(
       engine.fen(),
@@ -23,9 +21,7 @@ describe("fen", () => {
   });
 
   it("second move", () => {
-    assert.isTrue(engine.isLegal("e7", "e6"));
     engine.move("e7", "e6");
-    assert.isFalse(engine.isLegal("e7", "e6"));
 
     assert.equal(
       engine.fen(),

@@ -17,14 +17,10 @@ type State = {
   fullMoves: number;
 
   castlingRights: {
-    white: {
-      kingSide: boolean;
-      queenSide: boolean;
-    };
-    black: {
-      kingSide: boolean;
-      queenSide: boolean;
-    };
+    K: boolean;
+    k: boolean;
+    Q: boolean;
+    q: boolean;
   };
 };
 
@@ -46,15 +42,28 @@ export class BoardState {
   }
 
   move(from: TSquare, to: TSquare) {
-    if (!this.isLegal(from, to)) {
-      throw `${from}${to} is illegal.`;
-    }
-
     const fromIndex = this.toIndex(from);
     const toIndex = this.toIndex(to);
     const piece = this.intToPiece(this.state.board[fromIndex]);
 
-    if (piece === "p" || piece === "P" || this.state.board[toIndex] !== 0) {
+    if (!piece) {
+      throw `${from}${to} is illegal: ${from} is empty.`;
+    }
+
+    const side = getSide(piece);
+    const sideToMove = this.state.isWhiteTurn ? "white" : "black";
+    if (side !== this.sideToMove()) {
+      throw `${from}${to} is illegal: square contains ${side}, but side to move is ${sideToMove}.`;
+    }
+
+    const destinationPiece = this.intToPiece(
+      this.state.board[this.toIndex(to)]
+    );
+    if (destinationPiece && side === getSide(destinationPiece)) {
+      throw `${from}${to} is illegal: source and destination squares both contain ${sideToMove} pieces.`;
+    }
+
+    if (piece === "p" || piece === "P" || destinationPiece) {
       this.state.halfMoves = 0;
     } else {
       this.state.halfMoves++;
@@ -69,36 +78,6 @@ export class BoardState {
       this.state.fullMoves++;
     }
     this.state.isWhiteTurn = !this.state.isWhiteTurn;
-  }
-
-  // Updates the castling rights. This function assumes that the move has
-  // already been determined to be valid.
-  private updateCastlingRights(from: TSquare) {
-    if (from === "a1" || from === "e1") {
-      this.state.castlingRights.white.queenSide = false;
-    }
-    if (from === "h1" || from === "e1") {
-      this.state.castlingRights.white.kingSide = false;
-    }
-    if (from === "a8" || from === "e8") {
-      this.state.castlingRights.black.queenSide = false;
-    }
-    if (from === "h8" || from === "e8") {
-      this.state.castlingRights.black.kingSide = false;
-    }
-  }
-
-  isLegal(from: TSquare, to: TSquare): boolean {
-    const fromIndex = this.toIndex(from);
-    const piece = this.intToPiece(this.state.board[fromIndex]);
-    if (!piece || getSide(piece) !== this.sideToMove()) {
-      return false;
-    }
-
-    const destinationPiece = this.intToPiece(
-      this.state.board[this.toIndex(to)]
-    );
-    return !destinationPiece || getSide(piece) !== getSide(destinationPiece);
   }
 
   get(square: TSquare): TPiece | undefined {
@@ -138,18 +117,22 @@ export class BoardState {
     } ${this.state.fullMoves}`;
   }
 
+  castlingRights() {
+    return structuredClone(this.state.castlingRights);
+  }
+
   private fenCastlingRights(): string {
     const castlingRights = [];
-    if (this.state.castlingRights.white.kingSide) {
+    if (this.state.castlingRights.K) {
       castlingRights.push("K");
     }
-    if (this.state.castlingRights.white.queenSide) {
+    if (this.state.castlingRights.Q) {
       castlingRights.push("Q");
     }
-    if (this.state.castlingRights.black.kingSide) {
+    if (this.state.castlingRights.k) {
       castlingRights.push("k");
     }
-    if (this.state.castlingRights.black.queenSide) {
+    if (this.state.castlingRights.q) {
       castlingRights.push("q");
     }
     if (castlingRights.length === 0) {
@@ -157,6 +140,23 @@ export class BoardState {
     }
 
     return castlingRights.join("");
+  }
+
+  // Updates the castling rights. This function assumes that the move has
+  // already been determined to be valid.
+  private updateCastlingRights(from: TSquare) {
+    if (from === "a1" || from === "e1") {
+      this.state.castlingRights.Q = false;
+    }
+    if (from === "h1" || from === "e1") {
+      this.state.castlingRights.K = false;
+    }
+    if (from === "a8" || from === "e8") {
+      this.state.castlingRights.q = false;
+    }
+    if (from === "h8" || from === "e8") {
+      this.state.castlingRights.k = false;
+    }
   }
 
   sideToMove(): TSide {
@@ -242,14 +242,10 @@ export class BoardState {
       halfMoves,
       fullMoves,
       castlingRights: {
-        white: {
-          kingSide: castlingRights.includes("K"),
-          queenSide: castlingRights.includes("Q"),
-        },
-        black: {
-          kingSide: castlingRights.includes("k"),
-          queenSide: castlingRights.includes("q"),
-        },
+        K: castlingRights.includes("K"),
+        Q: castlingRights.includes("Q"),
+        k: castlingRights.includes("k"),
+        q: castlingRights.includes("q"),
       },
     };
   }

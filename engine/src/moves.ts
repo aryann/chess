@@ -258,6 +258,33 @@ export class MoveGenerator {
       }
     }
 
+    const castlingRights = this.board.castlingRights();
+
+    if (
+      (from === "e1" && castlingRights.K) ||
+      (from === "e8" && castlingRights.k)
+    ) {
+      const right = SQUARES[rank * NUM_FILES + file + 1];
+      const rightRight = SQUARES[rank * NUM_FILES + file + 2];
+      if (!this.board.get(right) && !this.board.get(rightRight)) {
+        moves.push(rightRight);
+      }
+    }
+
+    if (
+      (from === "e1" && castlingRights.Q) ||
+      (from === "e8" && castlingRights.q)
+    ) {
+      const left = SQUARES[rank * NUM_FILES + file - 1];
+      const leftLeft = SQUARES[rank * NUM_FILES + file - 2];
+      if (!this.board.get(left) && !this.board.get(leftLeft)) {
+        moves.push(leftLeft);
+      }
+    }
+
+    // TODO(aryann): Do not generate castling moves that pass through or end in
+    // a check.
+
     return moves;
   }
 
