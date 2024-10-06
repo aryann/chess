@@ -10,7 +10,7 @@ describe("moves", () => {
   it("pawn", () => {
     let generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
-    // White pawns:
+    // White pawn start:
     assert.sameDeepMembers(generator.generateMoves("a2"), ["a3", "a4"]);
     assert.sameDeepMembers(generator.generateMoves("b2"), ["b3", "b4"]);
     assert.sameDeepMembers(generator.generateMoves("c2"), ["c3", "c4"]);
@@ -20,7 +20,7 @@ describe("moves", () => {
     assert.sameDeepMembers(generator.generateMoves("g2"), ["g3", "g4"]);
     assert.sameDeepMembers(generator.generateMoves("h2"), ["h3", "h4"]);
 
-    // Black pawns:
+    // Black pawn start:
     assert.sameDeepMembers(generator.generateMoves("a7"), ["a6", "a5"]);
     assert.sameDeepMembers(generator.generateMoves("b7"), ["b6", "b5"]);
     assert.sameDeepMembers(generator.generateMoves("c7"), ["c6", "c5"]);
@@ -29,6 +29,44 @@ describe("moves", () => {
     assert.sameDeepMembers(generator.generateMoves("f7"), ["f6", "f5"]);
     assert.sameDeepMembers(generator.generateMoves("g7"), ["g6", "g5"]);
     assert.sameDeepMembers(generator.generateMoves("h7"), ["h6", "h5"]);
+
+    generator = make("rnbqkbnr/8/8/8/8/pppppppp/PPPPPPPP/RNBQKBNR");
+    assert.sameDeepMembers(generator.generateMoves("a2"), ["b3"]);
+    assert.sameDeepMembers(generator.generateMoves("b2"), ["a3", "c3"]);
+    assert.sameDeepMembers(generator.generateMoves("c2"), ["b3", "d3"]);
+    assert.sameDeepMembers(generator.generateMoves("d2"), ["c3", "e3"]);
+    assert.sameDeepMembers(generator.generateMoves("e2"), ["d3", "f3"]);
+    assert.sameDeepMembers(generator.generateMoves("f2"), ["e3", "g3"]);
+    assert.sameDeepMembers(generator.generateMoves("g2"), ["f3", "h3"]);
+    assert.sameDeepMembers(generator.generateMoves("h2"), ["g3"]);
+
+    assert.sameDeepMembers(generator.generateMoves("a3"), ["b2"]);
+    assert.sameDeepMembers(generator.generateMoves("b3"), ["a2", "c2"]);
+    assert.sameDeepMembers(generator.generateMoves("c3"), ["b2", "d2"]);
+    assert.sameDeepMembers(generator.generateMoves("d3"), ["c2", "e2"]);
+    assert.sameDeepMembers(generator.generateMoves("e3"), ["d2", "f2"]);
+    assert.sameDeepMembers(generator.generateMoves("f3"), ["e2", "g2"]);
+    assert.sameDeepMembers(generator.generateMoves("g3"), ["f2", "h2"]);
+    assert.sameDeepMembers(generator.generateMoves("h3"), ["g2"]);
+
+    generator = make("rnbqkbnr/pppppppp/PPPPPPPP/8/8/8/8/RNBQKBNR");
+    assert.sameDeepMembers(generator.generateMoves("a7"), ["b6"]);
+    assert.sameDeepMembers(generator.generateMoves("b7"), ["a6", "c6"]);
+    assert.sameDeepMembers(generator.generateMoves("c7"), ["b6", "d6"]);
+    assert.sameDeepMembers(generator.generateMoves("d7"), ["c6", "e6"]);
+    assert.sameDeepMembers(generator.generateMoves("e7"), ["d6", "f6"]);
+    assert.sameDeepMembers(generator.generateMoves("f7"), ["e6", "g6"]);
+    assert.sameDeepMembers(generator.generateMoves("g7"), ["f6", "h6"]);
+    assert.sameDeepMembers(generator.generateMoves("h7"), ["g6"]);
+
+    assert.sameDeepMembers(generator.generateMoves("a6"), ["b7"]);
+    assert.sameDeepMembers(generator.generateMoves("b6"), ["a7", "c7"]);
+    assert.sameDeepMembers(generator.generateMoves("c6"), ["b7", "d7"]);
+    assert.sameDeepMembers(generator.generateMoves("d6"), ["c7", "e7"]);
+    assert.sameDeepMembers(generator.generateMoves("e6"), ["d7", "f7"]);
+    assert.sameDeepMembers(generator.generateMoves("f6"), ["e7", "g7"]);
+    assert.sameDeepMembers(generator.generateMoves("g6"), ["f7", "h7"]);
+    assert.sameDeepMembers(generator.generateMoves("h6"), ["g7"]);
   });
 
   it("queen", () => {
