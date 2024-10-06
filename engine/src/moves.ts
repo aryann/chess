@@ -128,7 +128,7 @@ export class MoveGenerator {
           const secondFile = frontFile + front.file;
           const secondRank = frontRank + front.rank;
           const secondSquare = SQUARES[this.toIndex(secondFile, secondRank)];
-          const secondDestination = this.board.get(frontSquare);
+          const secondDestination = this.board.get(secondSquare);
           if (!secondDestination) {
             moves.push(secondSquare);
           }

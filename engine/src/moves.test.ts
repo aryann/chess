@@ -70,6 +70,18 @@ describe("pawns", () => {
     assert.sameDeepMembers(generator.generateMoves("g6"), ["f7", "h7"]);
     assert.sameDeepMembers(generator.generateMoves("h6"), ["g7"]);
   });
+
+  it("all black pawns on rank 4", () => {
+    const generator = make("rnbqkbnr/8/8/8/pppppppp/8/PPPPPPPP/RNBQKBNR");
+    assert.sameDeepMembers(generator.generateMoves("a2"), ["a3"]);
+    assert.sameDeepMembers(generator.generateMoves("b2"), ["b3"]);
+    assert.sameDeepMembers(generator.generateMoves("c2"), ["c3"]);
+    assert.sameDeepMembers(generator.generateMoves("d2"), ["d3"]);
+    assert.sameDeepMembers(generator.generateMoves("e2"), ["e3"]);
+    assert.sameDeepMembers(generator.generateMoves("f2"), ["f3"]);
+    assert.sameDeepMembers(generator.generateMoves("g2"), ["g3"]);
+    assert.sameDeepMembers(generator.generateMoves("h2"), ["h3"]);
+  });
 });
 
 describe("queens", () => {
