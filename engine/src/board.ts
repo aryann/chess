@@ -11,23 +11,28 @@ import {
 
 const START_STATE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+type State = {
+  board: Uint8Array;
+  isWhiteTurn: boolean;
+  halfMoves: number;
+  fullMoves: number;
+};
+
 export class BoardState {
-  private state: Uint8Array;
-  private isWhiteTurn = true;
-  private halfMoves = 0;
-  private fullMoves = 1;
+  // We wrap all state in a pure data object, so we can use structuredClone() to
+  // quickly make copies of the board state.
+  private state: State;
 
-  constructor(fen?: string) {
-    if (!fen) {
-      fen = START_STATE;
+  constructor(initialState?: string | BoardState) {
+    if (!initialState) {
+      this.state = this.fromFen(START_STATE);
+    } else if (typeof initialState === "string") {
+      this.state = this.fromFen(initialState);
+    } else if (typeof initialState === "object") {
+      this.state = structuredClone(initialState.state);
+    } else {
+      throw "initialState must be a Forsyth–Edwards Notation (FEN) or an existing BoardState.";
     }
-
-    this.initFromFen(fen);
-  }
-
-  clone(): BoardState {
-    // TODO(aryann): Improve the performance of this.
-    return new BoardState(this.fen());
   }
 
   move(from: TSquare, to: TSquare) {
@@ -37,53 +42,55 @@ export class BoardState {
 
     const fromIndex = this.toIndex(from);
     const toIndex = this.toIndex(to);
-    const piece = this.intToPiece(this.state[fromIndex]);
+    const piece = this.intToPiece(this.state.board[fromIndex]);
 
-    if (piece === "p" || piece === "P" || this.state[toIndex] !== 0) {
-      this.halfMoves = 0;
+    if (piece === "p" || piece === "P" || this.state.board[toIndex] !== 0) {
+      this.state.halfMoves = 0;
     } else {
-      this.halfMoves++;
+      this.state.halfMoves++;
     }
 
-    this.state[toIndex] = this.state[fromIndex];
-    this.state[fromIndex] = 0;
+    this.state.board[toIndex] = this.state.board[fromIndex];
+    this.state.board[fromIndex] = 0;
 
-    if (!this.isWhiteTurn) {
-      this.fullMoves++;
+    if (!this.state.isWhiteTurn) {
+      this.state.fullMoves++;
     }
-    this.isWhiteTurn = !this.isWhiteTurn;
+    this.state.isWhiteTurn = !this.state.isWhiteTurn;
   }
 
   isLegal(from: TSquare, to: TSquare): boolean {
     const fromIndex = this.toIndex(from);
-    const piece = this.intToPiece(this.state[fromIndex]);
+    const piece = this.intToPiece(this.state.board[fromIndex]);
     if (!piece) {
       return false;
     }
 
-    if (this.isWhiteTurn && !isWhite(piece)) {
+    if (this.state.isWhiteTurn && !isWhite(piece)) {
       return false;
     }
-    if (!this.isWhiteTurn && !isBlack(piece)) {
+    if (!this.state.isWhiteTurn && !isBlack(piece)) {
       return false;
     }
 
-    const destinationPiece = this.intToPiece(this.state[this.toIndex(to)]);
+    const destinationPiece = this.intToPiece(
+      this.state.board[this.toIndex(to)]
+    );
     return !destinationPiece || !isSame(piece, destinationPiece);
   }
 
   get(square: TSquare): TPiece | undefined {
     const index = this.toIndex(square);
-    const val = this.state[index];
+    const val = this.state.board[index];
     if (val === 0) {
       return undefined;
     }
-    return String.fromCharCode(this.state[index]) as TPiece;
+    return String.fromCharCode(this.state.board[index]) as TPiece;
   }
 
   current(): (TPiece | undefined)[] {
     const result: (TPiece | undefined)[] = [];
-    for (const val of this.state) {
+    for (const val of this.state.board) {
       result.push(this.intToPiece(val));
     }
     return result;
@@ -101,16 +108,16 @@ export class BoardState {
       ranks.push(this.rankToFen(currentRank));
     }
 
-    const turn = this.isWhiteTurn ? "w" : "b";
+    const turn = this.state.isWhiteTurn ? "w" : "b";
 
     // TODO: Add support for castling rights, en passant, and move counters.
-    return `${ranks.join("/")} ${turn} KQkq - ${this.halfMoves} ${
-      this.fullMoves
+    return `${ranks.join("/")} ${turn} KQkq - ${this.state.halfMoves} ${
+      this.state.fullMoves
     }`;
   }
 
   nextTurnIsWhite(): boolean {
-    return this.isWhiteTurn;
+    return this.state.isWhiteTurn;
   }
 
   currentTurn(square: TSquare) {
@@ -119,7 +126,7 @@ export class BoardState {
       return false;
     }
 
-    if (this.isWhiteTurn) {
+    if (this.state.isWhiteTurn) {
       return isWhite(piece);
     } else {
       return isBlack(piece);
@@ -150,28 +157,25 @@ export class BoardState {
     return result.join("");
   }
 
-  private initFromFen(fen: string) {
+  private fromFen(fen: string): State {
     const parts = fen.split(" ");
     if (parts.length !== 6) {
       throw `Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`;
     }
 
     const turn = parts[1];
-    if (turn === "w") {
-      this.isWhiteTurn = true;
-    } else if (turn === "b") {
-      this.isWhiteTurn = false;
-    } else {
+    if (turn !== "w" && turn !== "b") {
       throw `Forsyth–Edwards Notation (FEN) has invalid side to move: ${fen}`;
     }
+    const isWhiteTurn = turn === "w";
 
-    this.halfMoves = parseInt(parts[4]);
-    if (Number.isNaN(this.halfMoves) || this.halfMoves < 0) {
+    const halfMoves = parseInt(parts[4]);
+    if (Number.isNaN(halfMoves) || halfMoves < 0) {
       throw `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`;
     }
 
-    this.fullMoves = parseInt(parts[5]);
-    if (Number.isNaN(this.fullMoves) || this.fullMoves < 1) {
+    const fullMoves = parseInt(parts[5]);
+    if (Number.isNaN(fullMoves) || fullMoves < 1) {
       throw `Forsyth–Edwards Notation (FEN) has invalid full moves: ${fen}`;
     }
 
@@ -180,7 +184,7 @@ export class BoardState {
       throw `Forsyth–Edwards Notation (FEN) must have eight ranks: ${fen}`;
     }
 
-    const state = new Uint8Array(NUM_FILES * NUM_RANKS);
+    const board = new Uint8Array(NUM_FILES * NUM_RANKS);
     let square = 0;
 
     for (const rank of ranks) {
@@ -190,20 +194,27 @@ export class BoardState {
           const numEmptySquares = char - "1".charCodeAt(0) + 1;
           square += numEmptySquares;
         } else {
-          state[square] = char;
+          board[square] = char;
           square++;
         }
       }
     }
 
-    if (square != state.length) {
+    if (square != board.length) {
       throw `Forsyth–Edwards Notation (FEN) must specify all 64 squares: ${fen}`;
     }
-    this.state = state;
+
+    return {
+      board,
+      isWhiteTurn,
+      halfMoves,
+      fullMoves,
+    };
   }
 
   private toIndex(square: TSquare): number {
-    // TODO(aryann): Check the performance of finding the index through the SQUARES list.
+    // TODO(aryann): Check the performance of finding the index through the
+    // SQUARES list.
     return SQUARES.indexOf(square);
   }
 

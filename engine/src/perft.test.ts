@@ -13,7 +13,7 @@ const newStates = (board: BoardState): BoardState[] => {
     }
 
     for (const to of moveGenerator.generateMoves(from)) {
-      const newState = board.clone();
+      const newState = new BoardState(board);
       newState.move(from, to);
       newStates.push(newState);
     }
@@ -25,7 +25,7 @@ const newStates = (board: BoardState): BoardState[] => {
 // See https://www.chessprogramming.org/Perft_Results for more details.
 describe("perft", () => {
   it("initial position", () => {
-    const expectedStates = [20];
+    const expectedStates = [20, 400];
     let currentDepth = [new BoardState()];
     const actualStates = [];
 
