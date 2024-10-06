@@ -20,7 +20,7 @@ type State = {
 export class BoardState {
   // We wrap all state in a pure data object, so we can use structuredClone() to
   // quickly make copies of the board state.
-  private state: State;
+  private readonly state: State;
 
   constructor(initialState?: string | BoardState) {
     if (!initialState) {
