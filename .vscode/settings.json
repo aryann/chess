@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["aryann", "immer", "RNBQKBNR", "tanstack"],
+  "cSpell.words": ["aryann", "immer", "perft", "RNBQKBNR", "tanstack"],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[json]": {

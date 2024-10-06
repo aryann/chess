@@ -25,6 +25,11 @@ export class BoardState {
     this.state = this.fromFen(fen);
   }
 
+  clone(): BoardState {
+    // TODO(aryann): Improve the performance of this.
+    return new BoardState(this.fen());
+  }
+
   move(from: TSquare, to: TSquare) {
     if (!this.isLegal(from, to)) {
       throw `${from}${to} is illegal.`;
@@ -106,6 +111,19 @@ export class BoardState {
 
   nextTurnIsWhite(): boolean {
     return this.isWhiteTurn;
+  }
+
+  currentTurn(square: TSquare) {
+    const piece = this.get(square);
+    if (!piece) {
+      return false;
+    }
+
+    if (this.isWhiteTurn) {
+      return isWhite(piece);
+    } else {
+      return isBlack(piece);
+    }
   }
 
   private rankToFen(rank: (TPiece | undefined)[]): string {

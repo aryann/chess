@@ -18,19 +18,22 @@ export class Engine {
     return this.board.isLegal(from, to);
   }
 
-  moves(from: TSquare): TSquare[] {
+  // Returns the possible moves that this piece can make. There must be a
+  // piece occupying the square.
+  possibleMoves(from: TSquare): TSquare[] {
     return this.moveGenerator.generateMoves(from);
   }
 
   generateNextMove(): { from: TSquare; to: TSquare } {
-    const moves = this.nextMoves();
+    const moves = this.moves();
     if (!moves) {
       throw "No more moves are possible";
     }
     return moves[Math.floor(Math.random() * moves.length)];
   }
 
-  private nextMoves(): { from: TSquare; to: TSquare }[] {
+  // Returns all possible moves given the current game state.
+  moves(): { from: TSquare; to: TSquare }[] {
     const moves: { from: TSquare; to: TSquare }[] = [];
 
     for (const from of SQUARES) {
@@ -43,7 +46,7 @@ export class Engine {
         (this.board.nextTurnIsWhite() && isWhite(piece)) ||
         (!this.board.nextTurnIsWhite() && isBlack(piece))
       ) {
-        for (const to of this.moves(from)) {
+        for (const to of this.possibleMoves(from)) {
           moves.push({ from, to });
         }
       }

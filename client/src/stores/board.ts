@@ -34,7 +34,7 @@ export const boardActions = {
   setActivePiece: (square: TSquare, piece: TPiece) => {
     setState((state) => {
       state.activePiece = piece;
-      state.moves = engine.moves(square);
+      state.moves = engine.possibleMoves(square);
     });
   },
 
