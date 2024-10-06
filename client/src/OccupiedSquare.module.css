@@ -5,8 +5,5 @@
   transform: translateX(-50%) translateY(-50%);
   width: 80%;
   height: 80%;
-}
-
-.innerPieceContainer {
-  transition: transform 0.2s ease-in;
+  transition: all 1s ease-in;
 }

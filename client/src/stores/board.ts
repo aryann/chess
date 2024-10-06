@@ -4,10 +4,9 @@ import { WritableDraft, produce } from "immer";
 
 export const engine = new Engine();
 
-interface LastEngineMove {
+interface LastMove {
+  from: TSquare;
   to: TSquare;
-  translateX: number;
-  translateY: number;
 }
 
 interface TBoardStore {
@@ -15,7 +14,7 @@ interface TBoardStore {
   fen: string;
 
   activePiece?: TPiece;
-  lastEngineMove?: LastEngineMove;
+  lastMove?: LastMove;
   moves: string[];
 }
 
@@ -48,24 +47,25 @@ export const boardActions = {
 
   move: (from: TSquare, to: TSquare) => {
     engine.move(from, to);
+    setState((state) => {
+      state.board = engine.current();
+      state.fen = engine.fen();
+      state.lastMove = {
+        from,
+        to,
+      };
+    });
+
     const { from: nextFrom, to: nextTo } = engine.generateNextMove();
     engine.move(nextFrom, nextTo);
-
-    const fromDiv = document.getElementById(nextFrom);
-    const toDiv = document.getElementById(nextTo);
 
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();
-
-      if (fromDiv && toDiv) {
-        const fromRect = fromDiv.getBoundingClientRect();
-        const toRect = toDiv.getBoundingClientRect();
-        const translateX = fromRect.x - toRect.x;
-        const translateY = fromRect.y - toRect.y;
-
-        state.lastEngineMove = { to: nextTo, translateX, translateY };
-      }
+      state.lastMove = {
+        from: nextFrom,
+        to: nextTo,
+      };
     });
   },
 };

@@ -9,14 +9,6 @@ interface SquareProps {
   square: TSquare;
 }
 
-const PossibleMove = () => {
-  return (
-    <div className={classes.possibleMove}>
-      <div className={classes.circle}></div>
-    </div>
-  );
-};
-
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
   const moves = useStore(boardStore, (state) => state.moves);
@@ -56,7 +48,35 @@ export const Square = (props: SquareProps) => {
       {piece && <OccupiedSquare piece={piece} square={props.square} />}
 
       {isMoveCandidate && <PossibleMove />}
-      {isOver && <div className={classes.hover}></div>}
+      {isOver && <div className={classes.highlight}></div>}
+
+      <LastMoveHighlight square={props.square} />
     </div>
   );
+};
+
+const PossibleMove = () => {
+  return (
+    <div className={classes.possibleMove}>
+      <div className={classes.circle}></div>
+    </div>
+  );
+};
+
+interface LastMoveHighlightProps {
+  square: TSquare;
+}
+
+const LastMoveHighlight = (props: LastMoveHighlightProps) => {
+  const lastMove = useStore(boardStore, (state) => state.lastMove);
+
+  if (!lastMove) {
+    return <></>;
+  }
+
+  if (lastMove.to !== props.square && lastMove.from !== props.square) {
+    return <></>;
+  }
+
+  return <div className={classes.highlight}></div>;
 };
