@@ -88,23 +88,60 @@ describe("board", () => {
 });
 
 describe("from fen", () => {
-  it("illegal values", () => {
+  it("invalid fen", () => {
     expect(() => new BoardState("invalid")).toThrowError(
       "Forsyth–Edwards Notation (FEN) must have six parts: invalid"
     );
+  });
 
+  it("invalid part count", () => {
     expect(
       () =>
         new BoardState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -")
     ).toThrowError(
       "Forsyth–Edwards Notation (FEN) must have six parts: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -"
     );
+  });
 
+  it("invalid rank count", () => {
     expect(
       () =>
         new BoardState("rnbqkbnr/pppppppp/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     ).toThrowError(
       "Forsyth–Edwards Notation (FEN) must have eight ranks: rnbqkbnr/pppppppp/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    );
+  });
+
+  it("invalid side to move", () => {
+    expect(
+      () =>
+        new BoardState(
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR WHITE KQkq - 0 1"
+        )
+    ).toThrowError(
+      "Forsyth–Edwards Notation (FEN) has invalid side to move: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR WHITE KQkq - 0 1"
+    );
+  });
+
+  it("invalid half moves", () => {
+    expect(
+      () =>
+        new BoardState(
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -10 1"
+        )
+    ).toThrowError(
+      "Forsyth–Edwards Notation (FEN) has invalid half moves: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -10 1"
+    );
+  });
+
+  it("invalid full moves", () => {
+    expect(
+      () =>
+        new BoardState(
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 -10"
+        )
+    ).toThrowError(
+      "Forsyth–Edwards Notation (FEN) has invalid full moves: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 -10"
     );
   });
 
@@ -276,5 +313,19 @@ describe("from fen", () => {
     assert.isUndefined(board.get("f8"));
     assert.isUndefined(board.get("g8"));
     assert.isUndefined(board.get("h8"));
+  });
+
+  it("color", () => {
+    assert.isTrue(
+      new BoardState(
+        "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 40 40"
+      ).nextTurnIsWhite()
+    );
+
+    assert.isTrue(
+      !new BoardState(
+        "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b - - 40 40"
+      ).nextTurnIsWhite()
+    );
   });
 });

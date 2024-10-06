@@ -22,7 +22,7 @@ export class BoardState {
       fen = START_STATE;
     }
 
-    this.state = this.fromFen(fen);
+    this.initFromFen(fen);
   }
 
   clone(): BoardState {
@@ -150,20 +150,37 @@ export class BoardState {
     return result.join("");
   }
 
-  private fromFen(fen: string): Uint8Array {
+  private initFromFen(fen: string) {
     const parts = fen.split(" ");
     if (parts.length !== 6) {
       throw `Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`;
     }
 
-    // TODO(aryann): Implement reading in the half move and full move counters.
+    const turn = parts[1];
+    if (turn === "w") {
+      this.isWhiteTurn = true;
+    } else if (turn === "b") {
+      this.isWhiteTurn = false;
+    } else {
+      throw `Forsyth–Edwards Notation (FEN) has invalid side to move: ${fen}`;
+    }
+
+    this.halfMoves = parseInt(parts[4]);
+    if (Number.isNaN(this.halfMoves) || this.halfMoves < 0) {
+      throw `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`;
+    }
+
+    this.fullMoves = parseInt(parts[5]);
+    if (Number.isNaN(this.fullMoves) || this.fullMoves < 1) {
+      throw `Forsyth–Edwards Notation (FEN) has invalid full moves: ${fen}`;
+    }
 
     const ranks = parts[0].split("/");
     if (ranks.length !== 8) {
       throw `Forsyth–Edwards Notation (FEN) must have eight ranks: ${fen}`;
     }
 
-    const result = new Uint8Array(NUM_FILES * NUM_RANKS);
+    const state = new Uint8Array(NUM_FILES * NUM_RANKS);
     let square = 0;
 
     for (const rank of ranks) {
@@ -173,16 +190,16 @@ export class BoardState {
           const numEmptySquares = char - "1".charCodeAt(0) + 1;
           square += numEmptySquares;
         } else {
-          result[square] = char;
+          state[square] = char;
           square++;
         }
       }
     }
 
-    if (square != result.length) {
+    if (square != state.length) {
       throw `Forsyth–Edwards Notation (FEN) must specify all 64 squares: ${fen}`;
     }
-    return result;
+    this.state = state;
   }
 
   private toIndex(square: TSquare): number {
