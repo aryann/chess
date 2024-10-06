@@ -2,8 +2,13 @@ import { assert, describe, it } from "vitest";
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
 
-const make = (board: string) => {
-  return new MoveGenerator(new BoardState(`${board} w KQkq - 0 1`));
+const make = (board: string, castlingRights?: string) => {
+  if (!castlingRights) {
+    castlingRights = "KQkq";
+  }
+  return new MoveGenerator(
+    new BoardState(`${board} w ${castlingRights} - 0 1`)
+  );
 };
 
 describe("pawns", () => {
@@ -469,5 +474,47 @@ describe("kings", () => {
       "c5",
       "c4",
     ]);
+  });
+});
+
+describe("castling", () => {
+  it("K with castling rights on both sides", () => {
+    const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "KQkq");
+    assert.sameDeepMembers(generator.generateMoves("e1"), [
+      "f1",
+      "d1",
+      "g1",
+      "c1",
+    ]);
+  });
+
+  it("K with king-side castling rights only", () => {
+    const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "K");
+    assert.sameDeepMembers(generator.generateMoves("e1"), ["f1", "d1", "g1"]);
+  });
+
+  it("K with queen-side castling rights only", () => {
+    const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "Q");
+    assert.sameDeepMembers(generator.generateMoves("e1"), ["f1", "d1", "c1"]);
+  });
+
+  it("k with castling rights on both sides", () => {
+    const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "KQkq");
+    assert.sameDeepMembers(generator.generateMoves("e8"), [
+      "f8",
+      "d8",
+      "g8",
+      "c8",
+    ]);
+  });
+
+  it("k with king-side castling rights only", () => {
+    const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "k");
+    assert.sameDeepMembers(generator.generateMoves("e8"), ["f8", "d8", "g8"]);
+  });
+
+  it("k with queen-side castling rights only", () => {
+    const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "q");
+    assert.sameDeepMembers(generator.generateMoves("e8"), ["f8", "d8", "c8"]);
   });
 });
