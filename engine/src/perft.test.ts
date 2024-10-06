@@ -23,23 +23,36 @@ const newStates = (board: BoardState): BoardState[] => {
   return newStates;
 };
 
+const runPerftTest = (depth: number, initialState?: string): number[] => {
+  let currentDepth = [new BoardState(initialState)];
+  const actualStates = [];
+
+  for (let i = 0; i < depth; i++) {
+    const newDepth = [];
+    for (const state of currentDepth) {
+      newDepth.push(...newStates(state));
+    }
+
+    currentDepth = newDepth;
+    actualStates.push(newDepth.length);
+  }
+  return actualStates;
+};
+
 // See https://www.chessprogramming.org/Perft_Results for more details.
 describe("perft", () => {
   it("initial position", () => {
     const expectedStates = [20, 400, 8_902];
-    let currentDepth = [new BoardState()];
-    const actualStates = [];
+    const actualStates = runPerftTest(expectedStates.length);
+    assert.deepEqual(actualStates, expectedStates);
+  });
 
-    for (const _ of expectedStates) {
-      const newDepth = [];
-      for (const state of currentDepth) {
-        newDepth.push(...newStates(state));
-      }
-
-      currentDepth = newDepth;
-      actualStates.push(newDepth.length);
-    }
-
+  it("Kiwipete", () => {
+    const expectedStates: number[] = [];
+    const actualStates = runPerftTest(
+      expectedStates.length,
+      "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+    );
     assert.deepEqual(actualStates, expectedStates);
   });
 });
