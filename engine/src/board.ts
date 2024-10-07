@@ -69,8 +69,6 @@ export class BoardState {
       this.state.halfMoves++;
     }
 
-    this.updateCastlingRights(from);
-
     this.state.board[toIndex] = this.state.board[fromIndex];
     this.state.board[fromIndex] = 0;
 
@@ -78,6 +76,9 @@ export class BoardState {
       this.state.fullMoves++;
     }
     this.state.isWhiteTurn = !this.state.isWhiteTurn;
+
+    this.maybeMakeCastlingMove(from, to);
+    this.updateCastlingRights(from);
   }
 
   get(square: TSquare): TPiece | undefined {
@@ -140,6 +141,35 @@ export class BoardState {
     }
 
     return castlingRights.join("");
+  }
+
+  private maybeMakeCastlingMove(from: TSquare, to: TSquare) {
+    const fromIndex = this.toIndex(from);
+    const castlingRights = this.state.castlingRights;
+
+    if (
+      (from === "e1" && to === "g1" && castlingRights.K) ||
+      (from === "e8" && to === "g8" && castlingRights.k)
+    ) {
+      const right = fromIndex + 1;
+      const rookIndex = fromIndex + 3;
+      if (!this.state.board[right]) {
+        this.state.board[right] = this.state.board[rookIndex];
+        this.state.board[rookIndex] = 0;
+      }
+    }
+
+    if (
+      (from === "e1" && to === "c1" && castlingRights.Q) ||
+      (from === "e8" && to === "c8" && castlingRights.q)
+    ) {
+      const left = fromIndex - 1;
+      const rookIndex = fromIndex - 4;
+      if (!this.state.board[left]) {
+        this.state.board[left] = this.state.board[rookIndex];
+        this.state.board[rookIndex] = 0;
+      }
+    }
   }
 
   // Updates the castling rights. This function assumes that the move has
