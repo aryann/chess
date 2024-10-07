@@ -512,3 +512,89 @@ describe("castling rights", () => {
     });
   });
 });
+
+describe("castling", () => {
+  it("K king side", () => {
+    const board = new BoardState();
+
+    // Make space for a castle:
+    board.move("e2", "e3");
+    board.move("a7", "a6");
+    board.move("f1", "e2");
+    board.move("b7", "b6");
+    board.move("g1", "f3");
+    board.move("c7", "c6");
+
+    // Castling move:
+    board.move("e1", "g1");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1RK1 b kq - 1 4"
+    );
+  });
+
+  it("K queen side", () => {
+    const board = new BoardState();
+
+    // Make space for a castle:
+    board.move("d2", "d3");
+    board.move("a7", "a6");
+    board.move("c1", "e3");
+    board.move("b7", "b6");
+    board.move("d1", "d2");
+    board.move("c7", "c6");
+    board.move("b1", "c3");
+    board.move("d7", "d6");
+
+    // Castling move:
+    board.move("e1", "c1");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/4pppp/pppp4/8/8/2NPB3/PPPQPPPP/2KR1BNR b kq - 1 5"
+    );
+  });
+
+  it("k king side", () => {
+    const board = new BoardState();
+
+    // Make space for a castle:
+    board.move("a2", "a3");
+    board.move("e7", "e6");
+    board.move("b2", "b3");
+    board.move("f8", "e7");
+    board.move("c2", "c3");
+    board.move("g8", "f6");
+    board.move("d2", "d3");
+
+    // Castling move:
+    board.move("e8", "g8");
+
+    assert.equal(
+      board.fen(),
+      "rnbq1rk1/ppppbppp/4pn2/8/8/PPPP4/4PPPP/RNBQKBNR w KQ - 1 5"
+    );
+  });
+
+  it("k queen side", () => {
+    const board = new BoardState();
+
+    // Make space for a castle:
+    board.move("a2", "a3");
+    board.move("d7", "d6");
+    board.move("b2", "b3");
+    board.move("c8", "e6");
+    board.move("c2", "c3");
+    board.move("d8", "d7");
+    board.move("d2", "d3");
+    board.move("b8", "c6");
+    board.move("e2", "e3");
+
+    // Castling move:
+    board.move("e8", "c8");
+
+    assert.equal(
+      board.fen(),
+      "2kr1bnr/pppqpppp/2npb3/8/8/PPPPP3/5PPP/RNBQKBNR w KQ - 1 6"
+    );
+  });
+});
