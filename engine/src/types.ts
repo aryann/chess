@@ -105,3 +105,10 @@ export const getSide = (piece: TPiece): TSide => {
 export const toSquare = (file: string, rank: number): TSquare => {
   return `${file}${rank}` as TSquare;
 };
+
+export type TCastlingRights = {
+  K: boolean;
+  k: boolean;
+  Q: boolean;
+  q: boolean;
+};

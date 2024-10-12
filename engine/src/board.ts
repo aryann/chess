@@ -3,6 +3,7 @@ import {
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
+  TCastlingRights,
   TPiece,
   TSide,
   TSquare,
@@ -16,12 +17,7 @@ type State = {
   halfMoves: number;
   fullMoves: number;
 
-  castlingRights: {
-    K: boolean;
-    k: boolean;
-    Q: boolean;
-    q: boolean;
-  };
+  castlingRights: TCastlingRights;
 };
 
 export class BoardState {
@@ -118,7 +114,7 @@ export class BoardState {
     } ${this.state.fullMoves}`;
   }
 
-  castlingRights() {
+  castlingRights(): TCastlingRights {
     return structuredClone(this.state.castlingRights);
   }
 
