@@ -112,3 +112,8 @@ export type TCastlingRights = {
   Q: boolean;
   q: boolean;
 };
+
+export type TMove = {
+  from: TSquare;
+  to: TSquare;
+} & ({ type: "normal" } | { type: "promotion"; promoteTo: TPiece });

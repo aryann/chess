@@ -11,9 +11,9 @@ interface SquareProps {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
-  const moves = useStore(boardStore, (state) => state.moves);
-
-  const isMoveCandidate = moves.includes(props.square);
+  const isMoveCandidate = useStore(boardStore, (state) =>
+    state.targetSquares.includes(props.square)
+  );
 
   const { isOver, setNodeRef } = useDroppable({
     id: props.square,

@@ -5,6 +5,7 @@ import {
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
+  TMove,
   TSquare,
 } from "./types";
 
@@ -37,7 +38,7 @@ export class MoveGenerator {
     this.board = board;
   }
 
-  generateMoves(from: TSquare): TSquare[] {
+  generateMoves(from: TSquare): TMove[] {
     const piece = this.board.get(from);
 
     switch (piece) {
@@ -108,12 +109,12 @@ export class MoveGenerator {
     [left, front, right]: [Offset, Offset, Offset],
     isFirstMove: boolean,
     piece: "P" | "p"
-  ): TSquare[] {
+  ): TMove[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
 
-    const moves: TSquare[] = [];
+    const moves: TMove[] = [];
 
     // Front:
     const frontFile = file + front.file;
@@ -122,7 +123,7 @@ export class MoveGenerator {
       const frontSquare = SQUARES[this.toIndex(frontFile, frontRank)];
       const destinationPiece = this.board.get(frontSquare);
       if (!destinationPiece) {
-        moves.push(frontSquare);
+        moves.push({ type: "normal", from, to: frontSquare });
 
         if (isFirstMove) {
           const secondFile = frontFile + front.file;
@@ -130,7 +131,7 @@ export class MoveGenerator {
           const secondSquare = SQUARES[this.toIndex(secondFile, secondRank)];
           const secondDestination = this.board.get(secondSquare);
           if (!secondDestination) {
-            moves.push(secondSquare);
+            moves.push({ type: "normal", from, to: secondSquare });
           }
         }
       }
@@ -144,7 +145,7 @@ export class MoveGenerator {
         const leftSquare = SQUARES[this.toIndex(newFile, newRank)];
         const destinationPiece = this.board.get(leftSquare);
         if (destinationPiece && getSide(piece) !== getSide(destinationPiece)) {
-          moves.push(leftSquare);
+          moves.push({ type: "normal", from, to: leftSquare });
         }
       }
     }
@@ -160,12 +161,12 @@ export class MoveGenerator {
     from: TSquare,
     offsets: Offset[],
     piece: "Q" | "q" | "R" | "r" | "B" | "b"
-  ): TSquare[] {
+  ): TMove[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
 
-    const moves: TSquare[] = [];
+    const moves: TMove[] = [];
 
     for (const offset of offsets) {
       let newFile = file;
@@ -179,19 +180,20 @@ export class MoveGenerator {
           break;
         }
 
-        const square = SQUARES[newRank * NUM_FILES + newFile];
-        const destinationPiece = this.board.get(square);
+        const to = SQUARES[newRank * NUM_FILES + newFile];
+        const destinationPiece = this.board.get(to);
+        const move: TMove = { type: "normal", from, to };
 
         if (!destinationPiece) {
           // The next square is empty, so add it to the move set and continue.
-          moves.push(square);
+          moves.push(move);
         } else if (getSide(piece) === getSide(destinationPiece)) {
           // The next square has a piece of the same color as this one, so we
           // can't go any further in the current direction.
           break;
         } else {
           // The next square is the opposite color, so we can capture it.
-          moves.push(square);
+          moves.push(move);
           break;
         }
       }
@@ -200,12 +202,12 @@ export class MoveGenerator {
     return moves;
   }
 
-  private generateKnightMoves(from: TSquare, piece: "N" | "n"): TSquare[] {
+  private generateKnightMoves(from: TSquare, piece: "N" | "n"): TMove[] {
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
 
-    const moves: TSquare[] = [];
+    const moves: TMove[] = [];
 
     for (const offset of KNIGHT_OFFSETS) {
       const newRank = rank + offset.rank;
@@ -215,25 +217,25 @@ export class MoveGenerator {
         continue;
       }
 
-      const square = SQUARES[newRank * NUM_FILES + newFile];
-      const destinationPiece = this.board.get(square);
+      const to = SQUARES[newRank * NUM_FILES + newFile];
+      const destinationPiece = this.board.get(to);
       if (destinationPiece && getSide(piece) === getSide(destinationPiece)) {
         // There is a piece in the destination and it's of the same
         // color, so the knight can't move here.
         continue;
       }
 
-      moves.push(square);
+      moves.push({ type: "normal", from, to });
     }
     return moves;
   }
 
-  private generateKingMoves(from: TSquare, piece: "K" | "k"): TSquare[] {
+  private generateKingMoves(from: TSquare, piece: "K" | "k"): TMove[] {
     const fromIndex = SQUARES.indexOf(from);
     const file = fromIndex % NUM_FILES;
     const rank = Math.floor(fromIndex / NUM_FILES);
 
-    const moves: TSquare[] = [];
+    const moves: TMove[] = [];
     for (const offset of [
       UP,
       UP_RIGHT,
@@ -251,10 +253,10 @@ export class MoveGenerator {
         continue;
       }
 
-      const square = SQUARES[newRank * NUM_FILES + newFile];
-      const destinationPiece = this.board.get(square);
+      const to = SQUARES[newRank * NUM_FILES + newFile];
+      const destinationPiece = this.board.get(to);
       if (!destinationPiece || getSide(piece) !== getSide(destinationPiece)) {
-        moves.push(square);
+        moves.push({ type: "normal", from, to });
       }
     }
 
@@ -267,7 +269,7 @@ export class MoveGenerator {
       const right = SQUARES[rank * NUM_FILES + file + 1];
       const rightRight = SQUARES[rank * NUM_FILES + file + 2];
       if (!this.board.get(right) && !this.board.get(rightRight)) {
-        moves.push(rightRight);
+        moves.push({ type: "normal", from, to: rightRight });
       }
     }
 
@@ -278,7 +280,7 @@ export class MoveGenerator {
       const left = SQUARES[rank * NUM_FILES + file - 1];
       const leftLeft = SQUARES[rank * NUM_FILES + file - 2];
       if (!this.board.get(left) && !this.board.get(leftLeft)) {
-        moves.push(leftLeft);
+        moves.push({ type: "normal", from, to: leftLeft });
       }
     }
 

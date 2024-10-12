@@ -1,27 +1,22 @@
-import { Engine, TPiece, TSquare } from "@chess/engine/src";
+import { Engine, TMove, TPiece, TSquare } from "@chess/engine/src";
 import { Store } from "@tanstack/react-store";
 import { WritableDraft, produce } from "immer";
 
 export const engine = new Engine();
-
-interface LastMove {
-  from: TSquare;
-  to: TSquare;
-}
 
 interface TBoardStore {
   board: (TPiece | undefined)[];
   fen: string;
 
   activePiece?: TPiece;
-  lastMove?: LastMove;
-  moves: string[];
+  lastMove?: TMove;
+  targetSquares: TSquare[];
 }
 
 export const boardStore = new Store<TBoardStore>({
   board: engine.current(),
   fen: engine.fen(),
-  moves: [],
+  targetSquares: [],
 });
 
 const setState = (recipe: (draft: WritableDraft<TBoardStore>) => void) => {
@@ -34,38 +29,36 @@ export const boardActions = {
   setActivePiece: (square: TSquare, piece: TPiece) => {
     setState((state) => {
       state.activePiece = piece;
-      state.moves = engine.possibleMoves(square);
+      const moves = engine.possibleMoves(square);
+      for (const move of moves) {
+        state.targetSquares.push(move.to);
+      }
     });
   },
 
   clearActivePiece: () => {
     setState((state) => {
       state.activePiece = undefined;
-      state.moves = [];
+      state.targetSquares = [];
     });
   },
 
   move: (from: TSquare, to: TSquare) => {
-    engine.move(from, to);
+    const playerMove: TMove = { type: "normal", from, to };
+    engine.move(playerMove);
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();
-      state.lastMove = {
-        from,
-        to,
-      };
+      state.lastMove = playerMove;
     });
 
-    const { from: nextFrom, to: nextTo } = engine.generateNextMove();
-    engine.move(nextFrom, nextTo);
+    const computerMove = engine.generateNextMove();
+    engine.move(computerMove);
 
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();
-      state.lastMove = {
-        from: nextFrom,
-        to: nextTo,
-      };
+      state.lastMove = computerMove;
     });
   },
 };

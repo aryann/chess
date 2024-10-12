@@ -343,16 +343,16 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("e2", "e3");
-    board.move("a7", "a6");
-    board.move("f1", "e2");
-    board.move("b7", "b6");
-    board.move("g1", "f3");
-    board.move("c7", "c6");
+    board.move({ type: "normal", from: "e2", to: "e3" });
+    board.move({ type: "normal", from: "a7", to: "a6" });
+    board.move({ type: "normal", from: "f1", to: "e2" });
+    board.move({ type: "normal", from: "b7", to: "b6" });
+    board.move({ type: "normal", from: "g1", to: "f3" });
+    board.move({ type: "normal", from: "c7", to: "c6" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("e1", "f1");
+    board.move({ type: "normal", from: "e1", to: "f1" });
     assert.equal(
       board.fen(),
       "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1K1R b kq - 1 4"
@@ -375,17 +375,17 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("a2", "a3");
-    board.move("e7", "e6");
-    board.move("b2", "b3");
-    board.move("f8", "e7");
-    board.move("c2", "c3");
-    board.move("g8", "f6");
-    board.move("d2", "d3");
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    board.move({ type: "normal", from: "e7", to: "e6" });
+    board.move({ type: "normal", from: "b2", to: "b3" });
+    board.move({ type: "normal", from: "f8", to: "e7" });
+    board.move({ type: "normal", from: "c2", to: "c3" });
+    board.move({ type: "normal", from: "g8", to: "f6" });
+    board.move({ type: "normal", from: "d2", to: "d3" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("e8", "f8");
+    board.move({ type: "normal", from: "e8", to: "f8" });
     assert.equal(
       board.fen(),
       "rnbq1k1r/ppppbppp/4pn2/8/8/PPPP4/4PPPP/RNBQKBNR w KQ - 1 5"
@@ -408,12 +408,12 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("b1", "c3");
-    board.move("a7", "a6");
+    board.move({ type: "normal", from: "b1", to: "c3" });
+    board.move({ type: "normal", from: "a7", to: "a6" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("a1", "b1");
+    board.move({ type: "normal", from: "a1", to: "b1" });
     assert.equal(
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/2N5/PPPPPPPP/1RBQKBNR b Kkq - 1 2"
@@ -436,12 +436,12 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("g1", "f3");
-    board.move("a7", "a6");
+    board.move({ type: "normal", from: "g1", to: "f3" });
+    board.move({ type: "normal", from: "a7", to: "a6" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("h1", "g1");
+    board.move({ type: "normal", from: "h1", to: "g1" });
     assert.equal(
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKBR1 b Qkq - 1 2"
@@ -464,13 +464,13 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("a2", "a3");
-    board.move("b8", "c6");
-    board.move("b2", "b3");
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    board.move({ type: "normal", from: "b8", to: "c6" });
+    board.move({ type: "normal", from: "b2", to: "b3" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("a8", "b8");
+    board.move({ type: "normal", from: "a8", to: "b8" });
     assert.equal(
       board.fen(),
       "1rbqkbnr/pppppppp/2n5/8/8/PP6/2PPPPPP/RNBQKBNR w KQk - 1 3"
@@ -493,13 +493,13 @@ describe("castling rights", () => {
       q: true,
     });
 
-    board.move("a2", "a3");
-    board.move("g8", "f6");
-    board.move("b2", "b3");
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    board.move({ type: "normal", from: "g8", to: "f6" });
+    board.move({ type: "normal", from: "b2", to: "b3" });
 
     assert.include(board.fen(), "KQkq");
 
-    board.move("h8", "g8");
+    board.move({ type: "normal", from: "h8", to: "g8" });
     assert.equal(
       board.fen(),
       "rnbqkbr1/pppppppp/5n2/8/8/PP6/2PPPPPP/RNBQKBNR w KQq - 1 3"
@@ -518,15 +518,15 @@ describe("castling", () => {
     const board = new BoardState();
 
     // Make space for a castle:
-    board.move("e2", "e3");
-    board.move("a7", "a6");
-    board.move("f1", "e2");
-    board.move("b7", "b6");
-    board.move("g1", "f3");
-    board.move("c7", "c6");
+    board.move({ type: "normal", from: "e2", to: "e3" });
+    board.move({ type: "normal", from: "a7", to: "a6" });
+    board.move({ type: "normal", from: "f1", to: "e2" });
+    board.move({ type: "normal", from: "b7", to: "b6" });
+    board.move({ type: "normal", from: "g1", to: "f3" });
+    board.move({ type: "normal", from: "c7", to: "c6" });
 
     // Castling move:
-    board.move("e1", "g1");
+    board.move({ type: "normal", from: "e1", to: "g1" });
     assert.equal(
       board.fen(),
       "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1RK1 b kq - 1 4"
@@ -537,17 +537,17 @@ describe("castling", () => {
     const board = new BoardState();
 
     // Make space for a castle:
-    board.move("d2", "d3");
-    board.move("a7", "a6");
-    board.move("c1", "e3");
-    board.move("b7", "b6");
-    board.move("d1", "d2");
-    board.move("c7", "c6");
-    board.move("b1", "c3");
-    board.move("d7", "d6");
+    board.move({ type: "normal", from: "d2", to: "d3" });
+    board.move({ type: "normal", from: "a7", to: "a6" });
+    board.move({ type: "normal", from: "c1", to: "e3" });
+    board.move({ type: "normal", from: "b7", to: "b6" });
+    board.move({ type: "normal", from: "d1", to: "d2" });
+    board.move({ type: "normal", from: "c7", to: "c6" });
+    board.move({ type: "normal", from: "b1", to: "c3" });
+    board.move({ type: "normal", from: "d7", to: "d6" });
 
     // Castling move:
-    board.move("e1", "c1");
+    board.move({ type: "normal", from: "e1", to: "c1" });
     assert.equal(
       board.fen(),
       "rnbqkbnr/4pppp/pppp4/8/8/2NPB3/PPPQPPPP/2KR1BNR b kq - 1 5"
@@ -558,16 +558,16 @@ describe("castling", () => {
     const board = new BoardState();
 
     // Make space for a castle:
-    board.move("a2", "a3");
-    board.move("e7", "e6");
-    board.move("b2", "b3");
-    board.move("f8", "e7");
-    board.move("c2", "c3");
-    board.move("g8", "f6");
-    board.move("d2", "d3");
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    board.move({ type: "normal", from: "e7", to: "e6" });
+    board.move({ type: "normal", from: "b2", to: "b3" });
+    board.move({ type: "normal", from: "f8", to: "e7" });
+    board.move({ type: "normal", from: "c2", to: "c3" });
+    board.move({ type: "normal", from: "g8", to: "f6" });
+    board.move({ type: "normal", from: "d2", to: "d3" });
 
     // Castling move:
-    board.move("e8", "g8");
+    board.move({ type: "normal", from: "e8", to: "g8" });
 
     assert.equal(
       board.fen(),
@@ -579,18 +579,18 @@ describe("castling", () => {
     const board = new BoardState();
 
     // Make space for a castle:
-    board.move("a2", "a3");
-    board.move("d7", "d6");
-    board.move("b2", "b3");
-    board.move("c8", "e6");
-    board.move("c2", "c3");
-    board.move("d8", "d7");
-    board.move("d2", "d3");
-    board.move("b8", "c6");
-    board.move("e2", "e3");
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    board.move({ type: "normal", from: "d7", to: "d6" });
+    board.move({ type: "normal", from: "b2", to: "b3" });
+    board.move({ type: "normal", from: "c8", to: "e6" });
+    board.move({ type: "normal", from: "c2", to: "c3" });
+    board.move({ type: "normal", from: "d8", to: "d7" });
+    board.move({ type: "normal", from: "d2", to: "d3" });
+    board.move({ type: "normal", from: "b8", to: "c6" });
+    board.move({ type: "normal", from: "e2", to: "e3" });
 
     // Castling move:
-    board.move("e8", "c8");
+    board.move({ type: "normal", from: "e8", to: "c8" });
 
     assert.equal(
       board.fen(),

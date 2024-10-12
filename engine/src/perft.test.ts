@@ -13,9 +13,9 @@ const newStates = (board: BoardState): BoardState[] => {
       continue;
     }
 
-    for (const to of moveGenerator.generateMoves(from)) {
+    for (const move of moveGenerator.generateMoves(from)) {
       const newState = new BoardState(board);
-      newState.move(from, to);
+      newState.move(move);
       newStates.push(newState);
     }
   }

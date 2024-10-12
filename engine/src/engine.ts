@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { getSide, SQUARES, TPiece, TSquare } from "./types";
+import { getSide, SQUARES, TMove, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -13,17 +13,17 @@ export class Engine {
   // Moves a piece from one square to another. Clients must use possibleMoves()
   // to ensure that the parameters passed to this function are valid. Illegal
   // moves result in an exception.
-  move(from: TSquare, to: TSquare) {
-    this.board.move(from, to);
+  move(move: TMove) {
+    this.board.move(move);
   }
 
   // Returns the possible moves that this piece can make. There must be a
   // piece occupying the square.
-  possibleMoves(from: TSquare): TSquare[] {
+  possibleMoves(from: TSquare): TMove[] {
     return this.moveGenerator.generateMoves(from);
   }
 
-  generateNextMove(): { from: TSquare; to: TSquare } {
+  generateNextMove(): TMove {
     const moves = this.moves();
     if (!moves) {
       throw "No more moves are possible";
@@ -32,8 +32,8 @@ export class Engine {
   }
 
   // Returns all possible moves given the current game state.
-  moves(): { from: TSquare; to: TSquare }[] {
-    const moves: { from: TSquare; to: TSquare }[] = [];
+  moves(): TMove[] {
+    const moves: TMove[] = [];
 
     for (const from of SQUARES) {
       const piece = this.board.get(from);
@@ -41,8 +41,8 @@ export class Engine {
         continue;
       }
 
-      for (const to of this.possibleMoves(from)) {
-        moves.push({ from, to });
+      for (const move of this.possibleMoves(from)) {
+        moves.push(move);
       }
     }
 

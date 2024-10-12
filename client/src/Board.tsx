@@ -14,7 +14,7 @@ import { boardActions, boardStore } from "./stores/board";
 
 export const Board = () => {
   const activePiece = useStore(boardStore, (state) => state.activePiece);
-  const moves = useStore(boardStore, (state) => state.moves);
+  const targetSquares = useStore(boardStore, (state) => state.targetSquares);
 
   const squares = [];
   for (const square of SQUARES) {
@@ -35,7 +35,7 @@ export const Board = () => {
       return;
     }
     const to = event.over.id as TSquare;
-    if (!moves.includes(to)) {
+    if (!targetSquares.includes(to)) {
       return;
     }
     boardActions.move(event.active.id as TSquare, to);

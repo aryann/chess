@@ -4,6 +4,7 @@ import {
   NUM_RANKS,
   SQUARES,
   TCastlingRights,
+  TMove,
   TPiece,
   TSide,
   TSquare,
@@ -37,7 +38,8 @@ export class BoardState {
     }
   }
 
-  move(from: TSquare, to: TSquare) {
+  move(move: TMove) {
+    const { from, to } = move;
     const fromIndex = this.toIndex(from);
     const toIndex = this.toIndex(to);
     const piece = this.intToPiece(this.state.board[fromIndex]);
