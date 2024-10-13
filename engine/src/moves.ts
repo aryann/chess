@@ -103,7 +103,7 @@ export class MoveGenerator {
     }
   }
 
-  private generatePawnMovesHelper(
+  private moveOrPromotePawn(
     from: TSquare,
     to: TSquare,
     piece: "P" | "p"
@@ -144,7 +144,7 @@ export class MoveGenerator {
       const frontSquare = SQUARES[this.toIndex(frontFile, frontRank)];
       const destinationPiece = this.board.get(frontSquare);
       if (!destinationPiece) {
-        moves.push(...this.generatePawnMovesHelper(from, frontSquare, piece));
+        moves.push(...this.moveOrPromotePawn(from, frontSquare, piece));
 
         if (isFirstMove) {
           const secondFile = frontFile + front.file;
@@ -166,7 +166,7 @@ export class MoveGenerator {
         const to = SQUARES[this.toIndex(newFile, newRank)];
         const destinationPiece = this.board.get(to);
         if (destinationPiece && getSide(piece) !== getSide(destinationPiece)) {
-          moves.push(...this.generatePawnMovesHelper(from, to, piece));
+          moves.push(...this.moveOrPromotePawn(from, to, piece));
         }
       }
     }
