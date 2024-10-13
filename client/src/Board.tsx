@@ -14,7 +14,7 @@ import { boardActions, boardStore } from "./stores/board";
 
 export const Board = () => {
   const activePiece = useStore(boardStore, (state) => state.activePiece);
-  const targetSquares = useStore(boardStore, (state) => state.targetSquares);
+  const possibleMoves = useStore(boardStore, (state) => state.moves);
 
   const squares = [];
   for (const square of SQUARES) {
@@ -34,11 +34,17 @@ export const Board = () => {
     if (!event.over) {
       return;
     }
+
     const to = event.over.id as TSquare;
-    if (!targetSquares.includes(to)) {
+    const moves = possibleMoves.filter((move) => move.to === to);
+    if (moves.length === 0) {
       return;
     }
-    boardActions.move(event.active.id as TSquare, to);
+
+    // TODO(aryann): Check to see if the moves are promotion moves, and if so,
+    // present the user with a choice to promote.
+    boardActions.move(moves[0]);
+
     playMoveSound();
   };
 

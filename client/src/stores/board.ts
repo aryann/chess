@@ -10,13 +10,13 @@ interface TBoardStore {
 
   activePiece?: TPiece;
   lastMove?: TMove;
-  targetSquares: TSquare[];
+  moves: TMove[];
 }
 
 export const boardStore = new Store<TBoardStore>({
   board: engine.current(),
   fen: engine.fen(),
-  targetSquares: [],
+  moves: [],
 });
 
 const setState = (recipe: (draft: WritableDraft<TBoardStore>) => void) => {
@@ -29,27 +29,23 @@ export const boardActions = {
   setActivePiece: (square: TSquare, piece: TPiece) => {
     setState((state) => {
       state.activePiece = piece;
-      const moves = engine.possibleMoves(square);
-      for (const move of moves) {
-        state.targetSquares.push(move.to);
-      }
+      state.moves = engine.possibleMoves(square);
     });
   },
 
   clearActivePiece: () => {
     setState((state) => {
       state.activePiece = undefined;
-      state.targetSquares = [];
+      state.moves = [];
     });
   },
 
-  move: (from: TSquare, to: TSquare) => {
-    const playerMove: TMove = { type: "normal", from, to };
-    engine.move(playerMove);
+  move: (move: TMove) => {
+    engine.move(move);
     setState((state) => {
       state.board = engine.current();
       state.fen = engine.fen();
-      state.lastMove = playerMove;
+      state.lastMove = move;
     });
 
     const computerMove = engine.generateNextMove();

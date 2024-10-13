@@ -1,4 +1,4 @@
-import { getFile, getRank, SQUARES, TSquare } from "@chess/engine/src";
+import { getFile, getRank, SQUARES, TMove, TSquare } from "@chess/engine/src";
 import { useDroppable } from "@dnd-kit/core";
 import { useStore } from "@tanstack/react-store";
 import { OccupiedSquare } from "./OccupiedSquare";
@@ -11,9 +11,10 @@ interface SquareProps {
 
 export const Square = (props: SquareProps) => {
   const board = useStore(boardStore, (state) => state.board);
-  const isMoveCandidate = useStore(boardStore, (state) =>
-    state.targetSquares.includes(props.square)
-  );
+  const isMoveCandidate =
+    useStore(boardStore, (state) =>
+      state.moves.filter((move: TMove) => move.to === props.square)
+    ).length > 0;
 
   const { isOver, setNodeRef } = useDroppable({
     id: props.square,
