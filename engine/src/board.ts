@@ -71,11 +71,25 @@ export class BoardState {
       this.state.halfMoves++;
     }
 
-    if (move.type === "promotion") {
-      this.state.board[toIndex] = move.promoteTo.charCodeAt(0);
-    } else {
-      this.state.board[toIndex] = this.state.board[fromIndex];
+    switch (move.type) {
+      case "normal":
+        this.state.board[toIndex] = this.state.board[fromIndex];
+        break;
+
+      case "enPassant":
+        const capturedFile = getFile(to);
+        const capturedRank = getRank(from);
+        const capturedSquare = toSquare(capturedFile, capturedRank);
+
+        this.state.board[this.toIndex(capturedSquare)] = 0;
+        this.state.board[toIndex] = this.state.board[fromIndex];
+        break;
+
+      case "promotion":
+        this.state.board[toIndex] = move.promoteTo.charCodeAt(0);
+        break;
     }
+
     this.state.board[fromIndex] = 0;
 
     if (!this.state.isWhiteTurn) {

@@ -610,46 +610,74 @@ describe("promotion", () => {
 });
 
 describe("en passant", () => {
-  it("P", () => {
+  it("p captures P from left", () => {
     const board = new BoardState();
-
     assert.isUndefined(board.enPassantTarget());
-    assert.equal(
-      board.fen(),
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    );
+
+    board.move({ type: "normal", from: "b1", to: "c3" });
+    board.move({ type: "normal", from: "d7", to: "d5" });
+    board.move({ type: "normal", from: "c3", to: "b1" });
+    board.move({ type: "normal", from: "d5", to: "d4" });
 
     board.move({ type: "normal", from: "e2", to: "e4" });
     assert.equal(board.enPassantTarget(), "e3");
     assert.equal(
       board.fen(),
-      "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+      "rnbqkbnr/ppp1pppp/8/8/3pP3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 3"
     );
 
-    board.move({ type: "normal", from: "a7", to: "a6" });
+    board.move({ type: "enPassant", from: "d4", to: "e3" });
     assert.isUndefined(board.enPassantTarget());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/ppp1pppp/8/8/8/4p3/PPPP1PPP/RNBQKBNR w KQkq - 0 4"
+    );
   });
 
-  it("p", () => {
+  it("p captures P from right", () => {
     const board = new BoardState();
+    assert.isUndefined(board.enPassantTarget());
 
+    board.move({ type: "normal", from: "b1", to: "c3" });
+    board.move({ type: "normal", from: "f7", to: "f5" });
+    board.move({ type: "normal", from: "c3", to: "b1" });
+    board.move({ type: "normal", from: "f5", to: "f4" });
+
+    board.move({ type: "normal", from: "e2", to: "e4" });
+    assert.equal(board.enPassantTarget(), "e3");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/ppppp1pp/8/8/4Pp2/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 3"
+    );
+
+    board.move({ type: "enPassant", from: "f4", to: "e3" });
     assert.isUndefined(board.enPassantTarget());
     assert.equal(
       board.fen(),
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      "rnbqkbnr/ppppp1pp/8/8/8/4p3/PPPP1PPP/RNBQKBNR w KQkq - 0 4"
     );
+  });
 
-    board.move({ type: "normal", from: "a2", to: "a3" });
+  it("P captures p from left", () => {
+    const board = new BoardState();
     assert.isUndefined(board.enPassantTarget());
 
-    board.move({ type: "normal", from: "e7", to: "e5" });
-    assert.equal(board.enPassantTarget(), "e6");
+    board.move({ type: "normal", from: "e2", to: "e4" });
+    board.move({ type: "normal", from: "b8", to: "c6" });
+    board.move({ type: "normal", from: "e4", to: "e5" });
+    board.move({ type: "normal", from: "d7", to: "d5" });
+
+    assert.equal(board.enPassantTarget(), "d6");
     assert.equal(
       board.fen(),
-      "rnbqkbnr/pppp1ppp/8/4p3/8/P7/1PPPPPPP/RNBQKBNR w KQkq e6 0 2"
+      "r1bqkbnr/ppp1pppp/2n5/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3"
     );
 
-    board.move({ type: "normal", from: "b2", to: "b3" });
+    board.move({ type: "enPassant", from: "e5", to: "d6" });
     assert.isUndefined(board.enPassantTarget());
+    assert.equal(
+      board.fen(),
+      "r1bqkbnr/ppp1pppp/2nP4/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3"
+    );
   });
 });
