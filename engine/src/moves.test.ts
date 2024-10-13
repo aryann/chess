@@ -242,6 +242,218 @@ describe("pawns", () => {
       { type: "normal", from: "h2", to: "h3" },
     ]);
   });
+
+  it("promotions without captures", () => {
+    const generator = make("8/3P4/8/8/8/8/4p3/8");
+
+    assert.sameDeepMembers(generator.generateMoves("d7"), [
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "Q",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "R",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "B",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "N",
+      },
+    ]);
+
+    assert.sameDeepMembers(generator.generateMoves("e2"), [
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "q",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "r",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "b",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "n",
+      },
+    ]);
+  });
+
+  it("promotions with captures", () => {
+    const generator = make("2b1b3/3P4/8/8/8/8/4p3/3B1B2");
+
+    assert.sameDeepMembers(generator.generateMoves("d7"), [
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "Q",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "R",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "B",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "d8",
+        promoteTo: "N",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "e8",
+        promoteTo: "Q",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "e8",
+        promoteTo: "R",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "e8",
+        promoteTo: "B",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "e8",
+        promoteTo: "N",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "c8",
+        promoteTo: "Q",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "c8",
+        promoteTo: "R",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "c8",
+        promoteTo: "B",
+      },
+      {
+        type: "promotion",
+        from: "d7",
+        to: "c8",
+        promoteTo: "N",
+      },
+    ]);
+
+    assert.sameDeepMembers(generator.generateMoves("e2"), [
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "q",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "r",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "b",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "e1",
+        promoteTo: "n",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        promoteTo: "q",
+        to: "d1",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "d1",
+        promoteTo: "r",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "d1",
+        promoteTo: "b",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "d1",
+        promoteTo: "n",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "f1",
+        promoteTo: "q",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "f1",
+        promoteTo: "r",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "f1",
+        promoteTo: "b",
+      },
+      {
+        type: "promotion",
+        from: "e2",
+        to: "f1",
+        promoteTo: "n",
+      },
+    ]);
+  });
 });
 
 describe("queens", () => {

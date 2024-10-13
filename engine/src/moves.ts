@@ -6,6 +6,7 @@ import {
   NUM_RANKS,
   SQUARES,
   TMove,
+  TPiece,
   TSquare,
 } from "./types";
 
@@ -102,6 +103,26 @@ export class MoveGenerator {
     }
   }
 
+  private generatePawnMovesHelper(
+    from: TSquare,
+    to: TSquare,
+    piece: "P" | "p"
+  ): TMove[] {
+    const isPromotion = getRank(to) === 1 || getRank(to) === 8;
+    if (!isPromotion) {
+      return [{ type: "normal", from, to }];
+    }
+
+    const moves: TMove[] = [];
+    const promotionPieces: TPiece[] =
+      getSide(piece) === "w" ? ["Q", "R", "B", "N"] : ["q", "r", "b", "n"];
+
+    for (const promoteTo of promotionPieces) {
+      moves.push({ type: "promotion", from, to, promoteTo });
+    }
+    return moves;
+  }
+
   // Generates moves for pawns. The left, front, and right offsets are from the
   // pawn's perspective.
   private generatePawnMoves(
@@ -123,7 +144,7 @@ export class MoveGenerator {
       const frontSquare = SQUARES[this.toIndex(frontFile, frontRank)];
       const destinationPiece = this.board.get(frontSquare);
       if (!destinationPiece) {
-        moves.push({ type: "normal", from, to: frontSquare });
+        moves.push(...this.generatePawnMovesHelper(from, frontSquare, piece));
 
         if (isFirstMove) {
           const secondFile = frontFile + front.file;
@@ -142,10 +163,10 @@ export class MoveGenerator {
       const newFile = file + offset.file;
       const newRank = rank + offset.rank;
       if (this.isInRange(newFile, newRank)) {
-        const leftSquare = SQUARES[this.toIndex(newFile, newRank)];
-        const destinationPiece = this.board.get(leftSquare);
+        const to = SQUARES[this.toIndex(newFile, newRank)];
+        const destinationPiece = this.board.get(to);
         if (destinationPiece && getSide(piece) !== getSide(destinationPiece)) {
-          moves.push({ type: "normal", from, to: leftSquare });
+          moves.push(...this.generatePawnMovesHelper(from, to, piece));
         }
       }
     }
