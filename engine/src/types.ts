@@ -116,4 +116,8 @@ export type TCastlingRights = {
 export type TMove = {
   from: TSquare;
   to: TSquare;
-} & ({ type: "normal" } | { type: "promotion"; promoteTo: TPiece });
+} & (
+  | { type: "normal" }
+  | { type: "promotion"; promoteTo: TPiece }
+  | { type: "enPassant" }
+);

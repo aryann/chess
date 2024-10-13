@@ -265,6 +265,11 @@ export class BoardState {
 
     const castlingRights = parts[2];
 
+    let enPassantTarget = parts[3] === "-" ? undefined : (parts[3] as TSquare);
+    if (enPassantTarget && !SQUARES.includes(enPassantTarget)) {
+      throw `Forsyth–Edwards Notation (FEN) has invalid en passant target: ${fen}`;
+    }
+
     const halfMoves = parseInt(parts[4]);
     if (Number.isNaN(halfMoves) || halfMoves < 0) {
       throw `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`;
@@ -305,6 +310,7 @@ export class BoardState {
       isWhiteTurn,
       halfMoves,
       fullMoves,
+      enPassantTarget,
       castlingRights: {
         K: castlingRights.includes("K"),
         Q: castlingRights.includes("Q"),

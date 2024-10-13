@@ -165,15 +165,17 @@ export class MoveGenerator {
       if (this.isInRange(newFile, newRank)) {
         const to = SQUARES[this.toIndex(newFile, newRank)];
         const destinationPiece = this.board.get(to);
+
         if (destinationPiece && getSide(piece) !== getSide(destinationPiece)) {
           moves.push(...this.moveOrPromotePawn(from, to, piece));
         }
+
+        const enPassantTarget = this.board.enPassantTarget();
+        if (enPassantTarget === to) {
+          moves.push({ type: "enPassant", from, to });
+        }
       }
     }
-
-    // TODO(aryann): Add support for En Passant.
-
-    // TODO(aryann): Add support for promotion to queen, rook, bishop, and knight.
 
     return moves;
   }

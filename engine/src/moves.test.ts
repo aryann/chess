@@ -454,6 +454,74 @@ describe("pawns", () => {
       },
     ]);
   });
+
+  it("white en passant", () => {
+    const generator = new MoveGenerator(
+      new BoardState(
+        "rnbqkbnr/pppp1ppp/8/3PpP2/8/8/PPP1P1PP/RNBQKBNR w KQkq e6 0 2"
+      )
+    );
+
+    assert.sameDeepMembers(generator.generateMoves("d5"), [
+      {
+        from: "d5",
+        to: "d6",
+        type: "normal",
+      },
+      {
+        from: "d5",
+        to: "e6",
+        type: "enPassant",
+      },
+    ]);
+
+    assert.sameDeepMembers(generator.generateMoves("f5"), [
+      {
+        from: "f5",
+        to: "f6",
+        type: "normal",
+      },
+      {
+        from: "f5",
+        to: "e6",
+        type: "enPassant",
+      },
+    ]);
+  });
+
+  it("black en passant", () => {
+    const generator = new MoveGenerator(
+      new BoardState(
+        "rnbqkbnr/pp1p1ppp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+      )
+    );
+
+    assert.sameDeepMembers(generator.generateMoves("d4"), [
+      {
+        from: "d4",
+        to: "d3",
+        type: "normal",
+      },
+      {
+        from: "d4",
+        to: "e3",
+        type: "enPassant",
+      },
+    ]);
+
+    assert.sameDeepMembers(generator.generateMoves("f4"), [
+      {
+        from: "f4",
+        to: "f3",
+        type: "normal",
+      },
+      {
+        from: "f4",
+        to: "e3",
+        type: "enPassant",
+      },
+    ]);
+  });
 });
 
 describe("queens", () => {
