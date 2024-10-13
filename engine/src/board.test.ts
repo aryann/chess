@@ -598,3 +598,13 @@ describe("castling", () => {
     );
   });
 });
+
+describe("promotion", () => {
+  it("P", () => {
+    const board = new BoardState("8/P7/8/8/8/8/8/8 w - - 40 40");
+
+    board.move({ type: "promotion", from: "a7", to: "a8", promoteTo: "Q" });
+
+    assert.equal(board.fen(), "Q7/8/8/8/8/8/8/8 b - - 0 40");
+  });
+});

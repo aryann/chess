@@ -67,7 +67,11 @@ export class BoardState {
       this.state.halfMoves++;
     }
 
-    this.state.board[toIndex] = this.state.board[fromIndex];
+    if (move.type === "promotion") {
+      this.state.board[toIndex] = move.promoteTo.charCodeAt(0);
+    } else {
+      this.state.board[toIndex] = this.state.board[fromIndex];
+    }
     this.state.board[fromIndex] = 0;
 
     if (!this.state.isWhiteTurn) {
