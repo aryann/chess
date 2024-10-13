@@ -608,3 +608,48 @@ describe("promotion", () => {
     assert.equal(board.fen(), "Q7/8/8/8/8/8/8/8 b - - 0 40");
   });
 });
+
+describe("en passant", () => {
+  it("P", () => {
+    const board = new BoardState();
+
+    assert.isUndefined(board.enPassantTarget());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    );
+
+    board.move({ type: "normal", from: "e2", to: "e4" });
+    assert.equal(board.enPassantTarget(), "e3");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+    );
+
+    board.move({ type: "normal", from: "a7", to: "a6" });
+    assert.isUndefined(board.enPassantTarget());
+  });
+
+  it("p", () => {
+    const board = new BoardState();
+
+    assert.isUndefined(board.enPassantTarget());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    );
+
+    board.move({ type: "normal", from: "a2", to: "a3" });
+    assert.isUndefined(board.enPassantTarget());
+
+    board.move({ type: "normal", from: "e7", to: "e5" });
+    assert.equal(board.enPassantTarget(), "e6");
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppp1ppp/8/4p3/8/P7/1PPPPPPP/RNBQKBNR w KQkq e6 0 2"
+    );
+
+    board.move({ type: "normal", from: "b2", to: "b3" });
+    assert.isUndefined(board.enPassantTarget());
+  });
+});

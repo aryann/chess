@@ -1,10 +1,13 @@
 import {
+  getFile,
+  getRank,
   getSide,
   NUM_FILES,
   NUM_RANKS,
   SQUARES,
   TCastlingRights,
   TMove,
+  toSquare,
   TPiece,
   TSide,
   TSquare,
@@ -17,6 +20,7 @@ type State = {
   isWhiteTurn: boolean;
   halfMoves: number;
   fullMoves: number;
+  enPassantTarget?: TSquare;
 
   castlingRights: TCastlingRights;
 };
@@ -81,6 +85,7 @@ export class BoardState {
 
     this.maybeMakeCastlingMove(from, to);
     this.updateCastlingRights(from);
+    this.updateEnPassant(from, to, piece);
   }
 
   get(square: TSquare): TPiece | undefined {
@@ -112,16 +117,25 @@ export class BoardState {
       ranks.push(this.rankToFen(currentRank));
     }
 
+    const enPassantTarget = this.state.enPassantTarget ?? "-";
     const turn = this.state.isWhiteTurn ? "w" : "b";
 
-    // TODO: Add support for castling rights, en passant, and move counters.
-    return `${ranks.join("/")} ${turn} ${this.fenCastlingRights()} - ${
-      this.state.halfMoves
-    } ${this.state.fullMoves}`;
+    return [
+      ranks.join("/"),
+      turn,
+      this.fenCastlingRights(),
+      enPassantTarget,
+      this.state.halfMoves,
+      this.state.fullMoves,
+    ].join(" ");
   }
 
   castlingRights(): TCastlingRights {
     return structuredClone(this.state.castlingRights);
+  }
+
+  enPassantTarget(): TSquare | undefined {
+    return this.state.enPassantTarget;
   }
 
   private fenCastlingRights(): string {
@@ -189,6 +203,24 @@ export class BoardState {
     if (from === "h8" || from === "e8") {
       this.state.castlingRights.k = false;
     }
+  }
+
+  private updateEnPassant(from: TSquare, to: TSquare, piece: TPiece) {
+    if (piece !== "P" && piece !== "p") {
+      this.state.enPassantTarget = undefined;
+      return;
+    }
+
+    const fromRank = getRank(from);
+    const toRank = getRank(to);
+    if (Math.abs(fromRank - toRank) !== 2) {
+      this.state.enPassantTarget = undefined;
+      return;
+    }
+
+    const targetFile = getFile(from);
+    const targetRank = getRank(from) + (toRank - fromRank) / 2;
+    this.state.enPassantTarget = toSquare(targetFile, targetRank);
   }
 
   sideToMove(): TSide {
