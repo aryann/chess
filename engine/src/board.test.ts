@@ -680,4 +680,27 @@ describe("en passant", () => {
       "r1bqkbnr/ppp1pppp/2nP4/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3"
     );
   });
+
+  it("P captures p from right", () => {
+    const board = new BoardState();
+    assert.isUndefined(board.enPassantTarget());
+
+    board.move({ type: "normal", from: "e2", to: "e4" });
+    board.move({ type: "normal", from: "b8", to: "c6" });
+    board.move({ type: "normal", from: "e4", to: "e5" });
+    board.move({ type: "normal", from: "f7", to: "f5" });
+
+    assert.equal(board.enPassantTarget(), "f6");
+    assert.equal(
+      board.fen(),
+      "r1bqkbnr/ppppp1pp/2n5/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"
+    );
+
+    board.move({ type: "enPassant", from: "e5", to: "f6" });
+    assert.isUndefined(board.enPassantTarget());
+    assert.equal(
+      board.fen(),
+      "r1bqkbnr/ppppp1pp/2n2P2/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3"
+    );
+  });
 });
