@@ -1,4 +1,4 @@
-import { BoardState } from "./board";
+import { BoardState } from "./board.ts";
 import {
   getRank,
   getSide,
@@ -8,7 +8,7 @@ import {
   TMove,
   TPiece,
   TSquare,
-} from "./types";
+} from "./types.ts";
 
 type Offset = { file: number; rank: number };
 

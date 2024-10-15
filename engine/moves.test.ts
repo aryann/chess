@@ -1,6 +1,6 @@
 import { assert, describe, it } from "vitest";
-import { BoardState } from "./board";
-import { MoveGenerator } from "./moves";
+import { BoardState } from "./board.ts";
+import { MoveGenerator } from "./moves.ts";
 
 const make = (board: string, castlingRights?: string) => {
   if (!castlingRights) {

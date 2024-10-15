@@ -1,5 +1,5 @@
 import { assert, describe, it } from "vitest";
-import { Engine } from "./engine";
+import { Engine } from "./engine.ts";
 
 describe("fen", () => {
   const engine = new Engine();

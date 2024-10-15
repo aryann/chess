@@ -11,7 +11,7 @@ import {
   TPiece,
   TSide,
   TSquare,
-} from "./types";
+} from "./types.ts";
 
 const START_STATE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -49,20 +49,24 @@ export class BoardState {
     const piece = this.intToPiece(this.state.board[fromIndex]);
 
     if (!piece) {
-      throw `${from}${to} is illegal: ${from} is empty.`;
+      throw Error(`${from}${to} is illegal: ${from} is empty.`);
     }
 
     const side = getSide(piece);
     const sideToMove = this.state.isWhiteTurn ? "white" : "black";
     if (side !== this.sideToMove()) {
-      throw `${from}${to} is illegal: square contains ${side}, but side to move is ${sideToMove}.`;
+      throw Error(
+        `${from}${to} is illegal: square contains ${side}, but side to move is ${sideToMove}.`
+      );
     }
 
     const destinationPiece = this.intToPiece(
       this.state.board[this.toIndex(to)]
     );
     if (destinationPiece && side === getSide(destinationPiece)) {
-      throw `${from}${to} is illegal: source and destination squares both contain ${sideToMove} pieces.`;
+      throw Error(
+        `${from}${to} is illegal: source and destination squares both contain ${sideToMove} pieces.`
+      );
     }
 
     if (piece === "p" || piece === "P" || destinationPiece) {
@@ -76,7 +80,7 @@ export class BoardState {
         this.state.board[toIndex] = this.state.board[fromIndex];
         break;
 
-      case "enPassant":
+      case "enPassant": {
         const capturedFile = getFile(to);
         const capturedRank = getRank(from);
         const capturedSquare = toSquare(capturedFile, capturedRank);
@@ -84,6 +88,7 @@ export class BoardState {
         this.state.board[this.toIndex(capturedSquare)] = 0;
         this.state.board[toIndex] = this.state.board[fromIndex];
         break;
+      }
 
       case "promotion":
         this.state.board[toIndex] = move.promoteTo.charCodeAt(0);
@@ -268,12 +273,14 @@ export class BoardState {
   private fromFen(fen: string): State {
     const parts = fen.split(" ");
     if (parts.length !== 6) {
-      throw `Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`;
+      throw Error(`Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`);
     }
 
     const turn = parts[1];
     if (turn !== "w" && turn !== "b") {
-      throw `Forsyth–Edwards Notation (FEN) has invalid side to move: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) has invalid side to move: ${fen}`
+      );
     }
     const isWhiteTurn = turn === "w";
 
@@ -281,22 +288,30 @@ export class BoardState {
 
     let enPassantTarget = parts[3] === "-" ? undefined : (parts[3] as TSquare);
     if (enPassantTarget && !SQUARES.includes(enPassantTarget)) {
-      throw `Forsyth–Edwards Notation (FEN) has invalid en passant target: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) has invalid en passant target: ${fen}`
+      );
     }
 
     const halfMoves = parseInt(parts[4]);
     if (Number.isNaN(halfMoves) || halfMoves < 0) {
-      throw `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) has invalid half moves: ${fen}`
+      );
     }
 
     const fullMoves = parseInt(parts[5]);
     if (Number.isNaN(fullMoves) || fullMoves < 1) {
-      throw `Forsyth–Edwards Notation (FEN) has invalid full moves: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) has invalid full moves: ${fen}`
+      );
     }
 
     const ranks = parts[0].split("/");
     if (ranks.length !== 8) {
-      throw `Forsyth–Edwards Notation (FEN) must have eight ranks: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) must have eight ranks: ${fen}`
+      );
     }
 
     const board = new Uint8Array(NUM_FILES * NUM_RANKS);
@@ -316,7 +331,9 @@ export class BoardState {
     }
 
     if (square != board.length) {
-      throw `Forsyth–Edwards Notation (FEN) must specify all 64 squares: ${fen}`;
+      throw Error(
+        `Forsyth–Edwards Notation (FEN) must specify all 64 squares: ${fen}`
+      );
     }
 
     return {

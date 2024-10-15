@@ -1,6 +1,6 @@
-import { BoardState } from "./board";
-import { MoveGenerator } from "./moves";
-import { getSide, SQUARES, TMove, TPiece, TSquare } from "./types";
+import { BoardState } from "./board.ts";
+import { MoveGenerator } from "./moves.ts";
+import { getSide, SQUARES, TMove, TPiece, TSquare } from "./types.ts";
 
 export class Engine {
   private board: BoardState = new BoardState();
