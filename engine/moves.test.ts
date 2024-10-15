@@ -1,4 +1,4 @@
-import { assert, describe, it } from "vitest";
+import { assert } from "npm:chai@4.5.0";
 import { BoardState } from "./board.ts";
 import { MoveGenerator } from "./moves.ts";
 
@@ -11,10 +11,12 @@ const make = (board: string, castlingRights?: string) => {
   );
 };
 
-describe("pawns", () => {
-  it("initial state", () => {
+Deno.test("pawns", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
+    // TODO(aryann): Figure out how to do this in Deno, so the error messages
+    // are nicer to read.
     assert.sameDeepMembers(generator.generateMoves("a2"), [
       { type: "normal", from: "a2", to: "a3" },
       { type: "normal", from: "a2", to: "a4" },
@@ -82,7 +84,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("all black pawns on rank 3", () => {
+  await t.step("all black pawns on rank 3", () => {
     const generator = make("rnbqkbnr/8/8/8/8/pppppppp/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("a2"), [
@@ -148,7 +150,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("all white pawns on rank 6", () => {
+  await t.step("all white pawns on rank 6", () => {
     const generator = make("rnbqkbnr/pppppppp/PPPPPPPP/8/8/8/8/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("a7"), [
@@ -214,7 +216,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("all black pawns on rank 4", () => {
+  await t.step("all black pawns on rank 4", () => {
     const generator = make("rnbqkbnr/8/8/8/pppppppp/8/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("a2"), [
@@ -243,7 +245,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("promotions without captures", () => {
+  await t.step("promotions without captures", () => {
     const generator = make("8/3P4/8/8/8/8/4p3/8");
 
     assert.sameDeepMembers(generator.generateMoves("d7"), [
@@ -301,7 +303,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("promotions with captures", () => {
+  await t.step("promotions with captures", () => {
     const generator = make("2b1b3/3P4/8/8/8/8/4p3/3B1B2");
 
     assert.sameDeepMembers(generator.generateMoves("d7"), [
@@ -455,7 +457,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("white en passant", () => {
+  await t.step("white en passant", () => {
     const generator = new MoveGenerator(
       new BoardState(
         "rnbqkbnr/pppp1ppp/8/3PpP2/8/8/PPP1P1PP/RNBQKBNR w KQkq e6 0 2"
@@ -489,7 +491,7 @@ describe("pawns", () => {
     ]);
   });
 
-  it("black en passant", () => {
+  await t.step("black en passant", () => {
     const generator = new MoveGenerator(
       new BoardState(
         "rnbqkbnr/pp1p1ppp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
@@ -524,14 +526,14 @@ describe("pawns", () => {
   });
 });
 
-describe("queens", () => {
-  it("initial state", () => {
+Deno.test("queens", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     assert.sameDeepMembers(generator.generateMoves("d1"), []);
     assert.sameDeepMembers(generator.generateMoves("d8"), []);
   });
 
-  it("from corner", () => {
+  await t.step("from corner", () => {
     const generator = make("Q7/8/8/8/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("a8"), [
@@ -559,7 +561,7 @@ describe("queens", () => {
     ]);
   });
 
-  it("from center", () => {
+  await t.step("from center", () => {
     const generator = make("8/8/8/3q4/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -593,7 +595,7 @@ describe("queens", () => {
     ]);
   });
 
-  it("from center with adjacent friendly pieces", () => {
+  await t.step("from center with adjacent friendly pieces", () => {
     const generator = make("8/8/8/2rqr3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -620,7 +622,7 @@ describe("queens", () => {
     ]);
   });
 
-  it("from center with adjacent opposite pieces", () => {
+  await t.step("from center with adjacent opposite pieces", () => {
     const generator = make("8/8/8/2RqR3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -650,8 +652,8 @@ describe("queens", () => {
   });
 });
 
-describe("bishops", () => {
-  it("initial state", () => {
+Deno.test("bishops", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("c1"), []);
@@ -660,7 +662,7 @@ describe("bishops", () => {
     assert.sameDeepMembers(generator.generateMoves("f8"), []);
   });
 
-  it("from corner", () => {
+  await t.step("from corner", () => {
     const generator = make("b7/8/8/8/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("a8"), [
@@ -674,7 +676,7 @@ describe("bishops", () => {
     ]);
   });
 
-  it("from center", () => {
+  await t.step("from center", () => {
     const generator = make("8/8/8/3B4/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -694,7 +696,7 @@ describe("bishops", () => {
     ]);
   });
 
-  it("from center with adjacent friendly pieces", () => {
+  await t.step("from center with adjacent friendly pieces", () => {
     const generator = make("8/8/2p5/3b4/4p3/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -707,7 +709,7 @@ describe("bishops", () => {
     ]);
   });
 
-  it("from center with adjacent opposite pieces", () => {
+  await t.step("from center with adjacent opposite pieces", () => {
     const generator = make("8/8/2P5/3b4/4P3/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -723,8 +725,8 @@ describe("bishops", () => {
   });
 });
 
-describe("rooks", () => {
-  it("initial state", () => {
+Deno.test("rooks", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("a1"), []);
@@ -733,7 +735,7 @@ describe("rooks", () => {
     assert.sameDeepMembers(generator.generateMoves("h8"), []);
   });
 
-  it("from corner", () => {
+  await t.step("from corner", () => {
     const generator = make("r7/8/8/8/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("a8"), [
@@ -754,7 +756,7 @@ describe("rooks", () => {
     ]);
   });
 
-  it("from center", () => {
+  await t.step("from center", () => {
     const generator = make("8/8/8/3R4/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -775,7 +777,7 @@ describe("rooks", () => {
     ]);
   });
 
-  it("from center with adjacent friendly pieces", () => {
+  await t.step("from center with adjacent friendly pieces", () => {
     const generator = make("8/8/8/2prp3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -789,7 +791,7 @@ describe("rooks", () => {
     ]);
   });
 
-  it("from center with adjacent opposite pieces", () => {
+  await t.step("from center with adjacent opposite pieces", () => {
     const generator = make("8/8/8/2PrP3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -806,8 +808,8 @@ describe("rooks", () => {
   });
 });
 
-describe("knights", () => {
-  it("initial state", () => {
+Deno.test("knights", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("b1"), [
@@ -828,7 +830,7 @@ describe("knights", () => {
     ]);
   });
 
-  it("white pawns on rank 3", () => {
+  await t.step("white pawns on rank 3", () => {
     const generator = make("rnbqkbnr/8/pppppppp/8/8/PPPPPPPP/8/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("b1"), [
@@ -845,7 +847,7 @@ describe("knights", () => {
     ]);
   });
 
-  it("from corners", () => {
+  await t.step("from corners", () => {
     const generator = make("n7/8/8/8/8/8/8/7N");
 
     assert.sameDeepMembers(generator.generateMoves("a8"), [
@@ -858,7 +860,7 @@ describe("knights", () => {
     ]);
   });
 
-  it("from center", () => {
+  await t.step("from center", () => {
     const generator = make("8/8/8/3n4/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -873,7 +875,7 @@ describe("knights", () => {
     ]);
   });
 
-  it("from center with opposite pieces on destinations", () => {
+  await t.step("from center with opposite pieces on destinations", () => {
     const generator = make("8/2p1p3/1p3p2/3N4/1p3p2/2p1p3/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -888,13 +890,13 @@ describe("knights", () => {
     ]);
   });
 
-  it("from center with friendly pieces on destinations", () => {
+  await t.step("from center with friendly pieces on destinations", () => {
     const generator = make("8/2P1P3/1P3P2/3N4/1P3P2/2P1P3/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), []);
   });
 
-  it("from center with mix of pieces on destinations", () => {
+  await t.step("from center with mix of pieces on destinations", () => {
     const generator = make("8/2p1p3/1p3p2/3N4/1P3P2/2P1P3/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -906,15 +908,15 @@ describe("knights", () => {
   });
 });
 
-describe("kings", () => {
-  it("initial state", () => {
+Deno.test("kings", async (t) => {
+  await t.step("initial state", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
     assert.sameDeepMembers(generator.generateMoves("e1"), []);
     assert.sameDeepMembers(generator.generateMoves("e8"), []);
   });
 
-  it("from corner", () => {
+  await t.step("from corner", () => {
     const generator = make("K7/8/8/8/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("a8"), [
@@ -924,7 +926,7 @@ describe("kings", () => {
     ]);
   });
 
-  it("from center", () => {
+  await t.step("from center", () => {
     const generator = make("8/8/8/3k4/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -939,7 +941,7 @@ describe("kings", () => {
     ]);
   });
 
-  it("from center with adjacent friendly pieces", () => {
+  await t.step("from center with adjacent friendly pieces", () => {
     const generator = make("8/8/8/2rkr3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -952,7 +954,7 @@ describe("kings", () => {
     ]);
   });
 
-  it("from center with adjacent opposite pieces", () => {
+  await t.step("from center with adjacent opposite pieces", () => {
     const generator = make("8/8/8/2RkR3/8/8/8/8");
 
     assert.sameDeepMembers(generator.generateMoves("d5"), [
@@ -968,8 +970,8 @@ describe("kings", () => {
   });
 });
 
-describe("castling", () => {
-  it("K with castling rights on both sides", () => {
+Deno.test("castling", async (t) => {
+  await t.step("K with castling rights on both sides", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "KQkq");
 
     assert.sameDeepMembers(generator.generateMoves("e1"), [
@@ -980,7 +982,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("K with king-side castling rights only", () => {
+  await t.step("K with king-side castling rights only", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "K");
 
     assert.sameDeepMembers(generator.generateMoves("e1"), [
@@ -990,7 +992,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("K with queen-side castling rights only", () => {
+  await t.step("K with queen-side castling rights only", () => {
     const generator = make("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R", "Q");
 
     assert.sameDeepMembers(generator.generateMoves("e1"), [
@@ -1000,7 +1002,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("k with castling rights on both sides", () => {
+  await t.step("k with castling rights on both sides", () => {
     const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "KQkq");
 
     assert.sameDeepMembers(generator.generateMoves("e8"), [
@@ -1011,7 +1013,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("k with king-side castling rights only", () => {
+  await t.step("k with king-side castling rights only", () => {
     const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "k");
 
     assert.sameDeepMembers(generator.generateMoves("e8"), [
@@ -1021,7 +1023,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("k with queen-side castling rights only", () => {
+  await t.step("k with queen-side castling rights only", () => {
     const generator = make("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "q");
 
     assert.sameDeepMembers(generator.generateMoves("e8"), [

@@ -8,10 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: denoland/setup-deno@v2
         with:
-          package_json_file: package.json
-      - run: pnpm install
-      - run: pnpm --recursive run tsc
-      - run: pnpm --recursive run test
-      - run: pnpm --recursive run build
+          deno-version: v2.x
+      - run: deno test
