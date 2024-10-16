@@ -1,4 +1,4 @@
-import { TPiece as PieceType } from "@chess/engine/src";
+import { TPiece as PieceType } from "@chess/engine";
 import classes from "./Piece.module.css";
 
 interface PieceProps {

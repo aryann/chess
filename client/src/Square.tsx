@@ -1,4 +1,4 @@
-import { getFile, getRank, SQUARES, TMove, TSquare } from "@chess/engine/src";
+import { getFile, getRank, SQUARES, TMove, TSquare } from "@chess/engine";
 import { useDroppable } from "@dnd-kit/core";
 import { useStore } from "@tanstack/react-store";
 import { OccupiedSquare } from "./OccupiedSquare";

@@ -1,4 +1,4 @@
-import { Engine, TMove, TPiece, TSquare } from "@chess/engine/src";
+import { Engine, TMove, TPiece, TSquare } from "@chess/engine";
 import { Store } from "@tanstack/react-store";
 import { WritableDraft, produce } from "immer";
 

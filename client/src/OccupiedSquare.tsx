@@ -1,4 +1,4 @@
-import { TPiece, TSquare } from "@chess/engine/src";
+import { TPiece, TSquare } from "@chess/engine";
 import { useDraggable } from "@dnd-kit/core";
 import classes from "./OccupiedSquare.module.css";
 import { Piece } from "./Piece";
