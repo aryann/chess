@@ -286,6 +286,9 @@ export class BoardState {
     return castlingRights.join("");
   }
 
+  // TODO(aryann): Remove this helper. All this logic has been moved to the move
+  // generator. We retain this logic here because the unit tests currently
+  // depend on them.
   private maybeMakeCastlingMove(from: TSquare, to: TSquare) {
     const fromIndex = this.toIndex(from);
     const castlingRights = this.castlingRights;
