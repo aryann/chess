@@ -170,7 +170,7 @@ export class MoveGenerator {
           moves.push(...this.moveOrPromotePawn(from, to, piece));
         }
 
-        const enPassantTarget = this.board.enPassantTarget();
+        const enPassantTarget = this.board.getEnPassantTarget();
         if (enPassantTarget === to) {
           moves.push({ type: "enPassant", from, to });
         }
@@ -283,7 +283,7 @@ export class MoveGenerator {
       }
     }
 
-    const castlingRights = this.board.castlingRights();
+    const castlingRights = this.board.getCastlingRights();
 
     if (
       (from === "e1" && castlingRights.K) ||

@@ -336,7 +336,7 @@ describe("castling rights", () => {
   it("K move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -357,7 +357,7 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1K1R b kq - 1 4"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: false,
       Q: false,
       k: true,
@@ -368,7 +368,7 @@ describe("castling rights", () => {
   it("k move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -390,7 +390,7 @@ describe("castling rights", () => {
       board.fen(),
       "rnbq1k1r/ppppbppp/4pn2/8/8/PPPP4/4PPPP/RNBQKBNR w KQ - 1 5"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: false,
@@ -401,7 +401,7 @@ describe("castling rights", () => {
   it("queen side R move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -418,7 +418,7 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/2N5/PPPPPPPP/1RBQKBNR b Kkq - 1 2"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: false,
       k: true,
@@ -429,7 +429,7 @@ describe("castling rights", () => {
   it("king side R move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -446,7 +446,7 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKBR1 b Qkq - 1 2"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: false,
       Q: true,
       k: true,
@@ -457,7 +457,7 @@ describe("castling rights", () => {
   it("queen side r move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -475,7 +475,7 @@ describe("castling rights", () => {
       board.fen(),
       "1rbqkbnr/pppppppp/2n5/8/8/PP6/2PPPPPP/RNBQKBNR w KQk - 1 3"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -486,7 +486,7 @@ describe("castling rights", () => {
   it("king side r move", () => {
     const board = new BoardState();
     assert.include(board.fen(), "KQkq");
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: true,
@@ -504,7 +504,7 @@ describe("castling rights", () => {
       board.fen(),
       "rnbqkbr1/pppppppp/5n2/8/8/PP6/2PPPPPP/RNBQKBNR w KQq - 1 3"
     );
-    assert.deepEqual(board.castlingRights(), {
+    assert.deepEqual(board.getCastlingRights(), {
       K: true,
       Q: true,
       k: false,
@@ -612,7 +612,7 @@ describe("promotion", () => {
 describe("en passant", () => {
   it("p captures P from left", () => {
     const board = new BoardState();
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
 
     board.move({ type: "normal", from: "b1", to: "c3" });
     board.move({ type: "normal", from: "d7", to: "d5" });
@@ -620,14 +620,14 @@ describe("en passant", () => {
     board.move({ type: "normal", from: "d5", to: "d4" });
 
     board.move({ type: "normal", from: "e2", to: "e4" });
-    assert.equal(board.enPassantTarget(), "e3");
+    assert.equal(board.getEnPassantTarget(), "e3");
     assert.equal(
       board.fen(),
       "rnbqkbnr/ppp1pppp/8/8/3pP3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 3"
     );
 
     board.move({ type: "enPassant", from: "d4", to: "e3" });
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
     assert.equal(
       board.fen(),
       "rnbqkbnr/ppp1pppp/8/8/8/4p3/PPPP1PPP/RNBQKBNR w KQkq - 0 4"
@@ -636,7 +636,7 @@ describe("en passant", () => {
 
   it("p captures P from right", () => {
     const board = new BoardState();
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
 
     board.move({ type: "normal", from: "b1", to: "c3" });
     board.move({ type: "normal", from: "f7", to: "f5" });
@@ -644,14 +644,14 @@ describe("en passant", () => {
     board.move({ type: "normal", from: "f5", to: "f4" });
 
     board.move({ type: "normal", from: "e2", to: "e4" });
-    assert.equal(board.enPassantTarget(), "e3");
+    assert.equal(board.getEnPassantTarget(), "e3");
     assert.equal(
       board.fen(),
       "rnbqkbnr/ppppp1pp/8/8/4Pp2/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 3"
     );
 
     board.move({ type: "enPassant", from: "f4", to: "e3" });
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
     assert.equal(
       board.fen(),
       "rnbqkbnr/ppppp1pp/8/8/8/4p3/PPPP1PPP/RNBQKBNR w KQkq - 0 4"
@@ -660,21 +660,21 @@ describe("en passant", () => {
 
   it("P captures p from left", () => {
     const board = new BoardState();
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
 
     board.move({ type: "normal", from: "e2", to: "e4" });
     board.move({ type: "normal", from: "b8", to: "c6" });
     board.move({ type: "normal", from: "e4", to: "e5" });
     board.move({ type: "normal", from: "d7", to: "d5" });
 
-    assert.equal(board.enPassantTarget(), "d6");
+    assert.equal(board.getEnPassantTarget(), "d6");
     assert.equal(
       board.fen(),
       "r1bqkbnr/ppp1pppp/2n5/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3"
     );
 
     board.move({ type: "enPassant", from: "e5", to: "d6" });
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
     assert.equal(
       board.fen(),
       "r1bqkbnr/ppp1pppp/2nP4/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3"
@@ -683,21 +683,21 @@ describe("en passant", () => {
 
   it("P captures p from right", () => {
     const board = new BoardState();
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
 
     board.move({ type: "normal", from: "e2", to: "e4" });
     board.move({ type: "normal", from: "b8", to: "c6" });
     board.move({ type: "normal", from: "e4", to: "e5" });
     board.move({ type: "normal", from: "f7", to: "f5" });
 
-    assert.equal(board.enPassantTarget(), "f6");
+    assert.equal(board.getEnPassantTarget(), "f6");
     assert.equal(
       board.fen(),
       "r1bqkbnr/ppppp1pp/2n5/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"
     );
 
     board.move({ type: "enPassant", from: "e5", to: "f6" });
-    assert.isUndefined(board.enPassantTarget());
+    assert.isUndefined(board.getEnPassantTarget());
     assert.equal(
       board.fen(),
       "r1bqkbnr/ppppp1pp/2n2P2/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3"

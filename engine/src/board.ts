@@ -15,105 +15,191 @@ import {
 
 const START_STATE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-type State = {
-  board: Uint8Array;
-  isWhiteTurn: boolean;
+type TState = {
+  move: TMove;
+  capturedPiece?: TPiece;
+
   halfMoves: number;
   fullMoves: number;
   enPassantTarget?: TSquare;
-
   castlingRights: TCastlingRights;
 };
 
 export class BoardState {
-  // We wrap all state in a pure data object, so we can use structuredClone() to
-  // quickly make copies of the board state.
-  private readonly state: State;
+  private board: Uint8Array;
+  private isWhiteTurn: boolean;
+  private halfMoves: number;
+  private fullMoves: number;
+  private enPassantTarget?: TSquare;
+  private castlingRights: TCastlingRights;
 
-  constructor(initialState?: string | BoardState) {
+  // Contains a history of all moves.
+  private readonly undoStack: TState[] = [];
+  private redoStack: TState[] = [];
+
+  constructor(initialState?: string) {
     if (!initialState) {
-      this.state = this.fromFen(START_STATE);
-    } else if (typeof initialState === "string") {
-      this.state = this.fromFen(initialState);
-    } else if (typeof initialState === "object") {
-      this.state = structuredClone(initialState.state);
-    } else {
-      throw "initialState must be a Forsyth–Edwards Notation (FEN) or an existing BoardState.";
+      initialState = START_STATE;
     }
+
+    const state = this.fromFen(initialState);
+    this.board = state.board;
+    this.isWhiteTurn = state.isWhiteTurn;
+    this.halfMoves = state.halfMoves;
+    this.fullMoves = state.fullMoves;
+    this.enPassantTarget = state.enPassantTarget;
+    this.castlingRights = state.castlingRights;
   }
 
   move(move: TMove) {
+    const newState: TState = {
+      move,
+      halfMoves: this.halfMoves,
+      fullMoves: this.fullMoves,
+      enPassantTarget: this.enPassantTarget,
+      castlingRights: structuredClone(this.castlingRights),
+    };
+
     const { from, to } = move;
     const fromIndex = this.toIndex(from);
     const toIndex = this.toIndex(to);
-    const piece = this.intToPiece(this.state.board[fromIndex]);
+    const piece = this.intToPiece(this.board[fromIndex]);
 
     if (!piece) {
       throw `${from}${to} is illegal: ${from} is empty.`;
     }
 
     const side = getSide(piece);
-    const sideToMove = this.state.isWhiteTurn ? "white" : "black";
+    const sideToMove = this.isWhiteTurn ? "w" : "b";
     if (side !== this.sideToMove()) {
       throw `${from}${to} is illegal: square contains ${side}, but side to move is ${sideToMove}.`;
     }
 
-    const destinationPiece = this.intToPiece(
-      this.state.board[this.toIndex(to)]
-    );
+    const destinationPiece = this.intToPiece(this.board[this.toIndex(to)]);
     if (destinationPiece && side === getSide(destinationPiece)) {
       throw `${from}${to} is illegal: source and destination squares both contain ${sideToMove} pieces.`;
     }
 
     if (piece === "p" || piece === "P" || destinationPiece) {
-      this.state.halfMoves = 0;
+      this.halfMoves = 0;
     } else {
-      this.state.halfMoves++;
+      this.halfMoves++;
     }
 
     switch (move.type) {
       case "normal":
-        this.state.board[toIndex] = this.state.board[fromIndex];
+        if (this.board[toIndex] !== 0) {
+          newState.capturedPiece = this.intToPiece(this.board[toIndex]);
+        }
+
+        this.board[toIndex] = this.board[fromIndex];
         break;
 
       case "enPassant":
         const capturedFile = getFile(to);
         const capturedRank = getRank(from);
         const capturedSquare = toSquare(capturedFile, capturedRank);
-
-        this.state.board[this.toIndex(capturedSquare)] = 0;
-        this.state.board[toIndex] = this.state.board[fromIndex];
+        newState.capturedPiece = this.intToPiece(
+          this.board[this.toIndex(capturedSquare)]
+        );
+        this.board[this.toIndex(capturedSquare)] = 0;
+        this.board[toIndex] = this.board[fromIndex];
         break;
 
       case "promotion":
-        this.state.board[toIndex] = move.promoteTo.charCodeAt(0);
+        if (this.board[toIndex] !== 0) {
+          newState.capturedPiece = this.intToPiece(this.board[toIndex]);
+        }
+
+        this.board[toIndex] = move.promoteTo.charCodeAt(0);
         break;
     }
 
-    this.state.board[fromIndex] = 0;
+    this.board[fromIndex] = 0;
 
-    if (!this.state.isWhiteTurn) {
-      this.state.fullMoves++;
+    if (!this.isWhiteTurn) {
+      this.fullMoves++;
     }
-    this.state.isWhiteTurn = !this.state.isWhiteTurn;
+    this.isWhiteTurn = !this.isWhiteTurn;
 
     this.maybeMakeCastlingMove(from, to);
     this.updateCastlingRights(from);
     this.updateEnPassant(from, to, piece);
+
+    this.undoStack.push(newState);
+    this.redoStack = [];
+  }
+
+  // Undo the last move. Returns true if and only if there was a move to undo.
+  undo(): boolean {
+    const state = this.undoStack.pop();
+    if (!state) {
+      return false;
+    }
+
+    this.redoStack.push(state);
+
+    const { from, to } = state.move;
+    const fromIndex = this.toIndex(from);
+    const toIndex = this.toIndex(to);
+
+    switch (state.move.type) {
+      case "normal":
+        this.board[fromIndex] = this.board[toIndex];
+        if (state.capturedPiece) {
+          this.board[toIndex] = state.capturedPiece.charCodeAt(0);
+        } else {
+          this.board[toIndex] = 0;
+        }
+        break;
+
+      case "enPassant":
+        this.board[fromIndex] = this.board[toIndex];
+
+        const capturedFile = getFile(to);
+        const capturedRank = getRank(from);
+        const capturedSquare = toSquare(capturedFile, capturedRank);
+        this.board[this.toIndex(capturedSquare)] = this.pieceToInt(
+          this.isWhiteTurn ? "p" : "P"
+        );
+        break;
+
+      case "promotion":
+        if (state.capturedPiece) {
+          this.board[toIndex] = state.capturedPiece.charCodeAt(0);
+        } else {
+          this.board[toIndex] = 0;
+        }
+
+        this.board[fromIndex] = this.pieceToInt(this.isWhiteTurn ? "P" : "p");
+        break;
+    }
+
+    this.isWhiteTurn = !this.isWhiteTurn;
+    this.halfMoves = state.halfMoves;
+    this.fullMoves = state.fullMoves;
+    this.enPassantTarget = state.enPassantTarget;
+    this.castlingRights = state.castlingRights;
+    return true;
+  }
+
+  // Redo the last move.
+  redo() {
+    throw Error("unimplemented");
   }
 
   get(square: TSquare): TPiece | undefined {
     const index = this.toIndex(square);
-    const val = this.state.board[index];
+    const val = this.board[index];
     if (val === 0) {
       return undefined;
     }
-    return String.fromCharCode(this.state.board[index]) as TPiece;
+    return String.fromCharCode(this.board[index]) as TPiece;
   }
 
   current(): (TPiece | undefined)[] {
     const result: (TPiece | undefined)[] = [];
-    for (const val of this.state.board) {
+    for (const val of this.board) {
       result.push(this.intToPiece(val));
     }
     return result;
@@ -131,39 +217,39 @@ export class BoardState {
       ranks.push(this.rankToFen(currentRank));
     }
 
-    const enPassantTarget = this.state.enPassantTarget ?? "-";
-    const turn = this.state.isWhiteTurn ? "w" : "b";
+    const enPassantTarget = this.enPassantTarget ?? "-";
+    const turn = this.isWhiteTurn ? "w" : "b";
 
     return [
       ranks.join("/"),
       turn,
       this.fenCastlingRights(),
       enPassantTarget,
-      this.state.halfMoves,
-      this.state.fullMoves,
+      this.halfMoves,
+      this.fullMoves,
     ].join(" ");
   }
 
-  castlingRights(): TCastlingRights {
-    return structuredClone(this.state.castlingRights);
+  getCastlingRights(): TCastlingRights {
+    return structuredClone(this.castlingRights);
   }
 
-  enPassantTarget(): TSquare | undefined {
-    return this.state.enPassantTarget;
+  getEnPassantTarget(): TSquare | undefined {
+    return this.enPassantTarget;
   }
 
   private fenCastlingRights(): string {
     const castlingRights = [];
-    if (this.state.castlingRights.K) {
+    if (this.castlingRights.K) {
       castlingRights.push("K");
     }
-    if (this.state.castlingRights.Q) {
+    if (this.castlingRights.Q) {
       castlingRights.push("Q");
     }
-    if (this.state.castlingRights.k) {
+    if (this.castlingRights.k) {
       castlingRights.push("k");
     }
-    if (this.state.castlingRights.q) {
+    if (this.castlingRights.q) {
       castlingRights.push("q");
     }
     if (castlingRights.length === 0) {
@@ -175,7 +261,7 @@ export class BoardState {
 
   private maybeMakeCastlingMove(from: TSquare, to: TSquare) {
     const fromIndex = this.toIndex(from);
-    const castlingRights = this.state.castlingRights;
+    const castlingRights = this.castlingRights;
 
     if (
       (from === "e1" && to === "g1" && castlingRights.K) ||
@@ -183,9 +269,9 @@ export class BoardState {
     ) {
       const right = fromIndex + 1;
       const rookIndex = fromIndex + 3;
-      if (!this.state.board[right]) {
-        this.state.board[right] = this.state.board[rookIndex];
-        this.state.board[rookIndex] = 0;
+      if (!this.board[right]) {
+        this.board[right] = this.board[rookIndex];
+        this.board[rookIndex] = 0;
       }
     }
 
@@ -195,9 +281,9 @@ export class BoardState {
     ) {
       const left = fromIndex - 1;
       const rookIndex = fromIndex - 4;
-      if (!this.state.board[left]) {
-        this.state.board[left] = this.state.board[rookIndex];
-        this.state.board[rookIndex] = 0;
+      if (!this.board[left]) {
+        this.board[left] = this.board[rookIndex];
+        this.board[rookIndex] = 0;
       }
     }
   }
@@ -206,39 +292,39 @@ export class BoardState {
   // already been determined to be valid.
   private updateCastlingRights(from: TSquare) {
     if (from === "a1" || from === "e1") {
-      this.state.castlingRights.Q = false;
+      this.castlingRights.Q = false;
     }
     if (from === "h1" || from === "e1") {
-      this.state.castlingRights.K = false;
+      this.castlingRights.K = false;
     }
     if (from === "a8" || from === "e8") {
-      this.state.castlingRights.q = false;
+      this.castlingRights.q = false;
     }
     if (from === "h8" || from === "e8") {
-      this.state.castlingRights.k = false;
+      this.castlingRights.k = false;
     }
   }
 
   private updateEnPassant(from: TSquare, to: TSquare, piece: TPiece) {
     if (piece !== "P" && piece !== "p") {
-      this.state.enPassantTarget = undefined;
+      this.enPassantTarget = undefined;
       return;
     }
 
     const fromRank = getRank(from);
     const toRank = getRank(to);
     if (Math.abs(fromRank - toRank) !== 2) {
-      this.state.enPassantTarget = undefined;
+      this.enPassantTarget = undefined;
       return;
     }
 
     const targetFile = getFile(from);
     const targetRank = getRank(from) + (toRank - fromRank) / 2;
-    this.state.enPassantTarget = toSquare(targetFile, targetRank);
+    this.enPassantTarget = toSquare(targetFile, targetRank);
   }
 
   sideToMove(): TSide {
-    return this.state.isWhiteTurn ? "w" : "b";
+    return this.isWhiteTurn ? "w" : "b";
   }
 
   private rankToFen(rank: (TPiece | undefined)[]): string {
@@ -265,7 +351,7 @@ export class BoardState {
     return result.join("");
   }
 
-  private fromFen(fen: string): State {
+  private fromFen(fen: string) {
     const parts = fen.split(" ");
     if (parts.length !== 6) {
       throw `Forsyth–Edwards Notation (FEN) must have six parts: ${fen}`;
@@ -346,5 +432,9 @@ export class BoardState {
     } else {
       return String.fromCharCode(int) as TPiece;
     }
+  }
+
+  private pieceToInt(piece: TPiece): number {
+    return piece.charCodeAt(0);
   }
 }
