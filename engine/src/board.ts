@@ -113,6 +113,18 @@ export class BoardState {
 
         this.board[toIndex] = move.promoteTo.charCodeAt(0);
         break;
+
+      case "castling":
+        this.board[toIndex] = this.board[fromIndex];
+
+        const rookFromIndex = this.toIndex(move.rook.from);
+        const rookToIndex = this.toIndex(move.rook.to);
+        this.board[rookToIndex] = this.board[rookFromIndex];
+
+        this.board[fromIndex] = 0;
+        this.board[rookFromIndex] = 0;
+
+        break;
     }
 
     this.board[fromIndex] = 0;
@@ -171,7 +183,22 @@ export class BoardState {
           this.board[toIndex] = 0;
         }
 
-        this.board[fromIndex] = this.pieceToInt(this.isWhiteTurn ? "P" : "p");
+        console.log(state.move.promoteTo, this.isWhiteTurn);
+        this.board[fromIndex] = this.pieceToInt(
+          getSide(state.move.promoteTo) === "w" ? "P" : "p"
+        );
+        break;
+
+      case "castling":
+        this.board[fromIndex] = this.board[toIndex];
+
+        const rookFromIndex = this.toIndex(state.move.rook.from);
+        const rookToIndex = this.toIndex(state.move.rook.to);
+        this.board[rookFromIndex] = this.board[rookToIndex];
+
+        this.board[toIndex] = 0;
+        this.board[rookToIndex] = 0;
+
         break;
     }
 

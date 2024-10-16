@@ -120,4 +120,5 @@ export type TMove = {
   | { type: "normal" }
   | { type: "promotion"; promoteTo: TPiece }
   | { type: "enPassant" }
+  | { type: "castling"; rook: { from: TSquare; to: TSquare } }
 );

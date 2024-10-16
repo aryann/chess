@@ -975,8 +975,18 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e1"), [
       { type: "normal", from: "e1", to: "f1" },
       { type: "normal", from: "e1", to: "d1" },
-      { type: "normal", from: "e1", to: "g1" },
-      { type: "normal", from: "e1", to: "c1" },
+      {
+        type: "castling",
+        from: "e1",
+        to: "g1",
+        rook: { from: "h1", to: "f1" },
+      },
+      {
+        type: "castling",
+        from: "e1",
+        to: "c1",
+        rook: { from: "a1", to: "d1" },
+      },
     ]);
   });
 
@@ -986,7 +996,12 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e1"), [
       { type: "normal", from: "e1", to: "f1" },
       { type: "normal", from: "e1", to: "d1" },
-      { type: "normal", from: "e1", to: "g1" },
+      {
+        type: "castling",
+        from: "e1",
+        to: "g1",
+        rook: { from: "h1", to: "f1" },
+      },
     ]);
   });
 
@@ -996,7 +1011,12 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e1"), [
       { type: "normal", from: "e1", to: "f1" },
       { type: "normal", from: "e1", to: "d1" },
-      { type: "normal", from: "e1", to: "c1" },
+      {
+        type: "castling",
+        from: "e1",
+        to: "c1",
+        rook: { from: "a1", to: "d1" },
+      },
     ]);
   });
 
@@ -1006,8 +1026,18 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e8"), [
       { type: "normal", from: "e8", to: "f8" },
       { type: "normal", from: "e8", to: "d8" },
-      { type: "normal", from: "e8", to: "g8" },
-      { type: "normal", from: "e8", to: "c8" },
+      {
+        type: "castling",
+        from: "e8",
+        to: "g8",
+        rook: { from: "h8", to: "f8" },
+      },
+      {
+        type: "castling",
+        from: "e8",
+        to: "c8",
+        rook: { from: "a8", to: "d8" },
+      },
     ]);
   });
 
@@ -1017,7 +1047,12 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e8"), [
       { type: "normal", from: "e8", to: "f8" },
       { type: "normal", from: "e8", to: "d8" },
-      { type: "normal", from: "e8", to: "g8" },
+      {
+        type: "castling",
+        from: "e8",
+        to: "g8",
+        rook: { from: "h8", to: "f8" },
+      },
     ]);
   });
 
@@ -1027,7 +1062,12 @@ describe("castling", () => {
     assert.sameDeepMembers(generator.generateMoves("e8"), [
       { type: "normal", from: "e8", to: "f8" },
       { type: "normal", from: "e8", to: "d8" },
-      { type: "normal", from: "e8", to: "c8" },
+      {
+        type: "castling",
+        from: "e8",
+        to: "c8",
+        rook: { from: "a8", to: "d8" },
+      },
     ]);
   });
 });

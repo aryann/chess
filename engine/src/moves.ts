@@ -292,7 +292,15 @@ export class MoveGenerator {
       const right = SQUARES[rank * NUM_FILES + file + 1];
       const rightRight = SQUARES[rank * NUM_FILES + file + 2];
       if (!this.board.get(right) && !this.board.get(rightRight)) {
-        moves.push({ type: "normal", from, to: rightRight });
+        moves.push({
+          type: "castling",
+          from,
+          to: rightRight,
+          rook: {
+            from: (from === "e1" ? "h1" : "h8") as TSquare,
+            to: (from === "e1" ? "f1" : "f8") as TSquare,
+          },
+        });
       }
     }
 
@@ -303,7 +311,15 @@ export class MoveGenerator {
       const left = SQUARES[rank * NUM_FILES + file - 1];
       const leftLeft = SQUARES[rank * NUM_FILES + file - 2];
       if (!this.board.get(left) && !this.board.get(leftLeft)) {
-        moves.push({ type: "normal", from, to: leftLeft });
+        moves.push({
+          type: "castling",
+          from,
+          to: leftLeft,
+          rook: {
+            from: (from === "e1" ? "a1" : "a8") as TSquare,
+            to: (from === "e1" ? "d1" : "d8") as TSquare,
+          },
+        });
       }
     }
 
