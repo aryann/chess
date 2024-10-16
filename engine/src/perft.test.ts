@@ -46,7 +46,7 @@ describe("perft", () => {
     assert.deepEqual(actualStates, expectedStates);
   });
 
-  it.only("position 2, aka Kiwipete", () => {
+  it("position 2, aka Kiwipete", () => {
     const expectedStates: number[] = [1, 48];
     const actualStates = runPerftTest(
       expectedStates.length,
