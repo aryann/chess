@@ -1,7 +1,6 @@
 import { assert, describe, it } from "vitest";
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { getSide, SQUARES, TMove } from "./types";
 
 const visit = (
   states: number[],
@@ -15,17 +14,7 @@ const visit = (
     return;
   }
 
-  const moves: TMove[] = [];
-  for (const from of SQUARES) {
-    const piece = board.get(from);
-    if (!piece || getSide(piece) !== board.sideToMove()) {
-      continue;
-    }
-
-    moves.push(...moveGenerator.generateMoves(from));
-  }
-
-  for (const move of moves) {
+  for (const move of moveGenerator.generateAllMoves()) {
     board.move(move);
     visit(states, depth + 1, board, moveGenerator);
     board.undo();

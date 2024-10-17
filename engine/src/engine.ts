@@ -1,6 +1,6 @@
 import { BoardState } from "./board";
 import { MoveGenerator } from "./moves";
-import { getSide, SQUARES, TMove, TPiece, TSquare } from "./types";
+import { TMove, TPiece, TSquare } from "./types";
 
 export class Engine {
   private board: BoardState = new BoardState();
@@ -33,20 +33,7 @@ export class Engine {
 
   // Returns all possible moves given the current game state.
   moves(): TMove[] {
-    const moves: TMove[] = [];
-
-    for (const from of SQUARES) {
-      const piece = this.board.get(from);
-      if (!piece || getSide(piece) !== this.board.sideToMove()) {
-        continue;
-      }
-
-      for (const move of this.possibleMoves(from)) {
-        moves.push(move);
-      }
-    }
-
-    return moves;
+    return this.moveGenerator.generateAllMoves();
   }
 
   // Returns the current game state using the Forsyth–Edwards Notation (FEN).

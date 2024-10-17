@@ -39,6 +39,21 @@ export class MoveGenerator {
     this.board = board;
   }
 
+  generateAllMoves(): TMove[] {
+    const moves: TMove[] = [];
+
+    for (const from of SQUARES) {
+      const piece = this.board.get(from);
+      if (!piece || getSide(piece) !== this.board.sideToMove()) {
+        continue;
+      }
+
+      moves.push(...this.generateMoves(from));
+    }
+
+    return moves;
+  }
+
   generateMoves(from: TSquare): TMove[] {
     const piece = this.board.get(from);
 
