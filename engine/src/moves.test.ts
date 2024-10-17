@@ -979,13 +979,13 @@ describe("castling", () => {
         type: "castling",
         from: "e1",
         to: "g1",
-        rook: { from: "h1", to: "f1" },
+        side: "K",
       },
       {
         type: "castling",
         from: "e1",
         to: "c1",
-        rook: { from: "a1", to: "d1" },
+        side: "Q",
       },
     ]);
   });
@@ -1000,7 +1000,7 @@ describe("castling", () => {
         type: "castling",
         from: "e1",
         to: "g1",
-        rook: { from: "h1", to: "f1" },
+        side: "K",
       },
     ]);
   });
@@ -1015,7 +1015,7 @@ describe("castling", () => {
         type: "castling",
         from: "e1",
         to: "c1",
-        rook: { from: "a1", to: "d1" },
+        side: "Q",
       },
     ]);
   });
@@ -1030,13 +1030,13 @@ describe("castling", () => {
         type: "castling",
         from: "e8",
         to: "g8",
-        rook: { from: "h8", to: "f8" },
+        side: "k",
       },
       {
         type: "castling",
         from: "e8",
         to: "c8",
-        rook: { from: "a8", to: "d8" },
+        side: "q",
       },
     ]);
   });
@@ -1051,7 +1051,7 @@ describe("castling", () => {
         type: "castling",
         from: "e8",
         to: "g8",
-        rook: { from: "h8", to: "f8" },
+        side: "k",
       },
     ]);
   });
@@ -1066,7 +1066,7 @@ describe("castling", () => {
         type: "castling",
         from: "e8",
         to: "c8",
-        rook: { from: "a8", to: "d8" },
+        side: "q",
       },
     ]);
   });

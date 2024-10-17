@@ -1,3 +1,4 @@
+import { CASTLING_ROOK_MOVES } from "./castling.ts";
 import {
   getFile,
   getRank,
@@ -117,8 +118,8 @@ export class BoardState {
       case "castling":
         this.board[toIndex] = this.board[fromIndex];
 
-        const rookFromIndex = this.toIndex(move.rook.from);
-        const rookToIndex = this.toIndex(move.rook.to);
+        const rookFromIndex = this.toIndex(CASTLING_ROOK_MOVES[move.side].from);
+        const rookToIndex = this.toIndex(CASTLING_ROOK_MOVES[move.side].to);
         this.board[rookToIndex] = this.board[rookFromIndex];
 
         this.board[fromIndex] = 0;
@@ -134,7 +135,6 @@ export class BoardState {
     }
     this.isWhiteTurn = !this.isWhiteTurn;
 
-    this.maybeMakeCastlingMove(from, to);
     this.updateCastlingRights(from);
     this.updateEnPassant(from, to, piece);
 
@@ -192,8 +192,12 @@ export class BoardState {
       case "castling":
         this.board[fromIndex] = this.board[toIndex];
 
-        const rookFromIndex = this.toIndex(state.move.rook.from);
-        const rookToIndex = this.toIndex(state.move.rook.to);
+        const rookFromIndex = this.toIndex(
+          CASTLING_ROOK_MOVES[state.move.side].from
+        );
+        const rookToIndex = this.toIndex(
+          CASTLING_ROOK_MOVES[state.move.side].to
+        );
         this.board[rookFromIndex] = this.board[rookToIndex];
 
         this.board[toIndex] = 0;
@@ -284,38 +288,6 @@ export class BoardState {
     }
 
     return castlingRights.join("");
-  }
-
-  // TODO(aryann): Remove this helper. All this logic has been moved to the move
-  // generator. We retain this logic here because the unit tests currently
-  // depend on them.
-  private maybeMakeCastlingMove(from: TSquare, to: TSquare) {
-    const fromIndex = this.toIndex(from);
-    const castlingRights = this.castlingRights;
-
-    if (
-      (from === "e1" && to === "g1" && castlingRights.K) ||
-      (from === "e8" && to === "g8" && castlingRights.k)
-    ) {
-      const right = fromIndex + 1;
-      const rookIndex = fromIndex + 3;
-      if (!this.board[right]) {
-        this.board[right] = this.board[rookIndex];
-        this.board[rookIndex] = 0;
-      }
-    }
-
-    if (
-      (from === "e1" && to === "c1" && castlingRights.Q) ||
-      (from === "e8" && to === "c8" && castlingRights.q)
-    ) {
-      const left = fromIndex - 1;
-      const rookIndex = fromIndex - 4;
-      if (!this.board[left]) {
-        this.board[left] = this.board[rookIndex];
-        this.board[rookIndex] = 0;
-      }
-    }
   }
 
   // Updates the castling rights. This function assumes that the move has

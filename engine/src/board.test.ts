@@ -514,7 +514,7 @@ describe("castling rights", () => {
 });
 
 describe("castling", () => {
-  it("K king side", () => {
+  it("K", () => {
     const board = new BoardState();
 
     // Make space for a castle:
@@ -526,14 +526,15 @@ describe("castling", () => {
     board.move({ type: "normal", from: "c7", to: "c6" });
 
     // Castling move:
-    board.move({ type: "normal", from: "e1", to: "g1" });
+    board.move({ type: "castling", from: "e1", to: "g1", side: "K" });
+
     assert.equal(
       board.fen(),
       "rnbqkbnr/3ppppp/ppp5/8/8/4PN2/PPPPBPPP/RNBQ1RK1 b kq - 1 4"
     );
   });
 
-  it("K queen side", () => {
+  it("Q", () => {
     const board = new BoardState();
 
     // Make space for a castle:
@@ -547,14 +548,15 @@ describe("castling", () => {
     board.move({ type: "normal", from: "d7", to: "d6" });
 
     // Castling move:
-    board.move({ type: "normal", from: "e1", to: "c1" });
+    board.move({ type: "castling", from: "e1", to: "c1", side: "Q" });
+
     assert.equal(
       board.fen(),
       "rnbqkbnr/4pppp/pppp4/8/8/2NPB3/PPPQPPPP/2KR1BNR b kq - 1 5"
     );
   });
 
-  it("k king side", () => {
+  it("k", () => {
     const board = new BoardState();
 
     // Make space for a castle:
@@ -567,7 +569,7 @@ describe("castling", () => {
     board.move({ type: "normal", from: "d2", to: "d3" });
 
     // Castling move:
-    board.move({ type: "normal", from: "e8", to: "g8" });
+    board.move({ type: "castling", from: "e8", to: "g8", side: "k" });
 
     assert.equal(
       board.fen(),
@@ -575,7 +577,7 @@ describe("castling", () => {
     );
   });
 
-  it("k queen side", () => {
+  it("q", () => {
     const board = new BoardState();
 
     // Make space for a castle:
@@ -590,7 +592,7 @@ describe("castling", () => {
     board.move({ type: "normal", from: "e2", to: "e3" });
 
     // Castling move:
-    board.move({ type: "normal", from: "e8", to: "c8" });
+    board.move({ type: "castling", from: "e8", to: "c8", side: "q" });
 
     assert.equal(
       board.fen(),

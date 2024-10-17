@@ -113,12 +113,11 @@ export type TCastlingRights = {
   q: boolean;
 };
 
-export type TMove = {
-  from: TSquare;
-  to: TSquare;
-} & (
+export type TCastlingSides = "K" | "Q" | "k" | "q";
+
+export type TMove = { from: TSquare; to: TSquare } & (
   | { type: "normal" }
   | { type: "promotion"; promoteTo: TPiece }
   | { type: "enPassant" }
-  | { type: "castling"; rook: { from: TSquare; to: TSquare } }
+  | { type: "castling"; side: TCastlingSides }
 );

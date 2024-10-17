@@ -296,10 +296,7 @@ export class MoveGenerator {
           type: "castling",
           from,
           to: rightRight,
-          rook: {
-            from: (from === "e1" ? "h1" : "h8") as TSquare,
-            to: (from === "e1" ? "f1" : "f8") as TSquare,
-          },
+          side: getSide(piece) === "w" ? "K" : "k",
         });
       }
     }
@@ -315,10 +312,7 @@ export class MoveGenerator {
           type: "castling",
           from,
           to: leftLeft,
-          rook: {
-            from: (from === "e1" ? "a1" : "a8") as TSquare,
-            to: (from === "e1" ? "d1" : "d8") as TSquare,
-          },
+          side: getSide(piece) === "w" ? "Q" : "q",
         });
       }
     }
