@@ -706,3 +706,49 @@ describe("en passant", () => {
     );
   });
 });
+
+describe("undo", () => {
+  it("normal moves", () => {
+    const board = new BoardState();
+
+    board.move({ type: "normal", from: "e2", to: "e4" });
+    board.move({ type: "normal", from: "e7", to: "e5" });
+    board.move({ type: "normal", from: "b1", to: "c3" });
+    board.move({ type: "normal", from: "b8", to: "c6" });
+
+    assert.equal(
+      board.fen(),
+      "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 3"
+    );
+
+    assert.isTrue(board.undo());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2"
+    );
+
+    assert.isTrue(board.undo());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2"
+    );
+
+    assert.isTrue(board.undo());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+    );
+
+    assert.isTrue(board.undo());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    );
+
+    assert.isFalse(board.undo());
+    assert.equal(
+      board.fen(),
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    );
+  });
+});

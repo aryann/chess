@@ -183,7 +183,6 @@ export class BoardState {
           this.board[toIndex] = 0;
         }
 
-        console.log(state.move.promoteTo, this.isWhiteTurn);
         this.board[fromIndex] = this.pieceToInt(
           getSide(state.move.promoteTo) === "w" ? "P" : "p"
         );
