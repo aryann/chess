@@ -752,3 +752,21 @@ describe("undo", () => {
     );
   });
 });
+
+describe("king square", () => {
+  it("initial state", () => {
+    const board = new BoardState();
+
+    assert.equal(board.getKingSquare("w"), "e1");
+    assert.equal(board.getKingSquare("b"), "e8");
+  });
+
+  it("mid state", () => {
+    const board = new BoardState(
+      "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"
+    );
+
+    assert.equal(board.getKingSquare("w"), "g1");
+    assert.equal(board.getKingSquare("b"), "g8");
+  });
+});

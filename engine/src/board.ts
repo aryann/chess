@@ -268,6 +268,15 @@ export class BoardState {
     return this.enPassantTarget;
   }
 
+  getKingSquare(side: TSide): TSquare {
+    const pieceInt = this.pieceToInt(side === "w" ? "K" : "k");
+    const square = SQUARES[this.board.indexOf(pieceInt)];
+    if (!square) {
+      throw Error(`No king for side ${side} was found on board.`);
+    }
+    return square;
+  }
+
   private fenCastlingRights(): string {
     const castlingRights = [];
     if (this.castlingRights.K) {
