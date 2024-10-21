@@ -13,6 +13,7 @@ import {
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
+import { pins } from "./pins";
 import {
   getRank,
   getSide,
@@ -46,6 +47,41 @@ export class MoveGenerator {
   }
 
   generateMoves(from: TSquare): TMove[] {
+    const piece = this.board.get(from);
+    if (!piece) {
+      throw Error(`Square ${from} is empty.`);
+    }
+    const side = getSide(piece);
+
+    // TODO(aryann): Remove this check once all test boards have kings on them.
+    let pinnedPieces: TSquare[] = [];
+    try {
+      const kingSquare = this.board.getKingSquare(side);
+      pinnedPieces = pins(this.board, kingSquare);
+    } catch (e) {}
+
+    const moves: TMove[] = [];
+
+    for (const move of this.generatePseudoLegalMoves(from)) {
+      if (pinnedPieces.includes(move.from)) {
+        // Pinned pieces cannot be moved.
+
+        // TODO(aryann): Allow pinned piece moves that are aligned with the king.
+        continue;
+      }
+
+      // TODO(aryann): If the king is currently in check, exclude all moves that
+      // do not take the king out of check.
+
+      // TODO(aryann): Disallow other moves that place the king in a check.
+
+      moves.push(move);
+    }
+
+    return moves;
+  }
+
+  private generatePseudoLegalMoves(from: TSquare): TMove[] {
     const piece = this.board.get(from);
 
     switch (piece) {
