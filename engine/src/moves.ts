@@ -1,36 +1,27 @@
 import { BoardState } from "./board";
 import {
+  DOWN,
+  DOWN_LEFT,
+  DOWN_RIGHT,
+  isInRange,
+  KNIGHT_OFFSETS,
+  LEFT,
+  Offset,
+  RIGHT,
+  SLIDING_PIECE_OFFSETS,
+  UP,
+  UP_LEFT,
+  UP_RIGHT,
+} from "./offsets";
+import {
   getRank,
   getSide,
   NUM_FILES,
-  NUM_RANKS,
   SQUARES,
   TMove,
   TPiece,
   TSquare,
 } from "./types";
-
-type Offset = { file: number; rank: number };
-
-const UP: Offset = { file: 0, rank: 1 };
-const UP_RIGHT: Offset = { file: 1, rank: 1 };
-const RIGHT: Offset = { file: 1, rank: 0 };
-const DOWN_RIGHT: Offset = { file: 1, rank: -1 };
-const DOWN: Offset = { file: 0, rank: -1 };
-const DOWN_LEFT: Offset = { file: -1, rank: -1 };
-const LEFT: Offset = { file: -1, rank: 0 };
-const UP_LEFT: Offset = { file: -1, rank: 1 };
-
-const KNIGHT_OFFSETS: Offset[] = [
-  { file: 1, rank: -2 },
-  { file: 2, rank: -1 },
-  { file: 2, rank: 1 },
-  { file: 1, rank: 2 },
-  { file: -1, rank: 2 },
-  { file: -2, rank: 1 },
-  { file: -2, rank: -1 },
-  { file: -1, rank: -2 },
-];
 
 export class MoveGenerator {
   private readonly board: BoardState;
@@ -83,25 +74,15 @@ export class MoveGenerator {
       // Bishops
       case "B":
       case "b":
-        return this.generateSlidingMoves(
-          from,
-          [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
-          piece
-        );
 
       // Queens
       case "Q":
       case "q":
-        return this.generateSlidingMoves(
-          from,
-          [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
-          piece
-        );
 
       // Rooks
       case "R":
       case "r":
-        return this.generateSlidingMoves(from, [UP, RIGHT, DOWN, LEFT], piece);
+        return this.generateSlidingMoves(from, piece);
 
       // Knights
       case "N":
@@ -155,7 +136,7 @@ export class MoveGenerator {
     // Front:
     const frontFile = file + front.file;
     const frontRank = rank + front.rank;
-    if (this.isInRange(frontFile, frontRank)) {
+    if (isInRange(frontFile, frontRank)) {
       const frontSquare = SQUARES[this.toIndex(frontFile, frontRank)];
       const destinationPiece = this.board.get(frontSquare);
       if (!destinationPiece) {
@@ -177,7 +158,7 @@ export class MoveGenerator {
     for (const offset of [left, right]) {
       const newFile = file + offset.file;
       const newRank = rank + offset.rank;
-      if (this.isInRange(newFile, newRank)) {
+      if (isInRange(newFile, newRank)) {
         const to = SQUARES[this.toIndex(newFile, newRank)];
         const destinationPiece = this.board.get(to);
 
@@ -197,9 +178,10 @@ export class MoveGenerator {
 
   private generateSlidingMoves(
     from: TSquare,
-    offsets: Offset[],
     piece: "Q" | "q" | "R" | "r" | "B" | "b"
   ): TMove[] {
+    const offsets = SLIDING_PIECE_OFFSETS[piece];
+
     const fromIndex = SQUARES.indexOf(from);
     const rank = Math.floor(fromIndex / NUM_FILES);
     const file = fromIndex % NUM_FILES;
@@ -214,7 +196,7 @@ export class MoveGenerator {
         newFile += offset.file;
         newRank += offset.rank;
 
-        if (!this.isInRange(newFile, newRank)) {
+        if (!isInRange(newFile, newRank)) {
           break;
         }
 
@@ -251,7 +233,7 @@ export class MoveGenerator {
       const newRank = rank + offset.rank;
       const newFile = file + offset.file;
 
-      if (!this.isInRange(newFile, newRank)) {
+      if (!isInRange(newFile, newRank)) {
         continue;
       }
 
@@ -287,7 +269,7 @@ export class MoveGenerator {
       const newFile = file + offset.file;
       const newRank = rank + offset.rank;
 
-      if (!this.isInRange(newFile, newRank)) {
+      if (!isInRange(newFile, newRank)) {
         continue;
       }
 
@@ -336,10 +318,6 @@ export class MoveGenerator {
     // a check.
 
     return moves;
-  }
-
-  private isInRange(file: number, rank: number): boolean {
-    return file >= 0 && file < NUM_FILES && rank >= 0 && rank < NUM_RANKS;
   }
 
   private toIndex(file: number, rank: number): number {
