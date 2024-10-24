@@ -91,8 +91,8 @@ describe("pins", () => {
     assert.deepEqual(
       pins(board, "d5"),
       new Map<TSquare, TAllowedMoves>([
-        ["d4", []],
-        ["d6", []],
+        ["d4", ["d3"]],
+        ["d6", ["d7"]],
       ])
     );
   });
@@ -111,7 +111,9 @@ describe("pins", () => {
 
     assert.deepEqual(
       pins(board, "a8"),
-      new Map<TSquare, TAllowedMoves>([["g2", ["b7", "c6", "d5", "e4", "f3"]]])
+      new Map<TSquare, TAllowedMoves>([
+        ["g2", ["b7", "c6", "d5", "e4", "f3", "h1"]],
+      ])
     );
   });
 
@@ -129,7 +131,9 @@ describe("pins", () => {
 
     assert.deepEqual(
       pins(board, "a8"),
-      new Map<TSquare, TAllowedMoves>([["f3", ["b7", "c6", "d5", "e4"]]])
+      new Map<TSquare, TAllowedMoves>([
+        ["f3", ["b7", "c6", "d5", "e4", "g2", "h1"]],
+      ])
     );
   });
 

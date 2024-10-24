@@ -53,6 +53,7 @@ export const pins = (
     let pinCandidate: { square: TSquare; piece: TPiece } | undefined =
       undefined;
     let allowedMoves: TSquare[] = [];
+    let canMove = true;
 
     for (;;) {
       newFile += offset.file;
@@ -65,10 +66,9 @@ export const pins = (
       const currentSquare = SQUARES[newRank * NUM_FILES + newFile];
       const currentPiece = board.get(currentSquare);
       if (!currentPiece) {
-        if (!pinCandidate) {
+        if (canMove) {
           allowedMoves.push(currentSquare);
         }
-
         continue;
       }
 
@@ -83,26 +83,30 @@ export const pins = (
         }
       }
 
-      if (getSide(currentPiece) !== side) {
-        for (const attackerOffset of SLIDING_PIECE_OFFSETS[currentPiece]) {
-          if (
-            attackerOffset.file !== offset.file ||
-            attackerOffset.rank !== offset.rank
-          ) {
-            continue;
-          }
+      if (getSide(currentPiece) === side) {
+        canMove = false;
+        continue;
+      }
 
-          if (movesInSameDirection(pinCandidate.piece, attackerOffset)) {
-            // The
-            allowedMoves.push(currentSquare);
-          } else {
-            allowedMoves = [];
-          }
-
-          pins.set(pinCandidate.square, allowedMoves);
-
-          break;
+      for (const attackerOffset of SLIDING_PIECE_OFFSETS[currentPiece]) {
+        if (
+          attackerOffset.file !== offset.file ||
+          attackerOffset.rank !== offset.rank
+        ) {
+          continue;
         }
+
+        if (movesInSameDirection(pinCandidate.piece, attackerOffset)) {
+          if (canMove) {
+            allowedMoves.push(currentSquare);
+          }
+        } else {
+          allowedMoves = [];
+        }
+
+        pins.set(pinCandidate.square, allowedMoves);
+
+        break;
       }
     }
   }
