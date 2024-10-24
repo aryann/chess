@@ -1070,4 +1070,31 @@ describe("castling", () => {
       },
     ]);
   });
+
+  it("pinned pieces", () => {
+    const generator = make("K7/8/8/8/8/5Q2/8/7q");
+
+    assert.sameDeepMembers(generator.generateMoves("f3"), [
+      {
+        from: "f3",
+        to: "e4",
+        type: "normal",
+      },
+      {
+        from: "f3",
+        to: "d5",
+        type: "normal",
+      },
+      {
+        from: "f3",
+        to: "c6",
+        type: "normal",
+      },
+      {
+        from: "f3",
+        to: "b7",
+        type: "normal",
+      },
+    ]);
+  });
 });

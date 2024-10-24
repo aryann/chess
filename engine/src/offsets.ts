@@ -1,4 +1,4 @@
-import { NUM_FILES, NUM_RANKS } from "./types";
+import { NUM_FILES, NUM_RANKS, TPiece } from "./types";
 
 export type Offset = { file: number; rank: number };
 
@@ -11,13 +11,19 @@ export const DOWN_LEFT: Offset = { file: -1, rank: -1 };
 export const LEFT: Offset = { file: -1, rank: 0 };
 export const UP_LEFT: Offset = { file: -1, rank: 1 };
 
-export const SLIDING_PIECE_OFFSETS = {
+export const SLIDING_PIECE_OFFSETS: { [key in TPiece]: Offset[] } = {
   Q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
   q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
   R: [UP, RIGHT, DOWN, LEFT],
   r: [UP, RIGHT, DOWN, LEFT],
   B: [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
   b: [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
+  p: [],
+  P: [],
+  n: [],
+  N: [],
+  k: [],
+  K: [],
 };
 
 export const KNIGHT_OFFSETS: Offset[] = [

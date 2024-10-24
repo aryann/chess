@@ -13,7 +13,7 @@ import {
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
-import { pins } from "./pins";
+import { pins, TAllowedMoves } from "./pins";
 import {
   getRank,
   getSide,
@@ -54,7 +54,7 @@ export class MoveGenerator {
     const side = getSide(piece);
 
     // TODO(aryann): Remove this check once all test boards have kings on them.
-    let pinnedPieces: TSquare[] = [];
+    let pinnedPieces: Map<TSquare, TAllowedMoves> = new Map();
     try {
       const kingSquare = this.board.getKingSquare(side);
       pinnedPieces = pins(this.board, kingSquare);
@@ -63,10 +63,9 @@ export class MoveGenerator {
     const moves: TMove[] = [];
 
     for (const move of this.generatePseudoLegalMoves(from)) {
-      if (pinnedPieces.includes(move.from)) {
+      const pinnedPiece = pinnedPieces.get(move.from);
+      if (pinnedPiece && !pinnedPiece.includes(move.to)) {
         // Pinned pieces cannot be moved.
-
-        // TODO(aryann): Allow pinned piece moves that are aligned with the king.
         continue;
       }
 
