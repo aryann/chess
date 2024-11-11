@@ -5,13 +5,14 @@ import {
   DOWN_RIGHT,
   isInRange,
   LEFT,
+  Offset,
   RIGHT,
   SLIDING_PIECE_OFFSETS,
   UP,
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
-import { getSide, NUM_FILES, SQUARES, TSquare } from "./types";
+import { getSide, NUM_FILES, SQUARES, TPiece, TSquare } from "./types";
 
 const OFFSETS = [
   UP,
@@ -24,11 +25,17 @@ const OFFSETS = [
   UP_LEFT,
 ];
 
-export const pins = (board: BoardState, square: TSquare): TSquare[] => {
-  const pins: TSquare[] = [];
+export type TAllowedMoves = TSquare[];
+
+export const pins = (
+  board: BoardState,
+  square: TSquare
+): Map<TSquare, TAllowedMoves> => {
+  const pins = new Map<TSquare, TAllowedMoves>();
+
   const piece = board.get(square);
   if (!piece) {
-    return [];
+    return pins;
   }
 
   const side = getSide(piece);
@@ -43,7 +50,11 @@ export const pins = (board: BoardState, square: TSquare): TSquare[] => {
     let newFile = file;
     let newRank = rank;
 
-    let pinCandidate: TSquare | undefined = undefined;
+    let pinCandidate: { square: TSquare; piece: TPiece } | undefined =
+      undefined;
+    let allowedMoves: TSquare[] = [];
+    let canMove = true;
+
     for (;;) {
       newFile += offset.file;
       newRank += offset.rank;
@@ -55,12 +66,15 @@ export const pins = (board: BoardState, square: TSquare): TSquare[] => {
       const currentSquare = SQUARES[newRank * NUM_FILES + newFile];
       const currentPiece = board.get(currentSquare);
       if (!currentPiece) {
+        if (canMove) {
+          allowedMoves.push(currentSquare);
+        }
         continue;
       }
 
       if (!pinCandidate) {
         if (getSide(currentPiece) === side) {
-          pinCandidate = currentSquare;
+          pinCandidate = { square: currentSquare, piece: currentPiece };
           continue;
         } else {
           // The closest sliding piece along this direction is from the other
@@ -69,30 +83,45 @@ export const pins = (board: BoardState, square: TSquare): TSquare[] => {
         }
       }
 
-      if (getSide(currentPiece) !== side) {
+      if (getSide(currentPiece) === side) {
+        canMove = false;
+        continue;
+      }
+
+      for (const attackerOffset of SLIDING_PIECE_OFFSETS[currentPiece]) {
         if (
-          currentPiece != "Q" &&
-          currentPiece != "q" &&
-          currentPiece != "R" &&
-          currentPiece != "r" &&
-          currentPiece != "B" &&
-          currentPiece != "b"
+          attackerOffset.file !== offset.file ||
+          attackerOffset.rank !== offset.rank
         ) {
-          break;
+          continue;
         }
 
-        for (const pieceOffset of SLIDING_PIECE_OFFSETS[currentPiece]) {
-          if (
-            pieceOffset.file === offset.file &&
-            pieceOffset.rank === offset.rank
-          ) {
-            pins.push(pinCandidate);
-            break;
+        if (movesInSameDirection(pinCandidate.piece, attackerOffset)) {
+          if (canMove) {
+            allowedMoves.push(currentSquare);
           }
+        } else {
+          allowedMoves = [];
         }
+
+        pins.set(pinCandidate.square, allowedMoves);
+
+        break;
       }
     }
   }
 
   return pins;
+};
+
+const movesInSameDirection = (piece: TPiece, targetOffset: Offset): boolean => {
+  for (const offset of SLIDING_PIECE_OFFSETS[piece]) {
+    if (
+      offset.file === targetOffset.file &&
+      offset.rank === targetOffset.rank
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
