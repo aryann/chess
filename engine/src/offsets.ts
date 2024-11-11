@@ -41,7 +41,11 @@ export const isInRange = (file: number, rank: number): boolean => {
   return file >= 0 && file < NUM_FILES && rank >= 0 && rank < NUM_RANKS;
 };
 
-export const produceSquares = (start: TSquare, offset: Offset): TSquare[] => {
+export const produceSquares = (
+  start: TSquare,
+  offset: Offset,
+  last?: TSquare
+): TSquare[] => {
   const squares: TSquare[] = [];
 
   const fromIndex = SQUARES.indexOf(start);
@@ -56,7 +60,11 @@ export const produceSquares = (start: TSquare, offset: Offset): TSquare[] => {
       break;
     }
 
+    const square = SQUARES[rank * NUM_FILES + file];
     squares.push(SQUARES[rank * NUM_FILES + file]);
+    if (square === last) {
+      break;
+    }
   }
 
   return squares;

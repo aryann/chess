@@ -41,60 +41,63 @@ export const pins = (
   const side = getSide(piece);
 
   for (const offset of OFFSETS) {
-    let pinCandidate: { square: TSquare; piece: TPiece } | undefined =
-      undefined;
-    let allowedMoves: TSquare[] = [];
-    let canMove = true;
-
-    for (const currentSquare of produceSquares(square, offset)) {
-      const currentPiece = board.get(currentSquare);
-      if (!currentPiece) {
-        if (canMove) {
-          allowedMoves.push(currentSquare);
-        }
-        continue;
-      }
-
-      if (!pinCandidate) {
-        if (getSide(currentPiece) === side) {
-          pinCandidate = { square: currentSquare, piece: currentPiece };
-          continue;
-        } else {
-          // The closest sliding piece along this direction is from the other
-          // side.
-          break;
-        }
-      }
-
-      if (getSide(currentPiece) === side) {
-        canMove = false;
-        continue;
-      }
-
-      for (const attackerOffset of SLIDING_PIECE_OFFSETS[currentPiece]) {
-        if (
-          attackerOffset.file !== offset.file ||
-          attackerOffset.rank !== offset.rank
-        ) {
-          continue;
-        }
-
-        if (movesInSameDirection(pinCandidate.piece, attackerOffset)) {
-          if (canMove) {
-            allowedMoves.push(currentSquare);
-          }
-        } else {
-          allowedMoves = [];
-        }
-
-        pins.set(pinCandidate.square, allowedMoves);
-
-        break;
-      }
+    const pinnedPiece = findNextPiece(board, square, offset);
+    if (!pinnedPiece) {
+      // There are no pieces along this direction.
+      continue;
     }
+
+    if (getSide(pinnedPiece.piece) !== side) {
+      // The next piece in this direction is an enemy piece.
+      continue;
+    }
+
+    const nextPiece = findNextPiece(board, pinnedPiece.square, offset);
+    if (!nextPiece) {
+      // There are no additional pieces along this direction.
+      continue;
+    }
+
+    if (getSide(nextPiece.piece) === side) {
+      // The next piece in this direction is not an enemy piece.
+      continue;
+    }
+
+    const enemyPiece = nextPiece;
+
+    if (!movesInSameDirection(enemyPiece.piece, offset)) {
+      continue;
+    }
+
+    let allowedMoves: TSquare[] = [];
+
+    if (movesInSameDirection(pinnedPiece.piece, offset)) {
+      const last = enemyPiece.square;
+      allowedMoves = produceSquares(square, offset, last);
+
+      // Do not consider the pinned piece's own square as an allowed move.
+      allowedMoves.splice(allowedMoves.indexOf(pinnedPiece.square), 1);
+    }
+
+    pins.set(pinnedPiece.square, allowedMoves);
   }
 
   return pins;
+};
+
+const findNextPiece = (
+  board: BoardState,
+  start: TSquare,
+  offset: Offset
+): { square: TSquare; piece: TPiece } | undefined => {
+  for (const square of produceSquares(start, offset)) {
+    const piece = board.get(square);
+    if (piece) {
+      return { square, piece };
+    }
+  }
+
+  return undefined;
 };
 
 const movesInSameDirection = (piece: TPiece, targetOffset: Offset): boolean => {
