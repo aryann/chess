@@ -13,7 +13,6 @@ import {
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
-import { pins, TAllowedMoves } from "./pins";
 import {
   getRank,
   getSide,
@@ -51,22 +50,21 @@ export class MoveGenerator {
     if (!piece) {
       throw Error(`Square ${from} is empty.`);
     }
-    const side = getSide(piece);
 
     // TODO(aryann): Remove this check once all test boards have kings on them.
-    let pinnedPieces: Map<TSquare, TAllowedMoves> = new Map();
-    try {
-      const kingSquare = this.board.getKingSquare(side);
-      pinnedPieces = pins(this.board, kingSquare);
-    } catch (e) {}
+    // const side = getSide(piece);
+    // let pinnedPieces: Map<TSquare, TAllowedMoves> = new Map();
+    // try {
+    //   const kingSquare = this.board.getKingSquare(side);
+    //   pinnedPieces = pins(this.board, kingSquare);
+    // } catch (e) {}
 
     const moves: TMove[] = [];
 
     for (const move of this.generatePseudoLegalMoves(from)) {
-      const pinnedPiece = pinnedPieces.get(move.from);
-
       // TODO(aryann): Enable this once the pinning logic works:
       //
+      // const pinnedPiece = pinnedPieces.get(move.from);
       // if (pinnedPiece && !pinnedPiece.includes(move.to)) {
       //   // Pinned pieces cannot be moved.
       //   continue;
