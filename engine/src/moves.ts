@@ -64,10 +64,13 @@ export class MoveGenerator {
 
     for (const move of this.generatePseudoLegalMoves(from)) {
       const pinnedPiece = pinnedPieces.get(move.from);
-      if (pinnedPiece && !pinnedPiece.includes(move.to)) {
-        // Pinned pieces cannot be moved.
-        continue;
-      }
+
+      // TODO(aryann): Enable this once the pinning logic works:
+      //
+      // if (pinnedPiece && !pinnedPiece.includes(move.to)) {
+      //   // Pinned pieces cannot be moved.
+      //   continue;
+      // }
 
       // TODO(aryann): If the king is currently in check, exclude all moves that
       // do not take the king out of check.

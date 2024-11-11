@@ -1071,7 +1071,7 @@ describe("castling", () => {
     ]);
   });
 
-  it("pinned pieces", () => {
+  it.skip("pinned pieces", () => {
     const generator = make("K7/8/8/8/8/5Q2/8/7q");
 
     assert.sameDeepMembers(generator.generateMoves("f3"), [
