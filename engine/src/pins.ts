@@ -3,16 +3,16 @@ import {
   DOWN,
   DOWN_LEFT,
   DOWN_RIGHT,
-  isInRange,
   LEFT,
   Offset,
+  produceSquares,
   RIGHT,
   SLIDING_PIECE_OFFSETS,
   UP,
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
-import { getSide, NUM_FILES, SQUARES, TPiece, TSquare } from "./types";
+import { getSide, TPiece, TSquare } from "./types";
 
 const OFFSETS = [
   UP,
@@ -39,31 +39,14 @@ export const pins = (
   }
 
   const side = getSide(piece);
-  const squareIndex = SQUARES.indexOf(square);
-
-  // TODO(aryann): Rename these to row/col since they're not really rank and
-  // file.
-  const rank = Math.floor(squareIndex / NUM_FILES);
-  const file = squareIndex % NUM_FILES;
 
   for (const offset of OFFSETS) {
-    let newFile = file;
-    let newRank = rank;
-
     let pinCandidate: { square: TSquare; piece: TPiece } | undefined =
       undefined;
     let allowedMoves: TSquare[] = [];
     let canMove = true;
 
-    for (;;) {
-      newFile += offset.file;
-      newRank += offset.rank;
-
-      if (!isInRange(newFile, newRank)) {
-        break;
-      }
-
-      const currentSquare = SQUARES[newRank * NUM_FILES + newFile];
+    for (const currentSquare of produceSquares(square, offset)) {
       const currentPiece = board.get(currentSquare);
       if (!currentPiece) {
         if (canMove) {
