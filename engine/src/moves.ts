@@ -7,6 +7,7 @@ import {
   KNIGHT_OFFSETS,
   LEFT,
   Offset,
+  produceSquares,
   RIGHT,
   SLIDING_PIECE_OFFSETS,
   UP,
@@ -217,26 +218,10 @@ export class MoveGenerator {
     piece: "Q" | "q" | "R" | "r" | "B" | "b"
   ): TMove[] {
     const offsets = SLIDING_PIECE_OFFSETS[piece];
-
-    const fromIndex = SQUARES.indexOf(from);
-    const rank = Math.floor(fromIndex / NUM_FILES);
-    const file = fromIndex % NUM_FILES;
-
     const moves: TMove[] = [];
 
     for (const offset of offsets) {
-      let newFile = file;
-      let newRank = rank;
-
-      for (;;) {
-        newFile += offset.file;
-        newRank += offset.rank;
-
-        if (!isInRange(newFile, newRank)) {
-          break;
-        }
-
-        const to = SQUARES[newRank * NUM_FILES + newFile];
+      for (const to of produceSquares(from, offset)) {
         const destinationPiece = this.board.get(to);
         const move: TMove = { type: "normal", from, to };
 

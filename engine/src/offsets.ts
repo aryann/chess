@@ -1,4 +1,4 @@
-import { NUM_FILES, NUM_RANKS, TPiece } from "./types";
+import { NUM_FILES, NUM_RANKS, SQUARES, TPiece, TSquare } from "./types";
 
 export type Offset = { file: number; rank: number };
 
@@ -39,4 +39,25 @@ export const KNIGHT_OFFSETS: Offset[] = [
 
 export const isInRange = (file: number, rank: number): boolean => {
   return file >= 0 && file < NUM_FILES && rank >= 0 && rank < NUM_RANKS;
+};
+
+export const produceSquares = (start: TSquare, offset: Offset): TSquare[] => {
+  const squares: TSquare[] = [];
+
+  const fromIndex = SQUARES.indexOf(start);
+  let file = fromIndex % NUM_FILES;
+  let rank = Math.floor(fromIndex / NUM_FILES);
+
+  for (;;) {
+    file += offset.file;
+    rank += offset.rank;
+
+    if (!isInRange(file, rank)) {
+      break;
+    }
+
+    squares.push(SQUARES[rank * NUM_FILES + file]);
+  }
+
+  return squares;
 };
