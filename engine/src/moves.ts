@@ -14,7 +14,7 @@ import {
   UP_LEFT,
   UP_RIGHT,
 } from "./offsets";
-import { pins, TAllowedMoves } from "./pins";
+import { pins } from "./pins";
 import {
   getRank,
   getSide,
@@ -53,13 +53,10 @@ export class MoveGenerator {
       throw Error(`Square ${from} is empty.`);
     }
 
-    // TODO(aryann): Remove this check once all test boards have kings on them.
     const side = getSide(piece);
-    let pinnedPieces: Map<TSquare, TAllowedMoves> = new Map();
-    try {
-      const kingSquare = this.board.getKingSquare(side);
-      pinnedPieces = pins(this.board, kingSquare);
-    } catch (e) {}
+
+    const kingSquare = this.board.getKingSquare(side);
+    let pinnedPieces = pins(this.board, kingSquare);
 
     const moves: TMove[] = [];
 
