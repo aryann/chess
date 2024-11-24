@@ -9,31 +9,10 @@ interface OccupiedSquareProps {
 }
 
 export const OccupiedSquare = (props: OccupiedSquareProps) => {
-  // const lastEngineMove = useStore(boardStore, (state) => state.lastEngineMove);
-  // const [includeTransform, setIncludeTransform] = useState(!!lastEngineMove);
-
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.square,
     data: { piece: props.piece },
   });
-
-  // useEffect(() => {
-  //   // Immediately clears the transform property on the style,
-  //   // so the transition takes effect.
-  //   setIncludeTransform(false);
-  // }, []);
-
-  // let style = {};
-  // if (
-  //   lastEngineMove &&
-  //   props.square === lastEngineMove.to &&
-  //   includeTransform
-  // ) {
-  //   // style = {
-  //   //   // transform: `translate(${lastEngineMove.translateX}px, ${lastEngineMove.translateY}px)`,
-  //   //   backgroundColor: "yellow",
-  //   // };
-  // }
 
   return (
     <div className={classes.pieceContainer}>
@@ -44,7 +23,7 @@ export const OccupiedSquare = (props: OccupiedSquareProps) => {
           {...listeners}
           {...attributes}
         >
-          <Piece piece={props.piece} />
+          <Piece {...props} />
         </div>
       )}
     </div>

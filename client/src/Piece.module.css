@@ -4,4 +4,7 @@
 
   /* Disable scrolling on mobile when moving pieces. */
   touch-action: none;
+
+  transition: transform 100ms;
+  transform: none;
 }
