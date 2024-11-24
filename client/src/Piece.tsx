@@ -6,7 +6,7 @@ import { boardStore } from "./stores/board";
 
 interface PieceProps {
   piece: PieceType;
-  square: TSquare;
+  square?: TSquare;
 }
 
 export const Piece = (props: PieceProps) => {
