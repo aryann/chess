@@ -11,6 +11,17 @@ export const DOWN_LEFT: Offset = { file: -1, rank: -1 };
 export const LEFT: Offset = { file: -1, rank: 0 };
 export const UP_LEFT: Offset = { file: -1, rank: 1 };
 
+export const ALL_SLIDING_PIECE_OFFSETS = [
+  UP,
+  UP_RIGHT,
+  RIGHT,
+  DOWN_RIGHT,
+  DOWN,
+  DOWN_LEFT,
+  LEFT,
+  UP_LEFT,
+];
+
 export const SLIDING_PIECE_OFFSETS: { [key in TPiece]: Offset[] } = {
   Q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
   q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
