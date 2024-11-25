@@ -7,15 +7,19 @@ import {
 } from "./offsets";
 import { getSide, TSide, TSquare } from "./types";
 
-export const attackers = (board: BoardState, square: TSquare): TSquare[] => {
+export const attackers = (
+  board: BoardState,
+  square: TSquare,
+  side: TSide
+): TSquare[] => {
   const attackers: TSquare[] = [];
 
   const piece = board.get(square);
-  if (!piece) {
-    return attackers;
+  if (piece && getSide(piece) !== side) {
+    throw new Error(
+      `the piece on square ${square} is ${piece} which is not from the given side ${side}`
+    );
   }
-
-  const side = getSide(piece);
 
   attackers.push(...slidingPieceAttackers(board, square, side));
   attackers.push(...knightAttackers(board, square, side));
