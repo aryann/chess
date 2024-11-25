@@ -4,6 +4,12 @@ import { attackers } from "./attackers";
 import { BoardState } from "./board";
 
 describe("attackers", () => {
+  it("safe square", () => {
+    const board = new BoardState("3q4/3q4/8/8/q2K2qq/8/3q4/3q4 w KQkq - 0 1");
+
+    assert.sameMembers(attackers(board, "d5"), []);
+  });
+
   it("queens on ranks and files", () => {
     const board = new BoardState("3q4/3q4/8/8/q2K2qq/8/3q4/3q4 w KQkq - 0 1");
 
