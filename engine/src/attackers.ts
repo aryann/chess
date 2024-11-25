@@ -1,5 +1,10 @@
 import { BoardState } from "./board";
-import { ALL_SLIDING_PIECE_OFFSETS, Offset, produceSquares } from "./offsets";
+import {
+  ALL_SLIDING_PIECE_OFFSETS,
+  KNIGHT_OFFSETS,
+  Offset,
+  produceSquares,
+} from "./offsets";
 import { getSide, TSide, TSquare } from "./types";
 
 export const attackers = (board: BoardState, square: TSquare): TSquare[] => {
@@ -13,10 +18,7 @@ export const attackers = (board: BoardState, square: TSquare): TSquare[] => {
   const side = getSide(piece);
 
   attackers.push(...slidingPieceAttackers(board, square, side));
-
-  //   const index = SQUARES.indexOf(square);
-  //   let file = index % NUM_FILES;
-  //   let rank = Math.floor(index / NUM_FILES);
+  attackers.push(...knightAttackers(board, square, side));
 
   return attackers;
 };
@@ -56,6 +58,36 @@ const slidingPieceAttackers = (
         attackers.push(attackerSquare);
         break;
       }
+    }
+  }
+
+  return attackers;
+};
+
+const knightAttackers = (
+  board: BoardState,
+  square: TSquare,
+  side: TSide
+): TSquare[] => {
+  const attackers: TSquare[] = [];
+
+  for (const offset of KNIGHT_OFFSETS) {
+    const squares = produceSquares(square, offset);
+    if (squares.length !== 1) {
+      continue;
+    }
+    const attackerSquare = squares[0];
+    const attacker = board.get(attackerSquare);
+    if (!attacker) {
+      continue;
+    }
+
+    if (getSide(attacker) === side) {
+      break;
+    }
+
+    if (attacker === "N" || attacker === "n") {
+      attackers.push(attackerSquare);
     }
   }
 

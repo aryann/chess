@@ -51,4 +51,21 @@ describe("attackers", () => {
 
     assert.sameMembers(attackers(board, "d4"), []);
   });
+
+  it("knights", () => {
+    const board = new BoardState(
+      "8/8/2n1n3/1n3n2/3K4/1n3n2/2n1n3/8 w KQkq - 0 1"
+    );
+
+    assert.sameMembers(attackers(board, "d4"), [
+      "b3",
+      "f3",
+      "b5",
+      "c2",
+      "e2",
+      "f5",
+      "c6",
+      "e6",
+    ]);
+  });
 });
