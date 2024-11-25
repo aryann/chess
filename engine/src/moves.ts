@@ -240,21 +240,15 @@ export class MoveGenerator {
   }
 
   private generateKnightMoves(from: TSquare, piece: "N" | "n"): TMove[] {
-    const fromIndex = SQUARES.indexOf(from);
-    const rank = Math.floor(fromIndex / NUM_FILES);
-    const file = fromIndex % NUM_FILES;
-
     const moves: TMove[] = [];
 
     for (const offset of KNIGHT_OFFSETS) {
-      const newRank = rank + offset.rank;
-      const newFile = file + offset.file;
-
-      if (!isInRange(newFile, newRank)) {
+      const squares = produceSquares(from, offset);
+      if (squares.length !== 1) {
         continue;
       }
+      const to = squares[0];
 
-      const to = SQUARES[newRank * NUM_FILES + newFile];
       const destinationPiece = this.board.get(to);
       if (destinationPiece && getSide(piece) === getSide(destinationPiece)) {
         // There is a piece in the destination and it's of the same

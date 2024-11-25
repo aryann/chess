@@ -63,6 +63,8 @@ export const produceSquares = (
   let file = fromIndex % NUM_FILES;
   let rank = Math.floor(fromIndex / NUM_FILES);
 
+  const isKnightOffset = Math.abs(offset.file) + Math.abs(offset.rank) === 3;
+
   for (;;) {
     file += offset.file;
     rank += offset.rank;
@@ -74,6 +76,10 @@ export const produceSquares = (
     const square = SQUARES[rank * NUM_FILES + file];
     squares.push(SQUARES[rank * NUM_FILES + file]);
     if (square === last) {
+      break;
+    }
+
+    if (isKnightOffset) {
       break;
     }
   }
