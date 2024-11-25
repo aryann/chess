@@ -7,9 +7,9 @@ import {
   KNIGHT_OFFSETS,
   LEFT,
   Offset,
+  OFFSETS,
   produceSquares,
   RIGHT,
-  SLIDING_PIECE_OFFSETS,
   UP,
   UP_LEFT,
   UP_RIGHT,
@@ -82,26 +82,12 @@ export class MoveGenerator {
     const piece = this.board.get(from);
 
     switch (piece) {
-      // White pawns
-      case "P": {
-        const isFirstMove = getRank(from) === 2;
-        return this.generatePawnMoves(
-          from,
-          [DOWN_RIGHT, DOWN, DOWN_LEFT],
-          isFirstMove,
-          piece
-        );
-      }
-
-      // Black pawns
+      // Pawns
+      case "P":
       case "p": {
-        const isFirstMove = getRank(from) === 7;
-        return this.generatePawnMoves(
-          from,
-          [UP_LEFT, UP, UP_RIGHT],
-          isFirstMove,
-          piece
-        );
+        const startingRank = piece === "P" ? 2 : 7;
+        const isFirstMove = getRank(from) === startingRank;
+        return this.generatePawnMoves(from, OFFSETS[piece], isFirstMove, piece);
       }
 
       // Bishops
@@ -156,7 +142,7 @@ export class MoveGenerator {
   // pawn's perspective.
   private generatePawnMoves(
     from: TSquare,
-    [left, front, right]: [Offset, Offset, Offset],
+    [left, front, right]: Offset[],
     isFirstMove: boolean,
     piece: "P" | "p"
   ): TMove[] {
@@ -213,7 +199,7 @@ export class MoveGenerator {
     from: TSquare,
     piece: "Q" | "q" | "R" | "r" | "B" | "b"
   ): TMove[] {
-    const offsets = SLIDING_PIECE_OFFSETS[piece];
+    const offsets = OFFSETS[piece];
     const moves: TMove[] = [];
 
     for (const offset of offsets) {

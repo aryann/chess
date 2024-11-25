@@ -11,7 +11,7 @@ export const DOWN_LEFT: Offset = { file: -1, rank: -1 };
 export const LEFT: Offset = { file: -1, rank: 0 };
 export const UP_LEFT: Offset = { file: -1, rank: 1 };
 
-export const ALL_SLIDING_PIECE_OFFSETS = [
+export const SLIDING_PIECE_OFFSETS = [
   UP,
   UP_RIGHT,
   RIGHT,
@@ -22,19 +22,19 @@ export const ALL_SLIDING_PIECE_OFFSETS = [
   UP_LEFT,
 ];
 
-export const SLIDING_PIECE_OFFSETS: { [key in TPiece]: Offset[] } = {
+export const OFFSETS: { [key in TPiece]: Offset[] } = {
   Q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
   q: [UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT],
   R: [UP, RIGHT, DOWN, LEFT],
   r: [UP, RIGHT, DOWN, LEFT],
   B: [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
   b: [UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT],
-  p: [],
-  P: [],
-  n: [],
+  P: [DOWN_RIGHT, DOWN, DOWN_LEFT],
+  p: [UP_LEFT, UP, UP_RIGHT],
   N: [],
-  k: [],
+  n: [],
   K: [],
+  k: [],
 };
 
 export const KNIGHT_OFFSETS: Offset[] = [

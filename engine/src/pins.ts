@@ -1,29 +1,11 @@
 import { BoardState } from "./board";
 import {
-  DOWN,
-  DOWN_LEFT,
-  DOWN_RIGHT,
-  LEFT,
   Offset,
+  OFFSETS,
   produceSquares,
-  RIGHT,
   SLIDING_PIECE_OFFSETS,
-  UP,
-  UP_LEFT,
-  UP_RIGHT,
 } from "./offsets";
 import { getSide, TPiece, TSquare } from "./types";
-
-const OFFSETS = [
-  UP,
-  UP_RIGHT,
-  RIGHT,
-  DOWN_RIGHT,
-  DOWN,
-  DOWN_LEFT,
-  LEFT,
-  UP_LEFT,
-];
 
 export type TAllowedMoves = TSquare[];
 
@@ -40,7 +22,7 @@ export const pins = (
 
   const side = getSide(piece);
 
-  for (const offset of OFFSETS) {
+  for (const offset of SLIDING_PIECE_OFFSETS) {
     const pinnedPiece = findNextPiece(board, square, offset);
     if (!pinnedPiece) {
       // There are no pieces along this direction.
@@ -101,7 +83,7 @@ const findNextPiece = (
 };
 
 const movesInSameDirection = (piece: TPiece, targetOffset: Offset): boolean => {
-  for (const offset of SLIDING_PIECE_OFFSETS[piece]) {
+  for (const offset of OFFSETS[piece]) {
     if (
       offset.file === targetOffset.file &&
       offset.rank === targetOffset.rank

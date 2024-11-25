@@ -1,9 +1,9 @@
 import { BoardState } from "./board";
 import {
-  ALL_SLIDING_PIECE_OFFSETS,
   KNIGHT_OFFSETS,
   Offset,
   produceSquares,
+  SLIDING_PIECE_OFFSETS,
 } from "./offsets";
 import { getSide, TSide, TSquare } from "./types";
 
@@ -42,7 +42,7 @@ const slidingPieceAttackers = (
 ): TSquare[] => {
   const attackers: TSquare[] = [];
 
-  for (const offset of ALL_SLIDING_PIECE_OFFSETS) {
+  for (const offset of SLIDING_PIECE_OFFSETS) {
     for (const attackerSquare of produceSquares(square, offset)) {
       const attacker = board.get(attackerSquare);
       if (!attacker) {
