@@ -1,18 +1,11 @@
 import { BoardState } from "./board";
 import {
-  DOWN,
-  DOWN_LEFT,
-  DOWN_RIGHT,
   isInRange,
   KNIGHT_OFFSETS,
-  LEFT,
   Offset,
   OFFSETS,
   produceSquares,
-  RIGHT,
-  UP,
-  UP_LEFT,
-  UP_RIGHT,
+  SLIDING_PIECE_OFFSETS,
 } from "./offsets";
 import { pins } from "./pins";
 import {
@@ -253,16 +246,7 @@ export class MoveGenerator {
     const rank = Math.floor(fromIndex / NUM_FILES);
 
     const moves: TMove[] = [];
-    for (const offset of [
-      UP,
-      UP_RIGHT,
-      RIGHT,
-      DOWN_RIGHT,
-      DOWN,
-      DOWN_LEFT,
-      LEFT,
-      UP_LEFT,
-    ]) {
+    for (const offset of SLIDING_PIECE_OFFSETS) {
       const newFile = file + offset.file;
       const newRank = rank + offset.rank;
 
